@@ -1,0 +1,117 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>UnityLogWrapper</name>
+    </assembly>
+    <members>
+        <member name="T:Wrapper.Debug">
+            <summary>
+            <see cref="T:UnityEngine.Debug"/>를 래핑한 클래스입니다.
+            </summary>
+        </member>
+        <member name="F:Wrapper.Debug.strDefaultColorHexCode">
+            <summary>
+            로그에 출력하는 색상
+            <para>Ex) 008000ff</para>
+            <para>RGBA</para>
+            </summary>
+        </member>
+        <member name="F:Wrapper.Debug.strDefaultFlagName">
+            <summary>
+            플래그를 지정하지 않은 로그에 대한 플래그
+            </summary>
+        </member>
+        <member name="M:Wrapper.Debug.Set_PrintLog_FilterFlag(System.Object[])">
+            <summary>
+            출력할 로그의 필터 <see cref="T:System.FlagsAttribute"/>를 지정합니다. 인자가 <see cref="F:System.Int32.MaxValue"/>이면 모두 출력합니다.
+            </summary>
+        </member>
+        <member name="M:Wrapper.Debug.Set_PrintLog_FilterFlag(Wrapper.Debug.DebugFilterInfo[])">
+            <summary>
+            출력할 로그의 필터 <see cref="T:System.FlagsAttribute"/>를 지정합니다.
+            </summary>
+            <param name="arrPrintFilterFlag"></param>
+        </member>
+        <member name="M:Wrapper.Debug.Set_PrintLogFormat(Wrapper.Debug.PrintLogFormat)">
+            <summary>
+            로그의 출력 포멧을 지정합니다.
+            </summary>
+        </member>
+        <member name="M:Wrapper.Debug.Log(System.Object,System.Object)">
+            <summary>
+            <see cref="M:UnityEngine.Debug.Log(System.Object)"/>를 출력합니다.
+            <para><see cref="M:Wrapper.Debug.Set_PrintLog_FilterFlag(System.Object[])"/>에서 세팅한 플래그가 아니면 출력하지 않습니다.</para>
+            </summary>
+            <param name="pFilterFlags">출력할 필터 플래그입니다</param>
+            <param name="message">로그 메시지</param>
+        </member>
+        <member name="M:Wrapper.Debug.Log(System.Object,System.Object,UnityEngine.Object)">
+            <summary>
+            <see cref="M:UnityEngine.Debug.Log(System.Object,UnityEngine.Object)"/>를 출력합니다.
+            <para><see cref="M:Wrapper.Debug.Set_PrintLog_FilterFlag(System.Object[])"/>에서 세팅한 플래그가 아니면 출력하지 않습니다.</para>
+            </summary>
+            <param name="pFilterFlags">출력할 필터 플래그입니다</param>
+            <param name="message">로그 메시지</param>
+            <param name="context">유니티 오브젝트</param>
+        </member>
+        <member name="M:Wrapper.Debug.LogError(System.Object,System.Object)">
+            <summary>
+            <see cref="M:UnityEngine.Debug.LogError(System.Object)"/>를 출력합니다.
+            <para><see cref="M:Wrapper.Debug.Set_PrintLog_FilterFlag(System.Object[])"/>에서 세팅한 플래그가 아니면 출력하지 않습니다.</para>
+            </summary>
+            <param name="pFilterFlags">출력할 필터 플래그입니다</param>
+            <param name="message">로그 에러 메시지</param>
+        </member>
+        <member name="M:Wrapper.Debug.LogError(System.Object,System.Object,UnityEngine.Object)">
+            <summary>
+            <see cref="M:UnityEngine.Debug.LogError(System.Object,UnityEngine.Object)"/>를 출력합니다.
+            <para><see cref="M:Wrapper.Debug.Set_PrintLog_FilterFlag(System.Object[])"/>에서 세팅한 플래그가 아니면 출력하지 않습니다.</para>
+            </summary>
+            <param name="pFilterFlags">출력할 필터 플래그입니다</param>
+            <param name="message">로그 에러 메시지</param>
+        </member>
+        <member name="M:Wrapper.Debug.LogWarning(System.Object,System.Object)">
+            <summary>
+            <see cref="M:UnityEngine.Debug.LogWarning(System.Object)"/>를 출력합니다.
+            <para><see cref="M:Wrapper.Debug.Set_PrintLog_FilterFlag(System.Object[])"/>에서 세팅한 플래그가 아니면 출력하지 않습니다.</para>
+            </summary>
+            <param name="pFilterFlags">출력할 필터 플래그입니다</param>
+            <param name="message">로그 에러 메시지</param>
+        </member>
+        <member name="M:Wrapper.Debug.LogWarning(System.Object,System.Object,UnityEngine.Object)">
+            <summary>
+            <see cref="M:UnityEngine.Debug.LogWarning(System.Object,UnityEngine.Object)"/>를 출력합니다.
+            <para><see cref="M:Wrapper.Debug.Set_PrintLog_FilterFlag(System.Object[])"/>에서 세팅한 플래그가 아니면 출력하지 않습니다.</para>
+            </summary>
+            <param name="pFilterFlags">출력할 필터 플래그입니다</param>
+            <param name="message">로그 에러 메시지</param>
+        </member>
+        <member name="M:Wrapper.Debug.TryExecute(System.Action,UnityEngine.LogType)">
+            <summary>
+            함수를 실행하며, [try catch]로 감쌉니다. catch 발생시 로그를 출력합니다.
+            <para>리턴은 함수를 정상적으로 실행하면 true입니다.</para>
+            </summary>
+            <param name="TryFunc">실행할 함수</param>
+            <param name="eLogType">catch시 출력할 로그 타입</param>
+        </member>
+        <member name="M:Wrapper.Debug.TryExecute(System.Action,System.Object,UnityEngine.LogType)">
+            <summary>
+            함수를 실행하며, [try catch]로 감쌉니다. catch 발생시 로그를 출력합니다.
+            <para>리턴은 함수를 정상적으로 실행하면 true입니다.</para>
+            </summary>
+            <param name="TryFunc">실행할 함수</param>
+            <param name="pFilterFlags">출력할 필터 플래그입니다</param>
+            <param name="eLogType">catch시 출력할 로그 타입</param>
+        </member>
+        <member name="M:Wrapper.Debug.TryExecute(System.Action,System.Object,UnityEngine.Object,UnityEngine.LogType)">
+            <summary>
+            함수를 실행하며, [try catch]로 감쌉니다. catch 발생시 로그를 출력합니다.
+            <para>리턴은 함수를 정상적으로 실행하면 true입니다.</para>
+            </summary>
+            <param name="TryFunc">실행할 함수</param>
+            <param name="pFilterFlags">출력할 필터 플래그입니다</param>
+            <param name="eLogType">catch시 출력할 로그 타입</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
