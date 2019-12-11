@@ -9,6 +9,33 @@
             <see cref="T:UnityEngine.Debug"/>를 래핑한 클래스입니다.
             </summary>
         </member>
+        <member name="F:Wrapper.Debug.const_strDefaultColorHexCode">
+            <summary>
+            디폴트 색상 코드
+            </summary>
+        </member>
+        <member name="T:Wrapper.Debug.DebugFilterInfo">
+            <summary>
+            디버그 필터당 정보
+            </summary>
+        </member>
+        <member name="F:Wrapper.Debug.DebugFilterInfo.pFilterFlag">
+            <summary>
+            디버그 필터 플래그
+            </summary>
+        </member>
+        <member name="F:Wrapper.Debug.DebugFilterInfo.strColorHexCode">
+            <summary>
+            디버그 로그의 색상값
+            </summary>
+        </member>
+        <member name="M:Wrapper.Debug.DebugFilterInfo.#ctor(System.Object,System.String)">
+            <summary>
+            디버그 필터당 정보 생성 (보다 디테일한 필터 설정을)
+            </summary>
+            <param name="pFilterFlag">디버그 필터 플래그</param>
+            <param name="strColorHexCode">로그의 색상값</param>
+        </member>
         <member name="F:Wrapper.Debug.strDefaultColorHexCode">
             <summary>
             로그에 출력하는 색상
@@ -112,6 +139,11 @@
             <param name="pFilterFlags">출력할 필터 플래그입니다</param>
             <param name="eLogType">catch시 출력할 로그 타입</param>
             <returns></returns>
+        </member>
+        <member name="M:Wrapper.Debug.Check_IsContainFilter(System.Object)">
+            <summary>
+            현재 Wrapper에 필터가 들어있는지 유무
+            </summary>
         </member>
     </members>
 </doc>

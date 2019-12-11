@@ -274,7 +274,7 @@ GameObject:
   - component: {fileID: 1090886647}
   - component: {fileID: 1090886646}
   m_Layer: 0
-  m_Name: TestLogger
+  m_Name: LogTester
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -10,11 +10,31 @@ namespace Wrapper
     /// </summary>
     public static class Debug
     {
+        /// <summary>
+        /// 디폴트 색상 코드
+        /// </summary>
+        public const string const_strDefaultColorHexCode = "008000ff";
+
+        /// <summary>
+        /// 디버그 필터당 정보
+        /// </summary>
         public struct DebugFilterInfo
         {
+            /// <summary>
+            /// 디버그 필터 플래그
+            /// </summary>
             public object pFilterFlag;
+
+            /// <summary>
+            /// 디버그 로그의 색상값
+            /// </summary>
             public string strColorHexCode;
 
+            /// <summary>
+            /// 디버그 필터당 정보 생성 (보다 디테일한 필터 설정을)
+            /// </summary>
+            /// <param name="pFilterFlag">디버그 필터 플래그</param>
+            /// <param name="strColorHexCode">로그의 색상값</param>
             public DebugFilterInfo(object pFilterFlag, string strColorHexCode)
             {
                 this.pFilterFlag = pFilterFlag; this.strColorHexCode = strColorHexCode;
@@ -28,7 +48,7 @@ namespace Wrapper
         /// <para>Ex) 008000ff</para>
         /// <para>RGBA</para>
         /// </summary>
-        static public string strDefaultColorHexCode = "008000ff";
+        static public string strDefaultColorHexCode = const_strDefaultColorHexCode;
 
         /// <summary>
         /// 플래그를 지정하지 않은 로그에 대한 플래그
@@ -150,7 +170,7 @@ namespace Wrapper
         #region LogWrapping
         static private void Log_Custom(object pFilterFlags, object message, Object context)
         {
-            if (Check_IsFiltering(pFilterFlags))
+            if (Check_IsContainFilter(pFilterFlags) == false)
                 return;
 
             string strMessageOut;
@@ -161,8 +181,9 @@ namespace Wrapper
 
         static private void LogError_Custom(object pFilterFlags, object message, Object context)
         {
-            if (Check_IsFiltering(pFilterFlags))
-                return;
+            // 에러는 반드시 출력
+            //if (Check_IsFiltering(pFilterFlags))
+            //    return;
 
             string strMessageOut;
             _OnLogFormat(message, pFilterFlags, out strMessageOut);
@@ -172,7 +193,7 @@ namespace Wrapper
 
         static private void LogWarning_Custom(object pFilterFlags, object message, Object context)
         {
-            if (Check_IsFiltering(pFilterFlags))
+            if (Check_IsContainFilter(pFilterFlags) == false)
                 return;
 
             string strMessageOut;
@@ -278,6 +299,18 @@ namespace Wrapper
             return true;
         }
 
+        /// <summary>
+        /// 현재 Wrapper에 필터가 들어있는지 유무
+        /// </summary>
+        public static bool Check_IsContainFilter(object pFilterFlags)
+        {
+            if (pFilterFlags.Equals(strDefaultFlagName))
+                return true;
+
+            int iHashCode = pFilterFlags.GetHashCode();
+            return (_iFilterFlags & iHashCode) == iHashCode;
+        }
+
         #region UnityLog
 
         static public void Log(object message, Object context)
@@ -342,14 +375,6 @@ namespace Wrapper
 
         #endregion
 
-        static bool Check_IsFiltering(object pFilterFlags)
-        {
-            if (pFilterFlags.Equals(strDefaultFlagName))
-                return false;
-
-            int iHashCode = pFilterFlags.GetHashCode();
-            return (_iFilterFlags & iHashCode) != iHashCode;
-        }
 
         static void LogFormat_Default(object pMessage, object pFilterFlags, out string strMessageResult)
         {
