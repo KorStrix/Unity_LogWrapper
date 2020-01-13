@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 using Object = UnityEngine.Object;
 
+#pragma warning disable CS0419 // cref 특성에 모호한 참조가 있음
+#pragma warning disable CS1573 // 매개 변수와 짝이 맞는 매개 변수 태그가 XML 주석에 없습니다. 다른 매개 변수는 짝이 맞는 태그가 있습니다.
+
 namespace Wrapper
 {
     /// <summary>
@@ -34,14 +37,16 @@ namespace Wrapper
             /// 디버그 필터당 정보 생성 (보다 디테일한 필터 설정을)
             /// </summary>
             /// <param name="pFilterFlag">디버그 필터 플래그</param>
-            /// <param name="strColorHexCode">로그의 색상값</param>
+            /// <param name="strColorHexCode">로그의 색상값 Ex)ffffff(RGB)</param>
             public DebugFilterInfo(object pFilterFlag, string strColorHexCode)
             {
                 this.pFilterFlag = pFilterFlag; this.strColorHexCode = strColorHexCode;
             }
         }
 
+#pragma warning disable CS1591 // 공개된 형식 또는 멤버에 대한 XML 주석이 없습니다.
         public delegate void PrintLogFormat(object pMessage, object pFilterFlags, out string strMessageResult);
+#pragma warning restore CS1591 // 공개된 형식 또는 멤버에 대한 XML 주석이 없습니다.
 
         /// <summary>
         /// 로그에 출력하는 색상
@@ -79,13 +84,14 @@ namespace Wrapper
             _iFilterFlags = 0;
             for (int i = 0; i < arrPrintFilterFlag.Length; i++)
             {
-                if(arrPrintFilterFlag[i].pFilterFlag.Equals(strDefaultFlagName))
+                object pFilterFlag = arrPrintFilterFlag[i].pFilterFlag;
+                if (pFilterFlag.Equals(strDefaultFlagName))
                 {
                     strDefaultColorHexCode = arrPrintFilterFlag[i].strColorHexCode;
                 }
                 else
                 {
-                    int iHashCode = arrPrintFilterFlag[i].pFilterFlag.GetHashCode();
+                    int iHashCode = pFilterFlag.GetHashCode();
                     _iFilterFlags |= iHashCode;
                     _mapColorHexCode.Add(iHashCode, arrPrintFilterFlag[i].strColorHexCode);
                 }
@@ -134,12 +140,12 @@ namespace Wrapper
             LogError_Custom(pFilterFlags, message, null);
         }
 
-        /// <summary>
-        /// <see cref="UnityEngine.Debug.LogError(object, Object)"/>를 출력합니다.
-        /// <para><see cref="Set_PrintLog_FilterFlag"/>에서 세팅한 플래그가 아니면 출력하지 않습니다.</para>
-        /// </summary>
-        /// <param name="pFilterFlags">출력할 필터 플래그입니다</param>
-        /// <param name="message">로그 에러 메시지</param>
+                              /// <summary>
+                              /// <see cref="UnityEngine.Debug.LogError(object, Object)"/>를 출력합니다.
+                              /// <para><see cref="Set_PrintLog_FilterFlag"/>에서 세팅한 플래그가 아니면 출력하지 않습니다.</para>
+                              /// </summary>
+                              /// <param name="pFilterFlags">출력할 필터 플래그입니다</param>
+                              /// <param name="message">로그 에러 메시지</param>
         static public void LogError(object pFilterFlags, object message, Object context)
         {
             LogError_Custom(pFilterFlags, message, context);
@@ -211,27 +217,7 @@ namespace Wrapper
         /// <param name="eLogType">catch시 출력할 로그 타입</param>
         static public bool TryExecute(System.Action TryFunc, LogType eLogType = LogType.Error)
         {
-            try
-            {
-                TryFunc();
-            }
-            catch (System.Exception e)
-            {
-                switch (eLogType)
-                {
-                    case LogType.Log: Log(e); break;
-                    case LogType.Warning: LogWarning(e); break;
-
-                    case LogType.Error:
-                    case LogType.Exception:
-                        LogError(e);
-                        break;
-                }
-
-                return false;
-            }
-
-            return true;
+            return TryExecute(TryFunc, null, eLogType);
         }
 
         /// <summary>
@@ -311,6 +297,7 @@ namespace Wrapper
             return (_iFilterFlags & iHashCode) == iHashCode;
         }
 
+#pragma warning disable CS1591 // 공개된 형식 또는 멤버에 대한 XML 주석이 없습니다.
         #region UnityLog
 
         static public void Log(object message, Object context)
@@ -374,7 +361,7 @@ namespace Wrapper
         }
 
         #endregion
-
+#pragma warning restore CS1591 // 공개된 형식 또는 멤버에 대한 XML 주석이 없습니다.
 
         static void LogFormat_Default(object pMessage, object pFilterFlags, out string strMessageResult)
         {

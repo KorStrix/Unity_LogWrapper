@@ -16,17 +16,20 @@ public class CustomDebugLog_Tester : MonoBehaviour
     }
     private void OnEnable()
     {
-        LogTest("Default");
+        //LogTest("Default");
 
-        Wrapper.Debug.Set_PrintLog_FilterFlag(EFilter.InGame | EFilter.OutGame);
-        LogTest(EFilter.InGame | EFilter.OutGame);
+        //Wrapper.Debug.Set_PrintLog_FilterFlag(EFilter.InGame | EFilter.OutGame);
+        //LogTest(EFilter.InGame | EFilter.OutGame);
 
-        Wrapper.Debug.DebugFilterInfo pFilter_Programmer_2 = new Wrapper.Debug.DebugFilterInfo(EFilter.OutGame, "#ff0000ff");
-        Wrapper.Debug.DebugFilterInfo pFilter_Somthing = new Wrapper.Debug.DebugFilterInfo(EFilter.Error, "#ffff00ff");
-        Wrapper.Debug.DebugFilterInfo pFilter_Default = new Wrapper.Debug.DebugFilterInfo("Default", "#ffffffff");
-        Wrapper.Debug.Set_PrintLog_FilterFlag(pFilter_Programmer_2, pFilter_Somthing, pFilter_Default);
+        Wrapper.Debug.DebugFilterInfo pFilter_Programmer_2 = new Wrapper.Debug.DebugFilterInfo(EFilter.OutGame, "ff0000");
+        Wrapper.Debug.DebugFilterInfo pFilter_Somthing = new Wrapper.Debug.DebugFilterInfo(EFilter.Error, "ffff00");
+        Wrapper.Debug.DebugFilterInfo pFilter_Somthing2 = new Wrapper.Debug.DebugFilterInfo(EFilter.OutGame | EFilter.Error, "00ff00");
 
-        LogTest("DebugFilterInfo");
+        Wrapper.Debug.DebugFilterInfo pFilter_Default = new Wrapper.Debug.DebugFilterInfo("Default", "ffffff");
+        Wrapper.Debug.Set_PrintLog_FilterFlag(pFilter_Programmer_2, pFilter_Somthing, pFilter_Somthing2, pFilter_Default);
+        Wrapper.Debug.Log(EFilter.OutGame | EFilter.Error, EFilter.OutGame | EFilter.Error, this);
+
+        // LogTest("DebugFilterInfo");
     }
 
     private void LogTest(object strTestCase)
