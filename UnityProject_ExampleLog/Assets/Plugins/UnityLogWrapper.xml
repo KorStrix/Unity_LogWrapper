@@ -39,7 +39,7 @@
         <member name="F:Wrapper.Debug.strDefaultColorHexCode">
             <summary>
             로그에 출력하는 색상
-            <para>Ex) 008000ff</para>
+            <para>Ex) 008000</para>
             <para>RGBA</para>
             </summary>
         </member>

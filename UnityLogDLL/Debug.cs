@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using Object = UnityEngine.Object;
+using System.Linq;
 
 #pragma warning disable CS0419 // cref 특성에 모호한 참조가 있음
 #pragma warning disable CS1573 // 매개 변수와 짝이 맞는 매개 변수 태그가 XML 주석에 없습니다. 다른 매개 변수는 짝이 맞는 태그가 있습니다.
@@ -16,7 +17,7 @@ namespace Wrapper
         /// <summary>
         /// 디폴트 색상 코드
         /// </summary>
-        public const string const_strDefaultColorHexCode = "008000ff";
+        public const string const_strDefaultColorHexCode = "008000";
 
         /// <summary>
         /// 디버그 필터당 정보
@@ -50,7 +51,7 @@ namespace Wrapper
 
         /// <summary>
         /// 로그에 출력하는 색상
-        /// <para>Ex) 008000ff</para>
+        /// <para>Ex) 008000</para>
         /// <para>RGBA</para>
         /// </summary>
         static public string strDefaultColorHexCode = const_strDefaultColorHexCode;
@@ -85,15 +86,49 @@ namespace Wrapper
             for (int i = 0; i < arrPrintFilterFlag.Length; i++)
             {
                 object pFilterFlag = arrPrintFilterFlag[i].pFilterFlag;
+                string strHexCode = arrPrintFilterFlag[i].strColorHexCode;
+                strHexCode = strHexCode.Substring(0, 6);
+
                 if (pFilterFlag.Equals(strDefaultFlagName))
                 {
-                    strDefaultColorHexCode = arrPrintFilterFlag[i].strColorHexCode;
+                    strDefaultColorHexCode = strHexCode;
                 }
                 else
                 {
                     int iHashCode = pFilterFlag.GetHashCode();
                     _iFilterFlags |= iHashCode;
-                    _mapColorHexCode.Add(iHashCode, arrPrintFilterFlag[i].strColorHexCode);
+                    _mapColorHexCode.Add(iHashCode, strHexCode);
+
+                    var arrHexCode = _mapColorHexCode.ToArray();
+                    for(int j = 0; j < arrHexCode.Length; j++)
+                    {
+                        int iFilterFlag = iHashCode;
+                        for (int k = j; k < arrHexCode.Length; k++)
+                        {
+                            int iFlagTarget = arrHexCode[j].Key;
+                            iFilterFlag |= iFlagTarget;
+                            if (_mapColorHexCode.ContainsKey(iFilterFlag))
+                                continue;
+
+                            string strHexCodeTarget = _mapColorHexCode[iFlagTarget];
+
+                            int iCurrent_R = System.Convert.ToInt32(strHexCode.Substring(0, 2), 16);
+                            int iCurrent_G = System.Convert.ToInt32(strHexCode.Substring(2, 2), 16);
+                            int iCurrent_B = System.Convert.ToInt32(strHexCode.Substring(4, 2), 16);
+
+
+                            int iNew_R = System.Convert.ToInt32(strHexCodeTarget.Substring(0, 2), 16);
+                            int iNew_G = System.Convert.ToInt32(strHexCodeTarget.Substring(2, 2), 16);
+                            int iNew_B = System.Convert.ToInt32(strHexCodeTarget.Substring(4, 2), 16);
+
+
+                            string strNewHexCode = ((int)Mathf.Clamp((iCurrent_R + iNew_R), 0, 255f)).ToString("X2");
+                            strNewHexCode += ((int)Mathf.Clamp((iCurrent_G + iNew_G), 0, 255f)).ToString("X2");
+                            strNewHexCode += ((int)Mathf.Clamp((iCurrent_B + iNew_B), 0, 255f)).ToString("X2");
+
+                            _mapColorHexCode.Add(iFilterFlag, strNewHexCode);
+                        }
+                    }
                 }
             }
         }
@@ -140,12 +175,12 @@ namespace Wrapper
             LogError_Custom(pFilterFlags, message, null);
         }
 
-                              /// <summary>
-                              /// <see cref="UnityEngine.Debug.LogError(object, Object)"/>를 출력합니다.
-                              /// <para><see cref="Set_PrintLog_FilterFlag"/>에서 세팅한 플래그가 아니면 출력하지 않습니다.</para>
-                              /// </summary>
-                              /// <param name="pFilterFlags">출력할 필터 플래그입니다</param>
-                              /// <param name="message">로그 에러 메시지</param>
+        /// <summary>
+        /// <see cref="UnityEngine.Debug.LogError(object, Object)"/>를 출력합니다.
+        /// <para><see cref="Set_PrintLog_FilterFlag"/>에서 세팅한 플래그가 아니면 출력하지 않습니다.</para>
+        /// </summary>
+        /// <param name="pFilterFlags">출력할 필터 플래그입니다</param>
+        /// <param name="message">로그 에러 메시지</param>
         static public void LogError(object pFilterFlags, object message, Object context)
         {
             LogError_Custom(pFilterFlags, message, context);
@@ -370,7 +405,7 @@ namespace Wrapper
             if (_mapColorHexCode.ContainsKey(iHashCode))
                 strColorHexCode = _mapColorHexCode[iHashCode];
 
-            strMessageResult = $"<color=#{strColorHexCode}>[{pFilterFlags}]</color> {pMessage}";
+            strMessageResult = $"<color=#{strColorHexCode}><b>[{pFilterFlags}]</b></color> {pMessage}";
         }
     }
 }
