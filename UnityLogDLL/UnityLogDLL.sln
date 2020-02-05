@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29424.173
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityLogDLL", "UnityLogDLL.csproj", "{40A7E11B-82CE-4556-9B92-F728A766E9C9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{40A7E11B-82CE-4556-9B92-F728A766E9C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40A7E11B-82CE-4556-9B92-F728A766E9C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40A7E11B-82CE-4556-9B92-F728A766E9C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40A7E11B-82CE-4556-9B92-F728A766E9C9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {986B3307-F0B3-47AB-A5B8-EE5F405D7C7C}
+	EndGlobalSection
+EndGlobal
