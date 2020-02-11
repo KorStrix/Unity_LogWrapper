@@ -61,7 +61,7 @@ namespace Wrapper
         /// </summary>
         static public string strDefaultFlagName = "Default";
 
-        static Dictionary<int, string> _mapColorHexCode = new Dictionary<int, string>();
+        static Dictionary<string, string> _mapColorHexCode_ByString = new Dictionary<string, string>();
         static int _iFilterFlags;
         static PrintLogFormat _OnLogFormat = LogFormat_Default;
 
@@ -81,7 +81,8 @@ namespace Wrapper
         /// <param name="arrPrintFilterFlag"></param>
         static public void Set_PrintLog_FilterFlag(params DebugFilterInfo[] arrPrintFilterFlag)
         {
-            _mapColorHexCode.Clear();
+            _mapColorHexCode_ByString.Clear();
+
             _iFilterFlags = 0;
             for (int i = 0; i < arrPrintFilterFlag.Length; i++)
             {
@@ -97,38 +98,7 @@ namespace Wrapper
                 {
                     int iHashCode = pFilterFlag.GetHashCode();
                     _iFilterFlags |= iHashCode;
-                    _mapColorHexCode.Add(iHashCode, strHexCode);
-
-                    var arrHexCode = _mapColorHexCode.ToArray();
-                    for(int j = 0; j < arrHexCode.Length; j++)
-                    {
-                        int iFilterFlag = iHashCode;
-                        for (int k = j; k < arrHexCode.Length; k++)
-                        {
-                            int iFlagTarget = arrHexCode[j].Key;
-                            iFilterFlag |= iFlagTarget;
-                            if (_mapColorHexCode.ContainsKey(iFilterFlag))
-                                continue;
-
-                            string strHexCodeTarget = _mapColorHexCode[iFlagTarget];
-
-                            int iCurrent_R = System.Convert.ToInt32(strHexCode.Substring(0, 2), 16);
-                            int iCurrent_G = System.Convert.ToInt32(strHexCode.Substring(2, 2), 16);
-                            int iCurrent_B = System.Convert.ToInt32(strHexCode.Substring(4, 2), 16);
-
-
-                            int iNew_R = System.Convert.ToInt32(strHexCodeTarget.Substring(0, 2), 16);
-                            int iNew_G = System.Convert.ToInt32(strHexCodeTarget.Substring(2, 2), 16);
-                            int iNew_B = System.Convert.ToInt32(strHexCodeTarget.Substring(4, 2), 16);
-
-
-                            string strNewHexCode = ((int)Mathf.Clamp((iCurrent_R + iNew_R), 0, 255f)).ToString("X2");
-                            strNewHexCode += ((int)Mathf.Clamp((iCurrent_G + iNew_G), 0, 255f)).ToString("X2");
-                            strNewHexCode += ((int)Mathf.Clamp((iCurrent_B + iNew_B), 0, 255f)).ToString("X2");
-
-                            _mapColorHexCode.Add(iFilterFlag, strNewHexCode);
-                        }
-                    }
+                    _mapColorHexCode_ByString.Add(pFilterFlag.ToString(), strHexCode);
                 }
             }
         }
@@ -402,10 +372,12 @@ namespace Wrapper
         {
             string strColorHexCode = strDefaultColorHexCode;
             int iHashCode = pFilterFlags.GetHashCode();
-            if (_mapColorHexCode.ContainsKey(iHashCode))
-                strColorHexCode = _mapColorHexCode[iHashCode];
 
-            strMessageResult = $"<color=#{strColorHexCode}><b>[{pFilterFlags}]</b></color> {pMessage}";
+            string strFilterFlag = pFilterFlags.ToString();
+            foreach(var pColorString in _mapColorHexCode_ByString)
+                strFilterFlag = strFilterFlag.Replace(pColorString.Key, $"<color=#{pColorString.Value}>{pColorString.Key}</color>");
+
+            strMessageResult = $"<b>[{strFilterFlag}]</b> {pMessage}";
         }
     }
 }
