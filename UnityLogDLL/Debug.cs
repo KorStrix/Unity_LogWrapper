@@ -62,6 +62,7 @@ namespace Wrapper
         static public string strDefaultFlagName = "Default";
 
         static Dictionary<string, string> _mapColorHexCode_ByString = new Dictionary<string, string>();
+        static HashSet<string> _setHexcodeChecker = new HashSet<string>();
         static int _iFilterFlags;
         static PrintLogFormat _OnLogFormat = LogFormat_Default;
 
@@ -370,12 +371,27 @@ namespace Wrapper
 
         static void LogFormat_Default(object pMessage, object pFilterFlags, out string strMessageResult)
         {
-            string strColorHexCode = strDefaultColorHexCode;
-            int iHashCode = pFilterFlags.GetHashCode();
+            //string strColorHexCode = strDefaultColorHexCode;
+            //int iHashCode = pFilterFlags.GetHashCode();
 
+            _setHexcodeChecker.Clear();
             string strFilterFlag = pFilterFlags.ToString();
-            foreach(var pColorString in _mapColorHexCode_ByString)
-                strFilterFlag = strFilterFlag.Replace(pColorString.Key, $"<color=#{pColorString.Value}>{pColorString.Key}</color>");
+            var arrHexCode = _mapColorHexCode_ByString.OrderBy(p => p.Key.Length * -1);
+            foreach (var pColorString in arrHexCode)
+            {
+                string strKey = pColorString.Key;
+
+                bool bIsSkip = _setHexcodeChecker.Where(p => p.Contains(strKey) && p.Length != strKey.Length).Count() > 0;
+
+                UnityEngine.Debug.Log("strKey Result : " + _setHexcodeChecker.Where(p => p.Contains(strKey) && p.Length != strKey.Length).Count());
+
+                _setHexcodeChecker.Add(strKey);
+
+                if (bIsSkip)
+                    continue;
+
+                strFilterFlag = strFilterFlag.Replace(strKey, $"<color=#{pColorString.Value}>{strKey}</color>");
+            }
 
             strMessageResult = $"<b>[{strFilterFlag}]</b> {pMessage}";
         }
