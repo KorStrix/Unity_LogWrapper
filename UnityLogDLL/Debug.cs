@@ -12,38 +12,12 @@ namespace Wrapper
     /// <summary>
     /// <see cref="UnityEngine.Debug"/>를 래핑한 클래스입니다.
     /// </summary>
-    public static class Debug
+    public static partial class Debug
     {
         /// <summary>
         /// 디폴트 색상 코드
         /// </summary>
         public const string const_strDefaultColorHexCode = "008000";
-
-        /// <summary>
-        /// 디버그 필터당 정보
-        /// </summary>
-        public struct DebugFilterInfo
-        {
-            /// <summary>
-            /// 디버그 필터 플래그
-            /// </summary>
-            public object pFilterFlag;
-
-            /// <summary>
-            /// 디버그 로그의 색상값
-            /// </summary>
-            public string strColorHexCode;
-
-            /// <summary>
-            /// 디버그 필터당 정보 생성 (보다 디테일한 필터 설정을)
-            /// </summary>
-            /// <param name="pFilterFlag">디버그 필터 플래그</param>
-            /// <param name="strColorHexCode">로그의 색상값 Ex)ffffff(RGB)</param>
-            public DebugFilterInfo(object pFilterFlag, string strColorHexCode)
-            {
-                this.pFilterFlag = pFilterFlag; this.strColorHexCode = strColorHexCode;
-            }
-        }
 
 #pragma warning disable CS1591 // 공개된 형식 또는 멤버에 대한 XML 주석이 없습니다.
         public delegate void PrintLogFormat(object pMessage, object pFilterFlags, out string strMessageResult);
@@ -66,10 +40,13 @@ namespace Wrapper
         static int _iFilterFlags;
         static PrintLogFormat _OnLogFormat = LogFormat_Default;
 
+
+
+
         /// <summary>
         /// 출력할 로그의 필터 <see cref="System.FlagsAttribute"/>를 지정합니다. 인자가 <see cref="System.Int32.MaxValue"/>이면 모두 출력합니다.
         /// </summary>
-        static public void Set_PrintLog_FilterFlag(params object[] arrPrintFilterFlag)
+        static public void Init_PrintLog_FilterFlag(params object[] arrPrintFilterFlag)
         {
             _iFilterFlags = 0;
             for (int i = 0; i < arrPrintFilterFlag.Length; i++)
@@ -79,16 +56,15 @@ namespace Wrapper
         /// <summary>
         /// 출력할 로그의 필터 <see cref="System.FlagsAttribute"/>를 지정합니다.
         /// </summary>
-        /// <param name="arrPrintFilterFlag"></param>
-        static public void Set_PrintLog_FilterFlag(params DebugFilterInfo[] arrPrintFilterFlag)
+        static public void Init_PrintLog_FilterFlag(DebugFilterFactory pFactory)
         {
             _mapColorHexCode_ByString.Clear();
 
             _iFilterFlags = 0;
-            for (int i = 0; i < arrPrintFilterFlag.Length; i++)
+            foreach(var pFilter in pFactory.arrDebugFilter)
             {
-                object pFilterFlag = arrPrintFilterFlag[i].pFilterFlag;
-                string strHexCode = arrPrintFilterFlag[i].strColorHexCode;
+                object pFilterFlag = pFilter.pFilterFlag;
+                string strHexCode = pFilter.strColorHexCode;
                 strHexCode = strHexCode.Substring(0, 6);
 
                 if (pFilterFlag.Equals(strDefaultFlagName))
@@ -107,14 +83,16 @@ namespace Wrapper
         /// <summary>
         /// 로그의 출력 포멧을 지정합니다.
         /// </summary>
-        static public void Set_PrintLogFormat(PrintLogFormat OnLogFormat)
+        static public void Set_OnLogFormat(PrintLogFormat OnLogFormat)
         {
             _OnLogFormat = OnLogFormat;
         }
 
+
+
         /// <summary>
         /// <see cref="UnityEngine.Debug.Log(object)"/>를 출력합니다.
-        /// <para><see cref="Set_PrintLog_FilterFlag"/>에서 세팅한 플래그가 아니면 출력하지 않습니다.</para>
+        /// <para><see cref="Init_PrintLog_FilterFlag"/>에서 세팅한 플래그가 아니면 출력하지 않습니다.</para>
         /// </summary>
         /// <param name="pFilterFlags">출력할 필터 플래그입니다</param>
         /// <param name="message">로그 메시지</param>
@@ -125,7 +103,7 @@ namespace Wrapper
 
         /// <summary>
         /// <see cref="UnityEngine.Debug.Log(object, Object)"/>를 출력합니다.
-        /// <para><see cref="Set_PrintLog_FilterFlag"/>에서 세팅한 플래그가 아니면 출력하지 않습니다.</para>
+        /// <para><see cref="Init_PrintLog_FilterFlag"/>에서 세팅한 플래그가 아니면 출력하지 않습니다.</para>
         /// </summary>
         /// <param name="pFilterFlags">출력할 필터 플래그입니다</param>
         /// <param name="message">로그 메시지</param>
@@ -137,7 +115,7 @@ namespace Wrapper
 
         /// <summary>
         /// <see cref="UnityEngine.Debug.LogError(object)"/>를 출력합니다.
-        /// <para><see cref="Set_PrintLog_FilterFlag"/>에서 세팅한 플래그가 아니면 출력하지 않습니다.</para>
+        /// <para><see cref="Init_PrintLog_FilterFlag"/>에서 세팅한 플래그가 아니면 출력하지 않습니다.</para>
         /// </summary>
         /// <param name="pFilterFlags">출력할 필터 플래그입니다</param>
         /// <param name="message">로그 에러 메시지</param>
@@ -148,7 +126,7 @@ namespace Wrapper
 
         /// <summary>
         /// <see cref="UnityEngine.Debug.LogError(object, Object)"/>를 출력합니다.
-        /// <para><see cref="Set_PrintLog_FilterFlag"/>에서 세팅한 플래그가 아니면 출력하지 않습니다.</para>
+        /// <para><see cref="Init_PrintLog_FilterFlag"/>에서 세팅한 플래그가 아니면 출력하지 않습니다.</para>
         /// </summary>
         /// <param name="pFilterFlags">출력할 필터 플래그입니다</param>
         /// <param name="message">로그 에러 메시지</param>
@@ -159,7 +137,7 @@ namespace Wrapper
 
         /// <summary>
         /// <see cref="UnityEngine.Debug.LogWarning(object)"/>를 출력합니다.
-        /// <para><see cref="Set_PrintLog_FilterFlag"/>에서 세팅한 플래그가 아니면 출력하지 않습니다.</para>
+        /// <para><see cref="Init_PrintLog_FilterFlag"/>에서 세팅한 플래그가 아니면 출력하지 않습니다.</para>
         /// </summary>
         /// <param name="pFilterFlags">출력할 필터 플래그입니다</param>
         /// <param name="message">로그 에러 메시지</param>
@@ -170,7 +148,7 @@ namespace Wrapper
 
         /// <summary>
         /// <see cref="UnityEngine.Debug.LogWarning(object, Object)"/>를 출력합니다.
-        /// <para><see cref="Set_PrintLog_FilterFlag"/>에서 세팅한 플래그가 아니면 출력하지 않습니다.</para>
+        /// <para><see cref="Init_PrintLog_FilterFlag"/>에서 세팅한 플래그가 아니면 출력하지 않습니다.</para>
         /// </summary>
         /// <param name="pFilterFlags">출력할 필터 플래그입니다</param>
         /// <param name="message">로그 에러 메시지</param>
@@ -303,72 +281,6 @@ namespace Wrapper
             return (_iFilterFlags & iHashCode) == iHashCode;
         }
 
-#pragma warning disable CS1591 // 공개된 형식 또는 멤버에 대한 XML 주석이 없습니다.
-        #region UnityLog
-
-        static public void Log(object message, Object context)
-        {
-            Log_Custom(strDefaultFlagName, message, context);
-        }
-
-        public static void Log(object message)
-        {
-            Log_Custom(strDefaultFlagName, message, null);
-        }
-
-        public static void LogError(object message, Object context)
-        {
-            LogError_Custom(strDefaultFlagName, message, context);
-        }
-
-        public static void LogError(object message)
-        {
-            LogError_Custom(strDefaultFlagName, message, null);
-        }
-
-        public static void LogErrorFormat(string format, params object[] args)
-        {
-            LogError_Custom(strDefaultFlagName, string.Format(strDefaultFlagName, args), null);
-        }
-
-        public static void LogErrorFormat(Object context, string format, params object[] args)
-        {
-            LogError_Custom(strDefaultFlagName, string.Format(strDefaultFlagName, args), context);
-        }
-
-        public static void LogFormat(Object context, string format, params object[] args)
-        {
-            Log_Custom(strDefaultFlagName, string.Format(strDefaultFlagName, args), context);
-        }
-
-        public static void LogFormat(string format, params object[] args)
-        {
-            Log_Custom(strDefaultFlagName, string.Format(strDefaultFlagName, args), null);
-        }
-
-        public static void LogWarning(object message)
-        {
-            LogWarning_Custom(strDefaultFlagName, message, null);
-        }
-
-        public static void LogWarning(object message, Object context)
-        {
-            LogWarning_Custom(strDefaultFlagName, message, context);
-        }
-
-        public static void LogWarningFormat(string format, params object[] args)
-        {
-            LogWarning_Custom(strDefaultFlagName, string.Format(strDefaultFlagName, args), null);
-        }
-
-        public static void LogWarningFormat(Object context, string format, params object[] args)
-        {
-            LogWarning_Custom(strDefaultFlagName, string.Format(strDefaultFlagName, args), context);
-        }
-
-        #endregion
-#pragma warning restore CS1591 // 공개된 형식 또는 멤버에 대한 XML 주석이 없습니다.
-
         static void LogFormat_Default(object pMessage, object pFilterFlags, out string strMessageResult)
         {
             //string strColorHexCode = strDefaultColorHexCode;
@@ -382,8 +294,7 @@ namespace Wrapper
                 string strKey = pColorString.Key;
 
                 bool bIsSkip = _setHexcodeChecker.Where(p => p.Contains(strKey) && p.Length != strKey.Length).Count() > 0;
-
-                UnityEngine.Debug.Log("strKey Result : " + _setHexcodeChecker.Where(p => p.Contains(strKey) && p.Length != strKey.Length).Count());
+                // UnityEngine.Debug.Log("strKey Result : " + _setHexcodeChecker.Where(p => p.Contains(strKey) && p.Length != strKey.Length).Count());
 
                 _setHexcodeChecker.Add(strKey);
 
