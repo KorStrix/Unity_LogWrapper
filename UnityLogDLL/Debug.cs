@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 using Object = UnityEngine.Object;
-using System.Linq;
 
 #pragma warning disable CS0419 // cref 특성에 모호한 참조가 있음
 #pragma warning disable CS1573 // 매개 변수와 짝이 맞는 매개 변수 태그가 XML 주석에 없습니다. 다른 매개 변수는 짝이 맞는 태그가 있습니다.
@@ -20,7 +21,7 @@ namespace Wrapper
         public const string const_strDefaultColorHexCode = "008000";
 
 #pragma warning disable CS1591 // 공개된 형식 또는 멤버에 대한 XML 주석이 없습니다.
-        public delegate void PrintLogFormat(object pMessage, object pFilterFlags, out string strMessageResult);
+        public delegate void PrintLogFormat(object pFilterFlags, object pMessage, out string strMessageResult);
 #pragma warning restore CS1591 // 공개된 형식 또는 멤버에 대한 XML 주석이 없습니다.
 
         /// <summary>
@@ -36,7 +37,7 @@ namespace Wrapper
         static public string strDefaultFlagName = "Default";
 
         static Dictionary<string, string> _mapColorHexCode_ByString = new Dictionary<string, string>();
-        static HashSet<string> _setHexcodeChecker = new HashSet<string>();
+        static HashSet<string> _setColorCodeChecker = new HashSet<string>();
         static int _iFilterFlags;
         static PrintLogFormat _OnLogFormat = LogFormat_Default;
 
@@ -164,7 +165,7 @@ namespace Wrapper
                 return;
 
             string strMessageOut;
-            _OnLogFormat(message, pFilterFlags, out strMessageOut);
+            _OnLogFormat(pFilterFlags, message, out strMessageOut);
 
             UnityEngine.Debug.Log(strMessageOut, context);
         }
@@ -176,7 +177,7 @@ namespace Wrapper
             //    return;
 
             string strMessageOut;
-            _OnLogFormat(message, pFilterFlags, out strMessageOut);
+            _OnLogFormat(pFilterFlags, message, out strMessageOut);
 
             UnityEngine.Debug.LogError(strMessageOut, context);
         }
@@ -187,7 +188,7 @@ namespace Wrapper
                 return;
 
             string strMessageOut;
-            _OnLogFormat(message, pFilterFlags, out strMessageOut);
+            _OnLogFormat(pFilterFlags, message, out strMessageOut);
 
             UnityEngine.Debug.LogWarning(strMessageOut, context);
         }
@@ -281,27 +282,21 @@ namespace Wrapper
             return (_iFilterFlags & iHashCode) == iHashCode;
         }
 
-        static void LogFormat_Default(object pMessage, object pFilterFlags, out string strMessageResult)
+        /// <summary>
+        /// 기본 로그 포멧
+        /// </summary>
+        static public void LogFormat_Default(object pFilterFlags, object pMessage, out string strMessageResult)
         {
-            //string strColorHexCode = strDefaultColorHexCode;
-            //int iHashCode = pFilterFlags.GetHashCode();
-
-            _setHexcodeChecker.Clear();
             string strFilterFlag = pFilterFlags.ToString();
+
+            // 필터 길이가 긴 순부터 체크
             var arrHexCode = _mapColorHexCode_ByString.OrderBy(p => p.Key.Length * -1);
             foreach (var pColorString in arrHexCode)
             {
                 string strKey = pColorString.Key;
+                string strPattern = $"(?={strKey}([^a-z|A-Z|<|_]|($)))({strKey})";
 
-                bool bIsSkip = _setHexcodeChecker.Where(p => p.Contains(strKey) && p.Length != strKey.Length).Count() > 0;
-                // UnityEngine.Debug.Log("strKey Result : " + _setHexcodeChecker.Where(p => p.Contains(strKey) && p.Length != strKey.Length).Count());
-
-                _setHexcodeChecker.Add(strKey);
-
-                if (bIsSkip)
-                    continue;
-
-                strFilterFlag = strFilterFlag.Replace(strKey, $"<color=#{pColorString.Value}>{strKey}</color>");
+                strFilterFlag = Regex.Replace(strFilterFlag, strPattern, $"<color=#{pColorString.Value}>{strKey}</color>");
             }
 
             strMessageResult = $"<b>[{strFilterFlag}]</b> {pMessage}";

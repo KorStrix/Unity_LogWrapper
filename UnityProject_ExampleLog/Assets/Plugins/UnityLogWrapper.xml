@@ -166,5 +166,10 @@
             현재 Wrapper에 필터가 들어있는지 유무
             </summary>
         </member>
+        <member name="M:Wrapper.Debug.LogFormat_Default(System.Object,System.Object,System.String@)">
+            <summary>
+            기본 로그 포멧
+            </summary>
+        </member>
     </members>
 </doc>
