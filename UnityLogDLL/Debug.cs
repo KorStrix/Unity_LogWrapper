@@ -27,7 +27,7 @@ namespace Wrapper
         /// <summary>
         /// 로그에 출력하는 색상
         /// <para>Ex) 008000</para>
-        /// <para>RGBA</para>
+        /// <para>RGB</para>
         /// </summary>
         static public string strDefaultColorHexCode = const_strDefaultColorHexCode;
 
@@ -37,7 +37,6 @@ namespace Wrapper
         static public string strDefaultFlagName = "Default";
 
         static Dictionary<string, string> _mapColorHexCode_ByString = new Dictionary<string, string>();
-        static HashSet<string> _setColorCodeChecker = new HashSet<string>();
         static int _iFilterFlags;
         static PrintLogFormat _OnLogFormat = LogFormat_Default;
 
