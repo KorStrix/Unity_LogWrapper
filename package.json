@@ -1,0 +1,15 @@
+{
+	"name" : "com.korstrix.customdebuglog",
+	"version": "1.0.0",
+	"displayName" :"Custom Debug Log",
+	"description" :"Unity 기본 Log를 래핑했습니다",
+	"unity": "2018.1",
+	"dependencies": {},
+	"keywords": ["utility","debug","log"],
+	"author":
+	{
+		"name":"KorStrix",
+		"email":"korstrix@gmail.com",
+		"url":"https://discord.gg/9EGrJap"
+	}
+}
