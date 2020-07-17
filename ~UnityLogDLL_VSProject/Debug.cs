@@ -45,14 +45,14 @@ namespace Wrapper
         /// <summary>
         /// 출력할 로그의 필터 <see cref="System.FlagsAttribute"/>를 지정합니다.
         /// </summary>
-        public static void Init_PrintLog_FilterFlag(DebugFilterFactory pFactory)
+        public static void Init_PrintLog_FilterFlag(IEnumerable<LogFilterFlag> arrDebugFilter)
         {
             _mapColorHexCode_ByString.Clear();
 
             _iFilterFlags = 0;
-            foreach(var pFilter in pFactory.arrDebugFilter)
+            foreach(var pFilter in arrDebugFilter)
             {
-                object pFilterFlag = pFilter.pFilterFlag;
+                object pFilterFlag = pFilter.strFlagName;
                 string strHexCode = pFilter.strColorHexCode;
                 strHexCode = strHexCode.Substring(0, 6);
 
