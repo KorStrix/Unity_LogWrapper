@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -8,17 +9,33 @@ using UnityEditorInternal;
 #endif
 
 [Serializable]
-public class DebugWrapperEditorSetting : ScriptableObject
+public class CustomLogType_EnableArray : ScriptableObject
 {
-    public Wrapper.CustomLogType[] arrDebugFilter = new Wrapper.CustomLogType[0];
+    public CustomLogType_Enable[] arrLogEnable = new CustomLogType_Enable[0];
+
+    public CustomLogType_EnableArray(CustomLogType_Enable[] arrLogEnable)
+    {
+        this.arrLogEnable = arrLogEnable;
+    }
 }
 
+[Serializable]
+public class CustomLogType_Enable
+{
+    public string strCustomLogName;
+    public bool bEnable = true;
+
+    public CustomLogType_Enable(string strCustomLogName)
+    {
+        this.strCustomLogName = strCustomLogName;
+    }
+}
 
 #if UNITY_EDITOR
 
 // PropertyDrawer 안에 PropertyDrawer가 있으면 ReorderableList가 Select가 안됨;
 // https://stackoverflow.com/questions/54516221/how-to-select-elements-in-nested-reorderablelist-in-a-customeditor
-[CustomPropertyDrawer(typeof(DebugWrapperEditorSetting))]
+[CustomPropertyDrawer(typeof(CustomLogType_EnableArray))]
 public class DebugWrapperSettingDrawer : PropertyDrawer
 {
     private Dictionary<string, ReorderableList> innerListDict = new Dictionary<string, ReorderableList>();
@@ -26,19 +43,18 @@ public class DebugWrapperSettingDrawer : PropertyDrawer
 
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
-        EditorGUI.PropertyField(position, property, label);
-
+        // EditorGUI.PropertyField(position, property, label);
         EditorGUI.BeginProperty(position, label, property);
         {
             if (property.objectReferenceValue != null)
             {
-                if(_pSOThis == null)
+                if (_pSOThis == null)
                     _pSOThis = new SerializedObject(property.objectReferenceValue);
                 _pSOThis.Update();
 
                 EditorGUI.BeginChangeCheck();
 
-                var propertyArray = _pSOThis.FindProperty($"{nameof(DebugWrapperEditorSetting.arrDebugFilter)}");
+                var propertyArray = _pSOThis.FindProperty($"{nameof(CustomLogType_EnableArray.arrLogEnable)}");
                 DrawLogFilterArray(_pSOThis, propertyArray);
 
                 if (EditorGUI.EndChangeCheck())
@@ -67,6 +83,10 @@ public class DebugWrapperSettingDrawer : PropertyDrawer
         {
             pCurrentList = new ReorderableList(pSO, propertyArray);
 
+            pCurrentList.draggable = false;
+            pCurrentList.displayAdd = false;
+            pCurrentList.displayRemove = false;
+
             pCurrentList.drawHeaderCallback = (rect) => EditorGUI.LabelField(rect, propertyArray.displayName);
 
             pCurrentList.drawElementCallback = (rect, index, isActive, isFocused) =>
@@ -87,4 +107,46 @@ public class DebugWrapperSettingDrawer : PropertyDrawer
             pList.DoLayoutList();
     }
 }
+
+
+[CustomPropertyDrawer(typeof(CustomLogType_Enable))]
+public class CustomLogType_EnableDrawer : PropertyDrawer
+{
+    private const float fLabelWidth_strCustomLogName = 100f;
+    private const float fLabelWidth_bEnable = 50f;
+
+
+    private const float fLabelOffset = 5f;
+
+
+    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    {
+        EditorGUI.BeginProperty(position, label, property);
+        {
+            position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
+
+
+            SerializedProperty pProperty_strCustomLogName = property.FindPropertyRelative(nameof(CustomLogType_Enable.strCustomLogName));
+            // EditorGUI.LabelField(pProperty_strCustomLogName.stringValue);
+            // EditorGUI.PropertyField(CalculateRect(ref position, fLabelWidth_strCustomLogName, fLabelOffset), pProperty_strCustomLogName, GUIContent.none);
+
+            SerializedProperty pProperty_bEnable = property.FindPropertyRelative(nameof(CustomLogType_Enable.bEnable));
+            EditorGUI.PropertyField(CalculateRect(ref position, fLabelWidth_bEnable, fLabelOffset), pProperty_bEnable, GUIContent.none);
+
+
+            label.text = $"{pProperty_strCustomLogName.stringValue}[{pProperty_bEnable.boolValue}]";
+        }
+        EditorGUI.EndProperty();
+    }
+
+    private static Rect CalculateRect(ref Rect position, float fLabelWidth, float fOffset)
+    {
+        var rectFlagName = new Rect(position.x, position.y, fLabelWidth, position.height);
+
+        position.x += fLabelWidth + fOffset;
+
+        return rectFlagName;
+    }
+}
+
 #endif

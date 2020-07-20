@@ -45,7 +45,7 @@ namespace Wrapper
         /// <summary>
         /// 출력할 로그의 필터 <see cref="System.FlagsAttribute"/>를 지정합니다.
         /// </summary>
-        public static void Init_PrintLog_FilterFlag(IEnumerable<LogFilterFlag> arrDebugFilter)
+        public static void Init_PrintLog_FilterFlag(IEnumerable<CustomLogType> arrDebugFilter)
         {
             _mapColorHexCode_ByString.Clear();
 
@@ -185,7 +185,7 @@ namespace Wrapper
         /// </summary>
         /// <param name="TryFunc">실행할 함수</param>
         /// <param name="eLogType">catch시 출력할 로그 타입</param>
-        public static bool TryExecute(System.Action TryFunc, LogType eLogType = LogType.Error)
+        public static bool TryExecute(System.Action TryFunc, UnityEngine.LogType eLogType = UnityEngine.LogType.Error)
         {
             return TryExecute(TryFunc, null, eLogType);
         }
@@ -197,7 +197,7 @@ namespace Wrapper
         /// <param name="TryFunc">실행할 함수</param>
         /// <param name="pFilterFlags">출력할 필터 플래그입니다</param>
         /// <param name="eLogType">catch시 출력할 로그 타입</param>
-        public static bool TryExecute(System.Action TryFunc, object pFilterFlags, LogType eLogType = LogType.Error)
+        public static bool TryExecute(System.Action TryFunc, object pFilterFlags, UnityEngine.LogType eLogType = UnityEngine.LogType.Error)
         {
             try
             {
@@ -207,11 +207,11 @@ namespace Wrapper
             {
                 switch (eLogType)
                 {
-                    case LogType.Log: Log(pFilterFlags, e); break;
-                    case LogType.Warning: LogWarning(pFilterFlags, e); break;
+                    case UnityEngine.LogType.Log: Log(pFilterFlags, e); break;
+                    case UnityEngine.LogType.Warning: LogWarning(pFilterFlags, e); break;
 
-                    case LogType.Error:
-                    case LogType.Exception:
+                    case UnityEngine.LogType.Error:
+                    case UnityEngine.LogType.Exception:
                         LogError(pFilterFlags, e);
                         break;
                 }
@@ -230,7 +230,7 @@ namespace Wrapper
         /// <param name="pFilterFlags">출력할 필터 플래그입니다</param>
         /// <param name="eLogType">catch시 출력할 로그 타입</param>
         /// <returns></returns>
-        public static bool TryExecute(System.Action TryFunc, object pFilterFlags, Object context, LogType eLogType = LogType.Error)
+        public static bool TryExecute(System.Action TryFunc, object pFilterFlags, Object context, UnityEngine.LogType eLogType = UnityEngine.LogType.Error)
         {
             try
             {
@@ -240,11 +240,11 @@ namespace Wrapper
             {
                 switch (eLogType)
                 {
-                    case LogType.Log: Log(pFilterFlags, e, context); break;
-                    case LogType.Warning: LogWarning(pFilterFlags, e, context); break;
+                    case UnityEngine.LogType.Log: Log(pFilterFlags, e, context); break;
+                    case UnityEngine.LogType.Warning: LogWarning(pFilterFlags, e, context); break;
 
-                    case LogType.Error:
-                    case LogType.Exception:
+                    case UnityEngine.LogType.Error:
+                    case UnityEngine.LogType.Exception:
                         LogError(pFilterFlags, e, context);
                         break;
                 }

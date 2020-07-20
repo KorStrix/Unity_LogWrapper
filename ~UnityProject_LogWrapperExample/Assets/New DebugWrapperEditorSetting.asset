@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: New DebugWrapperEditorSetting
   m_EditorClassIdentifier: 
   arrDebugFilter:
-  - strFlagName: 123
-    lNumber: 2
-    strColorHexCode: 1
-  - strFlagName: 1
-    lNumber: 2
-    strColorHexCode: 1
+  - strFlagName: Debug_1
+    lNumber: 3
+    strColorHexCode: FFFFFF
+  - strFlagName: Debug_2
+    lNumber: 3
+    strColorHexCode: FF0000

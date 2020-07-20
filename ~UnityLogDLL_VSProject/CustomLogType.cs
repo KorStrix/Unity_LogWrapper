@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using Wrapper;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -11,23 +12,23 @@ namespace Wrapper
     /// 디버그 필터
     /// </summary>
     [System.Serializable]
-    public partial class LogFilterFlag
+    public partial class CustomLogType
     {
         #region DefaultFilter
         /// <summary>
         /// <see cref="Debug.Log(object)"/>로 출력하고 싶은 경우 이 플래그를 넣으시면 됩니다
         /// </summary>
-        public static LogFilterFlag Log = new LogFilterFlag(nameof(Log), 1 << 0);
+        public static CustomLogType customLog = new CustomLogType(nameof(customLog), 1 << 0);
 
         /// <summary>
         /// <see cref="Debug.LogWarning(object)"/>로 출력하고 싶은 경우 이 플래그를 넣으시면 됩니다
         /// </summary>
-        public static LogFilterFlag Warning = new LogFilterFlag(nameof(Warning), 1 << 1, "ffff00");
+        public static CustomLogType Warning = new CustomLogType(nameof(Warning), 1 << 1, "ffff00");
 
         /// <summary>
         /// <see cref="Debug.LogError(object)"/>로 출력하고 싶은 경우 이 플래그를 넣으시면 됩니다.
         /// </summary>
-        public static LogFilterFlag Error = new LogFilterFlag(nameof(Error), 1 << 2, "ff0000");
+        public static CustomLogType Error = new CustomLogType(nameof(Error), 1 << 2, "ff0000");
         #endregion
 
         /// <summary>
@@ -51,7 +52,7 @@ namespace Wrapper
         /// 필터의 정보
         /// </summary>
         /// <param name="strFlagName">디버그 필터 플래그</param>
-        public LogFilterFlag(string strFlagName)
+        public CustomLogType(string strFlagName)
         {
             this.strFlagName = strFlagName;
         }
@@ -61,7 +62,7 @@ namespace Wrapper
         /// </summary>
         /// <param name="strFlagName">디버그 필터 플래그</param>
         /// <param name="lNumber">플래그 체크할 숫자</param>
-        public LogFilterFlag(string strFlagName, ulong lNumber)
+        public CustomLogType(string strFlagName, ulong lNumber)
         {
             this.strFlagName = strFlagName;
             this.lNumber = lNumber;
@@ -73,7 +74,7 @@ namespace Wrapper
         /// <param name="strFlagName">디버그 필터 플래그</param>
         /// <param name="lNumber">플래그 체크할 숫자</param>
         /// <param name="strColorHexCode">색상 코드 (Ex. 흰색 : ffffff)</param>
-        public LogFilterFlag(string strFlagName, ulong lNumber, string strColorHexCode)
+        public CustomLogType(string strFlagName, ulong lNumber, string strColorHexCode)
         {
             this.strFlagName = strFlagName;
             this.lNumber = lNumber;
@@ -82,7 +83,7 @@ namespace Wrapper
 
         public string ToCSharpCodeString()
         {
-            return $@"  public static {nameof(LogFilterFlag)} {strFlagName} = new LogFilterFlag(""{strFlagName}"", {lNumber}, ""{strColorHexCode}"");";
+            return $@"  public static {nameof(CustomLogType)} {strFlagName} = new CustomLogType(""{strFlagName}"", {lNumber}, ""{strColorHexCode}"");";
         }
 
 
@@ -121,26 +122,54 @@ namespace Wrapper
     }
 }
 
-
-[CustomPropertyDrawer(typeof(LogFilterFlag))]
+#if UNITY_EDITOR
+[CustomPropertyDrawer(typeof(CustomLogType))]
 public class DebugFilterDrawer : PropertyDrawer
 {
-    // Draw the property inside the given rect
+    private const float fLabelWidth_FlagName = 100f;
+    private const float fLabelWidth_lNumber = 50f;
+    private const float fLabelWidth_strColorHexCode = 50f;
+
+
+    private const float fLabelOffset = 5f;
+
+
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
-        LogFilterFlag sFilter = null;
-
         EditorGUI.BeginProperty(position, label, property);
+        {
+            position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
 
-        position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
 
-        // Calculate rects
-        var amountRect = new Rect(position.x, position.y, 30, position.height);
-        var unitRect = new Rect(position.x + 35, position.y, 50, position.height);
 
-        SerializedProperty pProperty_ColorHexCode = property.FindPropertyRelative(nameof(sFilter.strColorHexCode));
-        EditorGUI.PropertyField(unitRect, pProperty_ColorHexCode, GUIContent.none);
+            SerializedProperty pProperty_strFlagName = property.FindPropertyRelative(nameof(CustomLogType.strFlagName));
+            EditorGUI.PropertyField(CalculateRect(ref position, fLabelWidth_FlagName, fLabelOffset), pProperty_strFlagName, GUIContent.none);
 
+            SerializedProperty pProperty_lNumber = property.FindPropertyRelative(nameof(CustomLogType.lNumber));
+            EditorGUI.PropertyField(CalculateRect(ref position, fLabelWidth_lNumber, fLabelOffset), pProperty_lNumber, GUIContent.none);
+
+            // Color
+            SerializedProperty pProperty_strColorHexCode = property.FindPropertyRelative(nameof(CustomLogType.strColorHexCode));
+            
+            // Editor는 #RGBA를 원하고 Code는 RGB만 필요
+            ColorUtility.TryParseHtmlString("#" + pProperty_strColorHexCode.stringValue + "FF", out Color sColor);
+            sColor = EditorGUI.ColorField(CalculateRect(ref position, fLabelWidth_strColorHexCode, fLabelOffset), sColor);
+
+            pProperty_strColorHexCode.stringValue = ColorUtility.ToHtmlStringRGB(sColor);
+
+
+            label.text = $"{pProperty_strFlagName.stringValue}[{pProperty_lNumber.longValue}]";
+        }
         EditorGUI.EndProperty();
     }
+
+    private static Rect CalculateRect(ref Rect position, float fLabelWidth, float fOffset)
+    {
+        var rectFlagName = new Rect(position.x, position.y, fLabelWidth, position.height);
+
+        position.x += fLabelWidth + fOffset;
+
+        return rectFlagName;
+    }
 }
+#endif

@@ -4,10 +4,10 @@
 
 namespace Wrapper
 {
-    public partial class LogFilterFlag
+    public partial class CustomLogType
     {
-          public static LogFilterFlag Debug_1 = new LogFilterFlag("Debug_1", 0, "5DFF00");
-          public static LogFilterFlag Debug_2 = new LogFilterFlag("Debug_2", 0, "286A01");
+          public static CustomLogType Debug_1 = new CustomLogType("Debug_1", 3, "FFFFFF");
+          public static CustomLogType Debug_2 = new CustomLogType("Debug_2", 3, "FF0000");
 
     }
 }

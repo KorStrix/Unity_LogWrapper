@@ -33,8 +33,7 @@ namespace {0}
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="strClass"></param>
-        public void DoAddClass(LogFilterFlag pFlag)
+        public void DoAddClass(CustomLogType pFlag)
         {
             _strBuilder.AppendLine("        " + pFlag.ToCSharpCodeString());
         }
@@ -46,12 +45,12 @@ namespace {0}
         {
             // string.Format이 안됨;
             //string strFileContent = string.Format(const_strClass, 
-            //    nameof(LogFilterFlag),
+            //    nameof(CustomLogType),
             //    _strBuilder.ToString());
 
             string strFileContent = const_strClass.
                 Replace("{0}", nameof(Wrapper)).
-                Replace("{1}", nameof(LogFilterFlag)).
+                Replace("{1}", nameof(CustomLogType)).
                 Replace("{2}", _strBuilder.ToString());
 
 
