@@ -38,8 +38,6 @@ public class DebugWrapperEditor : EditorWindow
 
     /* protected & private - Field declaration  */
 
-    string _strCSExportPath;
-
     // ========================================================================== //
 
     /* public - [Do~Something] Function 	        */
@@ -60,24 +58,28 @@ public class DebugWrapperEditor : EditorWindow
     private void OnGUI()
     {
         EditorGUILayout.LabelField("Debug Wrapper Editor", EditorStyles.boldLabel);
-        EditorGUILayout.Separator();
-        EditorGUILayout.Separator();
+        EditorGUILayout.Space();
+        EditorGUILayout.Space();
 
 
         SerializedObject pSO = new SerializedObject(this);
 
         EditorGUILayout.LabelField("Editor Setting", EditorStyles.boldLabel);
         Draw_EditorSetting(pSO);
-        Draw_CSExportButton();
+        
+        
 
-
-        EditorGUILayout.Separator();
-        EditorGUILayout.Separator();
-
-
-        EditorGUILayout.LabelField("Local Editor Setting", EditorStyles.boldLabel);
+        EditorGUILayout.Space();
         if (pEditorSetting != null)
-            Draw_LocalEditor_EnableSetting(pSO);
+        {
+            Draw_CSExportButton();
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+
+
+            EditorGUILayout.LabelField("Local Editor Setting", EditorStyles.boldLabel);
+            // Draw_LocalEditor_EnableSetting(pSO);
+        }
         else
             EditorGUILayout.LabelField("Require Editor Setting");
 
@@ -96,6 +98,10 @@ public class DebugWrapperEditor : EditorWindow
 
     private void Get_LogTypeEnable_FromPlayerPrefs()
     {
+        if (pLogTypeEnableArray == null)
+            pLogTypeEnableArray = new CustomLogType_EnableArray();
+            // pLogTypeEnableArray = CreateInstance<CustomLogType_EnableArray>();
+
         bool bIsRequireUpdate_LogTypeEnableArray = CustomLogType.Load_FromPlayerPrefs(const_strPlayerPefs_SaveKey, ref pLogTypeEnableArray) == false;
         if (bIsRequireUpdate_LogTypeEnableArray == false)
         {
@@ -165,10 +171,12 @@ public class DebugWrapperEditor : EditorWindow
     {
         const string strExportCS = "Export CS";
 
-        _strCSExportPath = EditorGUILayout.TextField($"{strExportCS} Path (Assets/*.cs)", _strCSExportPath);
+        EditorGUILayout.LabelField($"{strExportCS} Path (Assets/*.cs)");
+        pEditorSetting.strCSExportPath = EditorGUILayout.TextField(pEditorSetting.strCSExportPath);
+
         if (GUILayout.Button(strExportCS))
         {
-            if (string.IsNullOrEmpty(_strCSExportPath))
+            if (string.IsNullOrEmpty(pEditorSetting.strCSExportPath))
             {
                 Debug.LogError($"{strExportCS} - string.IsNullOrEmpty(_strCSExportPath)");
                 return;
@@ -177,7 +185,7 @@ public class DebugWrapperEditor : EditorWindow
             CustomCodedom pCodeDom = new CustomCodedom();
             foreach (var pFilter in pEditorSetting.arrDebugFilter)
                 pCodeDom.DoAddClass(pFilter);
-            pCodeDom.DoExportCS($"{Application.dataPath}/{_strCSExportPath}");
+            pCodeDom.DoExportCS($"{Application.dataPath}/{pEditorSetting.strCSExportPath}");
 
             AssetDatabase.Refresh();
             Debug.Log($"{strExportCS} Complete");
@@ -187,7 +195,6 @@ public class DebugWrapperEditor : EditorWindow
     #endregion Private
 
     #region Tool
-
 
     public static T CreateAsset<T>() where T : ScriptableObject
     {
@@ -204,7 +211,6 @@ public class DebugWrapperEditor : EditorWindow
 
         return asset;
     }
-
 
     #endregion Tool
 }

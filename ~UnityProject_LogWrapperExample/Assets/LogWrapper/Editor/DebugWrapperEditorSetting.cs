@@ -10,7 +10,18 @@ using UnityEditorInternal;
 [Serializable]
 public class DebugWrapperEditorSetting : ScriptableObject
 {
+    public string strCSExportPath;
     public Wrapper.CustomLogType[] arrDebugFilter = new Wrapper.CustomLogType[0];
+
+    // 여기에 브렌치별 Log 필터 정보도 넣어야 할듯?
+    public LogFilter_PerBranch[] arrTest;
+}
+
+[Serializable]
+public class LogFilter_PerBranch
+{
+    public string strBranchName;
+    public CustomLogType_EnableArray arrLogTypeEnable;
 }
 
 
@@ -37,17 +48,20 @@ public class DebugWrapperSettingDrawer : PropertyDrawer
                 _pSOThis.Update();
 
                 EditorGUI.BeginChangeCheck();
+                {
+                    var pProperty_arrDebugFilter = _pSOThis.FindProperty($"{nameof(DebugWrapperEditorSetting.arrDebugFilter)}");
+                    DrawLogFilterArray(_pSOThis, pProperty_arrDebugFilter);
 
-                var propertyArray = _pSOThis.FindProperty($"{nameof(DebugWrapperEditorSetting.arrDebugFilter)}");
-                DrawLogFilterArray(_pSOThis, propertyArray);
-
+                    var pProperty_arrTest = _pSOThis.FindProperty($"{nameof(DebugWrapperEditorSetting.arrTest)}");
+                    DrawLogFilterArray(_pSOThis, pProperty_arrTest);
+                }
                 if (EditorGUI.EndChangeCheck())
                 {
                     foreach (var pList in innerListDict.Values)
                     {
                         if (pList != null &&
-                           pList.serializedProperty.propertyType == SerializedPropertyType.ObjectReference &&
-                           pList.serializedProperty.objectReferenceValue != null)
+                            pList.serializedProperty.propertyType == SerializedPropertyType.ObjectReference &&
+                            pList.serializedProperty.objectReferenceValue != null)
                             EditorUtility.SetDirty(pList.serializedProperty.objectReferenceValue);
                     }
 
@@ -83,8 +97,48 @@ public class DebugWrapperSettingDrawer : PropertyDrawer
             innerListDict[listKey] = pCurrentList;
         }
 
-        foreach (var pList in innerListDict.Values)
-            pList.DoLayoutList();
+        pCurrentList.DoLayoutList();
     }
 }
+
+[CustomPropertyDrawer(typeof(LogFilter_PerBranch))]
+public class LogFilter_PerBranchDrawer : PropertyDrawer
+{
+    private const float fLabelWidth_strBranchName = 50f;
+    private const float fLabelOffset = 5f;
+
+
+    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    {
+        EditorGUI.BeginProperty(position, label, property);
+        {
+            position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
+
+            SerializedProperty pProperty_strBranchName = property.FindPropertyRelative(nameof(LogFilter_PerBranch.strBranchName));
+            EditorGUI.PropertyField(CalculateRect(ref position, fLabelWidth_strBranchName, fLabelOffset), pProperty_strBranchName, GUIContent.none);
+
+            SerializedProperty pProperty_arrLogTypeEnable = property.FindPropertyRelative(nameof(LogFilter_PerBranch.arrLogTypeEnable));
+            if (pProperty_arrLogTypeEnable.objectReferenceValue == null)
+            {
+                pProperty_arrLogTypeEnable.objectReferenceValue = ScriptableObject.CreateInstance<CustomLogType_EnableArray>();
+                property.serializedObject.ApplyModifiedProperties();
+            }
+
+            EditorGUI.PropertyField(CalculateRect(ref position, fLabelWidth_strBranchName, fLabelOffset), pProperty_arrLogTypeEnable, GUIContent.none);
+
+            label.text = $"{pProperty_strBranchName.stringValue}";
+        }
+        EditorGUI.EndProperty();
+    }
+
+    private static Rect CalculateRect(ref Rect position, float fLabelWidth, float fOffset)
+    {
+        var rectFlagName = new Rect(position.x, position.y, fLabelWidth, position.height);
+
+        position.x += fLabelWidth + fOffset;
+
+        return rectFlagName;
+    }
+}
+
 #endif
