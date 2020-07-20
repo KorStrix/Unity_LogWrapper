@@ -4,31 +4,21 @@ using UnityEngine;
 
 public class CustomDebugLog_Tester : MonoBehaviour
 {
-    [System.Flags]
-    enum EFilter
+    private void OnEnable()
     {
-        None = 0, 
-        InGame = 1 << 0,
-        OutGame = 1 << 1,
+        //LogTest("Default");
 
-        Warning = 1 << 2,
-        Error = 1 << 3,
+        //Wrapper.Debug.Set_PrintLog_FilterFlag(EFilter.InGame | EFilter.OutGame);
+        //LogTest(EFilter.InGame | EFilter.OutGame);
+
+        //pFactory.DoAdd_DebugFilter(EFilter.OutGame, Color.blue);
+        //pFactory.DoAdd_DebugFilter(EFilter.Error, Color.red);
+        //pFactory.DoAdd_DebugFilter(EFilter.OutGame | EFilter.Error, Color.magenta);
+        //pFactory.DoAdd_DebugFilter(EFilter.None, Color.white);
+        //Wrapper.Debug.Init_PrintLog_FilterFlag(pFactory);
+
+        // Wrapper.Debug.Log(EFilter.OutGame | EFilter.Error, EFilter.OutGame | EFilter.Error, this);
     }
-    //private void OnEnable()
-    //{
-    //    //LogTest("Default");
-
-    //    //Wrapper.Debug.Set_PrintLog_FilterFlag(EFilter.InGame | EFilter.OutGame);
-    //    //LogTest(EFilter.InGame | EFilter.OutGame);
-
-    //    //pFactory.DoAdd_DebugFilter(EFilter.OutGame, Color.blue);
-    //    //pFactory.DoAdd_DebugFilter(EFilter.Error, Color.red);
-    //    //pFactory.DoAdd_DebugFilter(EFilter.OutGame | EFilter.Error, Color.magenta);
-    //    //pFactory.DoAdd_DebugFilter(EFilter.None, Color.white);
-    //    //Wrapper.Debug.Init_PrintLog_FilterFlag(pFactory);
-
-    //    Wrapper.Debug.Log(EFilter.OutGame | EFilter.Error, EFilter.OutGame | EFilter.Error, this);
-    //}
 
     //private void LogTest(object strTestCase)
     //{
