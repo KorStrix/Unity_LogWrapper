@@ -56,8 +56,8 @@ public class CustomLogType_EnableArrayDrawer : PropertyDrawer
                     foreach (var pList in innerListDict.Values)
                     {
                         if (pList != null &&
-                           pList.serializedProperty.propertyType == SerializedPropertyType.ObjectReference &&
-                           pList.serializedProperty.objectReferenceValue != null)
+                            pList.serializedProperty.propertyType == SerializedPropertyType.ObjectReference &&
+                            pList.serializedProperty.objectReferenceValue != null)
                             EditorUtility.SetDirty(pList.serializedProperty.objectReferenceValue);
                     }
 

@@ -14,13 +14,14 @@ public class DebugWrapperEditorSetting : ScriptableObject
     public Wrapper.CustomLogType[] arrDebugFilter = new Wrapper.CustomLogType[0];
 
     // 여기에 브렌치별 Log 필터 정보도 넣어야 할듯?
-    public LogFilter_PerBranch[] arrTest;
+    public LogFilter_PerBranch arrTest;
 }
 
 [Serializable]
 public class LogFilter_PerBranch
 {
     public string strBranchName;
+    // public CustomLogType_Enable[] arrLogTypeEnable;
     public CustomLogType_EnableArray arrLogTypeEnable;
 }
 
@@ -53,7 +54,8 @@ public class DebugWrapperSettingDrawer : PropertyDrawer
                     DrawLogFilterArray(_pSOThis, pProperty_arrDebugFilter);
 
                     var pProperty_arrTest = _pSOThis.FindProperty($"{nameof(DebugWrapperEditorSetting.arrTest)}");
-                    DrawLogFilterArray(_pSOThis, pProperty_arrTest);
+                    EditorGUILayout.PropertyField(pProperty_arrTest);
+                    // DrawLogFilterArray(_pSOThis, pProperty_arrTest);
                 }
                 if (EditorGUI.EndChangeCheck())
                 {
@@ -118,12 +120,6 @@ public class LogFilter_PerBranchDrawer : PropertyDrawer
             EditorGUI.PropertyField(CalculateRect(ref position, fLabelWidth_strBranchName, fLabelOffset), pProperty_strBranchName, GUIContent.none);
 
             SerializedProperty pProperty_arrLogTypeEnable = property.FindPropertyRelative(nameof(LogFilter_PerBranch.arrLogTypeEnable));
-            if (pProperty_arrLogTypeEnable.objectReferenceValue == null)
-            {
-                pProperty_arrLogTypeEnable.objectReferenceValue = ScriptableObject.CreateInstance<CustomLogType_EnableArray>();
-                property.serializedObject.ApplyModifiedProperties();
-            }
-
             EditorGUI.PropertyField(CalculateRect(ref position, fLabelWidth_strBranchName, fLabelOffset), pProperty_arrLogTypeEnable, GUIContent.none);
 
             label.text = $"{pProperty_strBranchName.stringValue}";
