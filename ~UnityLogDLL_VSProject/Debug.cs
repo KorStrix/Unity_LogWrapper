@@ -52,7 +52,7 @@ namespace Wrapper
             _iFilterFlags = 0;
             foreach(var pFilter in arrDebugFilter)
             {
-                object pFilterFlag = pFilter.strFlagName;
+                object pFilterFlag = pFilter.strLogTypeName;
                 string strHexCode = pFilter.strColorHexCode;
                 strHexCode = strHexCode.Substring(0, 6);
 

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Wrapper;
 
 #if UNITY_EDITOR
@@ -18,7 +17,7 @@ namespace Wrapper
         /// <summary>
         /// <see cref="Debug.Log(object)"/>로 출력하고 싶은 경우 이 플래그를 넣으시면 됩니다
         /// </summary>
-        public static CustomLogType customLog = new CustomLogType(nameof(customLog), 1 << 0);
+        public static CustomLogType Log = new CustomLogType(nameof(Log), 1 << 0);
 
         /// <summary>
         /// <see cref="Debug.LogWarning(object)"/>로 출력하고 싶은 경우 이 플래그를 넣으시면 됩니다
@@ -34,7 +33,7 @@ namespace Wrapper
         /// <summary>
         /// 디버그 필터 플래그
         /// </summary>
-        public string strFlagName;
+        public string strLogTypeName;
 
         /// <summary>
         /// 플래그 체크용 ulong 값
@@ -51,39 +50,39 @@ namespace Wrapper
         /// <summary>
         /// 필터의 정보
         /// </summary>
-        /// <param name="strFlagName">디버그 필터 플래그</param>
-        public CustomLogType(string strFlagName)
+        /// <param name="strLogTypeName">디버그 필터 플래그</param>
+        public CustomLogType(string strLogTypeName)
         {
-            this.strFlagName = strFlagName;
+            this.strLogTypeName = strLogTypeName;
         }
 
         /// <summary>
         /// 필터의 정보
         /// </summary>
-        /// <param name="strFlagName">디버그 필터 플래그</param>
+        /// <param name="strLogTypeName">디버그 필터 플래그</param>
         /// <param name="lNumber">플래그 체크할 숫자</param>
-        public CustomLogType(string strFlagName, ulong lNumber)
+        public CustomLogType(string strLogTypeName, ulong lNumber)
         {
-            this.strFlagName = strFlagName;
+            this.strLogTypeName = strLogTypeName;
             this.lNumber = lNumber;
         }
 
         /// <summary>
         /// 필터의 정보
         /// </summary>
-        /// <param name="strFlagName">디버그 필터 플래그</param>
+        /// <param name="strLogTypeName">디버그 필터 플래그</param>
         /// <param name="lNumber">플래그 체크할 숫자</param>
         /// <param name="strColorHexCode">색상 코드 (Ex. 흰색 : ffffff)</param>
-        public CustomLogType(string strFlagName, ulong lNumber, string strColorHexCode)
+        public CustomLogType(string strLogTypeName, ulong lNumber, string strColorHexCode)
         {
-            this.strFlagName = strFlagName;
+            this.strLogTypeName = strLogTypeName;
             this.lNumber = lNumber;
             this.strColorHexCode = strColorHexCode;
         }
 
         public string ToCSharpCodeString()
         {
-            return $@"  public static {nameof(CustomLogType)} {strFlagName} = new CustomLogType(""{strFlagName}"", {lNumber}, ""{strColorHexCode}"");";
+            return $@"  public static {nameof(CustomLogType)} {strLogTypeName} = new CustomLogType(""{strLogTypeName}"", {lNumber}, ""{strColorHexCode}"");";
         }
 
 
@@ -126,7 +125,7 @@ namespace Wrapper
 [CustomPropertyDrawer(typeof(CustomLogType))]
 public class DebugFilterDrawer : PropertyDrawer
 {
-    private const float fLabelWidth_FlagName = 100f;
+    private const float fLabelWidth_strLogTypeName = 100f;
     private const float fLabelWidth_lNumber = 50f;
     private const float fLabelWidth_strColorHexCode = 50f;
 
@@ -142,8 +141,8 @@ public class DebugFilterDrawer : PropertyDrawer
 
 
 
-            SerializedProperty pProperty_strFlagName = property.FindPropertyRelative(nameof(CustomLogType.strFlagName));
-            EditorGUI.PropertyField(CalculateRect(ref position, fLabelWidth_FlagName, fLabelOffset), pProperty_strFlagName, GUIContent.none);
+            SerializedProperty pProperty_strLogTypeName = property.FindPropertyRelative(nameof(CustomLogType.strLogTypeName));
+            EditorGUI.PropertyField(CalculateRect(ref position, fLabelWidth_strLogTypeName, fLabelOffset), pProperty_strLogTypeName, GUIContent.none);
 
             SerializedProperty pProperty_lNumber = property.FindPropertyRelative(nameof(CustomLogType.lNumber));
             EditorGUI.PropertyField(CalculateRect(ref position, fLabelWidth_lNumber, fLabelOffset), pProperty_lNumber, GUIContent.none);
@@ -157,8 +156,7 @@ public class DebugFilterDrawer : PropertyDrawer
 
             pProperty_strColorHexCode.stringValue = ColorUtility.ToHtmlStringRGB(sColor);
 
-
-            label.text = $"{pProperty_strFlagName.stringValue}[{pProperty_lNumber.longValue}]";
+            label.text = $"{pProperty_strLogTypeName.stringValue}[{pProperty_lNumber.longValue}]";
         }
         EditorGUI.EndProperty();
     }
