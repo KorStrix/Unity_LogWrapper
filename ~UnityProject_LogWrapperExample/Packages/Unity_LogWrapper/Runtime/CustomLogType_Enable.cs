@@ -96,7 +96,6 @@ public class CustomLogType_Enable
 public class CustomLogType_EnableDrawer : PropertyDrawer
 {
     private const float fLabelWidth_strCustomLogName = 200f;
-    private const float fLabelWidth_bEnable = 50f;
     private const float fLabelOffset = 5f;
 
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
@@ -110,7 +109,7 @@ public class CustomLogType_EnableDrawer : PropertyDrawer
             EditorGUI.PropertyField(CalculateRect(ref position, fLabelWidth_strCustomLogName, fLabelOffset), pProperty_strCustomLogName, GUIContent.none);
 
             SerializedProperty pProperty_bEnable = property.FindPropertyRelative(nameof(CustomLogType_Enable.bEnable));
-            EditorGUI.PropertyField(CalculateRect(ref position, fLabelWidth_bEnable, fLabelOffset), pProperty_bEnable, GUIContent.none);
+            EditorGUI.PropertyField(position, pProperty_bEnable, GUIContent.none);
 
             label.text = $"{pProperty_strCustomLogName.stringValue}[{pProperty_bEnable.boolValue}]";
         }
