@@ -23,10 +23,12 @@ public class CustomLogType_Enable
     public static bool DoMatch_LogTypeEnableArray(DebugWrapperEditorSetting pEditorSetting, ref CustomLogType_Enable[] arrMatchTarget)
     {
         string[] arrLogTypeName_EditorSetting = pEditorSetting.arrLogType.Select(p => p.strLogTypeName).ToArray();
-        string[] arrLogTypeName_PlayerPrefs = arrMatchTarget.Select(p => p.strCustomLogName).ToArray();
+        string[] arrLogTypeName_Target = arrMatchTarget.Select(p => p.strCustomLogName).ToArray();
 
-        var arrIntersect = arrLogTypeName_EditorSetting.Intersect(arrLogTypeName_PlayerPrefs);
-        bool bIsRequireUpdate_LogTypeEnableArray = arrIntersect.Count() != arrLogTypeName_EditorSetting.Length;
+        var arrIntersect = arrLogTypeName_EditorSetting.Intersect(arrLogTypeName_Target);
+        int iCount = arrIntersect.Count();
+
+        bool bIsRequireUpdate_LogTypeEnableArray = iCount != arrLogTypeName_EditorSetting.Length || iCount != arrLogTypeName_Target.Length;
 
         if (bIsRequireUpdate_LogTypeEnableArray)
         {
@@ -52,41 +54,41 @@ public class CustomLogType_Enable
     }
 
 
-//    #region Editor
-//    private const float fLabelWidth_strCustomLogName = 200f;
-//    private const float fLabelWidth_bEnable = 50f;
-//    private const float fLabelOffset = 5f;
+    //    #region Editor
+    //    private const float fLabelWidth_strCustomLogName = 200f;
+    //    private const float fLabelWidth_bEnable = 50f;
+    //    private const float fLabelOffset = 5f;
 
-//    public static void DoDrawEditorGUI(Rect position, SerializedProperty property, GUIContent label)
-//    {
-//#if UNITY_EDITOR
-//        EditorGUI.BeginProperty(position, label, property);
-//        {
-//            position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
+    //    public static void DoDrawEditorGUI(Rect position, SerializedProperty property, GUIContent label)
+    //    {
+    //#if UNITY_EDITOR
+    //        EditorGUI.BeginProperty(position, label, property);
+    //        {
+    //            position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
 
-//            SerializedProperty pProperty_strCustomLogName = property.FindPropertyRelative(nameof(CustomLogType_Enable.strCustomLogName));
-//            EditorGUI.PropertyField(CalculateRect(ref position, fLabelWidth_strCustomLogName, fLabelOffset), pProperty_strCustomLogName, GUIContent.none);
+    //            SerializedProperty pProperty_strCustomLogName = property.FindPropertyRelative(nameof(CustomLogType_Enable.strCustomLogName));
+    //            EditorGUI.PropertyField(CalculateRect(ref position, fLabelWidth_strCustomLogName, fLabelOffset), pProperty_strCustomLogName, GUIContent.none);
 
-//            SerializedProperty pProperty_bEnable = property.FindPropertyRelative(nameof(CustomLogType_Enable.bEnable));
-//            EditorGUI.PropertyField(CalculateRect(ref position, fLabelWidth_bEnable, fLabelOffset), pProperty_bEnable, GUIContent.none);
+    //            SerializedProperty pProperty_bEnable = property.FindPropertyRelative(nameof(CustomLogType_Enable.bEnable));
+    //            EditorGUI.PropertyField(CalculateRect(ref position, fLabelWidth_bEnable, fLabelOffset), pProperty_bEnable, GUIContent.none);
 
-//            label.text = $"{pProperty_strCustomLogName.stringValue}[{pProperty_bEnable.boolValue}]";
-//        }
-//        EditorGUI.EndProperty();
-//#endif
-//    }
+    //            label.text = $"{pProperty_strCustomLogName.stringValue}[{pProperty_bEnable.boolValue}]";
+    //        }
+    //        EditorGUI.EndProperty();
+    //#endif
+    //    }
 
 
-//    private static Rect CalculateRect(ref Rect position, float fLabelWidth, float fOffset)
-//    {
-//        var rectFlagName = new Rect(position.x, position.y, fLabelWidth, position.height);
+    //    private static Rect CalculateRect(ref Rect position, float fLabelWidth, float fOffset)
+    //    {
+    //        var rectFlagName = new Rect(position.x, position.y, fLabelWidth, position.height);
 
-//        position.x += fLabelWidth + fOffset;
+    //        position.x += fLabelWidth + fOffset;
 
-//        return rectFlagName;
-//    }
+    //        return rectFlagName;
+    //    }
 
-//    #endregion
+    //    #endregion
 }
 
 
@@ -106,7 +108,8 @@ public class CustomLogType_EnableDrawer : PropertyDrawer
             // position.height = 20f;
 
             SerializedProperty pProperty_strCustomLogName = property.FindPropertyRelative(nameof(CustomLogType_Enable.strCustomLogName));
-            EditorGUI.PropertyField(CalculateRect(ref position, fLabelWidth_strCustomLogName, fLabelOffset), pProperty_strCustomLogName, GUIContent.none);
+            // EditorGUI.LabelField(CalculateRect(ref position, fLabelWidth_strCustomLogName, fLabelOffset), pProperty_strCustomLogName.stringValue);
+            EditorGUI.LabelField(CalculateRect(ref position, fLabelWidth_strCustomLogName, fLabelOffset), pProperty_strCustomLogName.stringValue);
 
             SerializedProperty pProperty_bEnable = property.FindPropertyRelative(nameof(CustomLogType_Enable.bEnable));
             EditorGUI.PropertyField(position, pProperty_bEnable, GUIContent.none);
@@ -120,7 +123,7 @@ public class CustomLogType_EnableDrawer : PropertyDrawer
     {
         var rectFlagName = new Rect(position.x, position.y, fLabelWidth, position.height);
 
-        position.x += fLabelWidth + fOffset;
+        position.x += (fLabelWidth * 0.5f) + fOffset;
 
         return rectFlagName;
     }

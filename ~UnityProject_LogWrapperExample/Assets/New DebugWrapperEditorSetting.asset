@@ -13,31 +13,25 @@ MonoBehaviour:
   m_Name: New DebugWrapperEditorSetting
   m_EditorClassIdentifier: 
   strCSExportPath: 
-  arrDebugFilter:
-  - strLogTypeName: 
-    lNumber: 4
+  arrLogType:
+  - strLogTypeName: a
+    lNumber: 0
     strColorHexCode: FFFFFF
-  - strLogTypeName: 
-    lNumber: 1
-    strColorHexCode: FF0000
+  - strLogTypeName: b
+    lNumber: 0
+    strColorHexCode: FFFFFF
   arrTest:
-  - strBranchName: 2
+  - pEditorSetting: {fileID: 11400000}
+    strBranchName: 5
     arrLogTypeEnable:
-    - strCustomLogName: 1
-      bEnable: 0
-    - strCustomLogName: 2
-      bEnable: 0
-    - strCustomLogName: 3
-      bEnable: 0
-  - strBranchName: 3
+    - strCustomLogName: a
+      bEnable: 1
+    - strCustomLogName: b
+      bEnable: 1
+  - pEditorSetting: {fileID: 11400000}
+    strBranchName: 3
     arrLogTypeEnable:
-    - strCustomLogName: 
-      bEnable: 0
-  - strBranchName: 3
-    arrLogTypeEnable:
-    - strCustomLogName: 3
-      bEnable: 0
-    - strCustomLogName: 
-      bEnable: 0
-    - strCustomLogName: 
-      bEnable: 0
+    - strCustomLogName: a
+      bEnable: 1
+    - strCustomLogName: b
+      bEnable: 1

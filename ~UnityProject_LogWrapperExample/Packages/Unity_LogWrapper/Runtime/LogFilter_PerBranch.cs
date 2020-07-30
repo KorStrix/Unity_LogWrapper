@@ -14,6 +14,7 @@ using UnityEditor;
 public class LogFilter_PerBranch
 {
     public DebugWrapperEditorSetting pEditorSetting;
+
     public string strBranchName;
     public CustomLogType_Enable[] arrLogTypeEnable;
 }
@@ -36,7 +37,6 @@ public class LogFilter_PerBranchDrawer : PropertyDrawer
             EditorGUI.PropertyField(position, pProperty_strBranchName, true);
             label.text = $"{pProperty_strBranchName.stringValue}";
 
-
             SerializedProperty pProperty_pEditorSetting = property.FindPropertyRelative(nameof(LogFilter_PerBranch.pEditorSetting));
             if (pProperty_pEditorSetting == null)
             {
@@ -53,9 +53,14 @@ public class LogFilter_PerBranchDrawer : PropertyDrawer
             position.y += const_fHeightPerLine;
             EditorGUI.indentLevel++;
             {
-                //LogFilter_PerBranch pBranch = GetThis(property);
-                //CustomLogType_Enable[] arrLogTypeEnable = pBranch.arrLogTypeEnable;
-                //CustomLogType_Enable.DoMatch_LogTypeEnableArray(pEditorSetting, ref arrLogTypeEnable);
+                LogFilter_PerBranch pBranch = GetThis(property);
+                if (CustomLogType_Enable.DoMatch_LogTypeEnableArray(pEditorSetting, ref pBranch.arrLogTypeEnable))
+                {
+                    property.serializedObject.ApplyModifiedProperties();
+                    EditorUtility.SetDirty(property.serializedObject.targetObject);
+                }
+
+                CustomLogType_Enable[] arrLogTypeEnable = pBranch.arrLogTypeEnable;
 
                 //for (int i = 0; i < arrLogTypeEnable.Length; i++)
                 //{
@@ -96,12 +101,16 @@ public class LogFilter_PerBranchDrawer : PropertyDrawer
     {
         object pObjectOwner = property.serializedObject.targetObject;
         Type pOwnerType = pObjectOwner.GetType();
+
+
         FieldInfo pFieldInfo_Array = pOwnerType.GetField(property.propertyPath.Split('.').FirstOrDefault());
-        Array pTest = (Array)pFieldInfo_Array.GetValue(pObjectOwner);
+        Array pArray = (Array)pFieldInfo_Array.GetValue(pObjectOwner);
+
+
         string strValue = Regex.Match(property.propertyPath, @"\d+").Value;
         int iIndex = int.Parse(strValue);
 
-        return (LogFilter_PerBranch)pTest.GetValue(iIndex);
+        return (LogFilter_PerBranch)pArray.GetValue(iIndex);
     }
 }
 #endif

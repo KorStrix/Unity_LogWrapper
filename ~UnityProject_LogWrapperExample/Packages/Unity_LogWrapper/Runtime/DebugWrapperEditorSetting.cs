@@ -14,7 +14,7 @@ public class DebugWrapperEditorSetting : ScriptableObject
     public Wrapper.CustomLogType[] arrLogType = new Wrapper.CustomLogType[0];
 
     // 여기에 브렌치별 Log 필터 정보도 넣어야 할듯?
-    public LogFilter_PerBranch[] arrTest;
+    public LogFilter_PerBranch[] arrBranch;
 
 
     public static void DoDrawEditorGUI(SerializedObject pSerializeObject, DebugWrapperEditorSetting pEditorSetting)
@@ -28,7 +28,7 @@ public class DebugWrapperEditorSetting : ScriptableObject
             var pProperty_arrDebugFilter = pSerializeObject.FindProperty($"{nameof(DebugWrapperEditorSetting.arrLogType)}");
             EditorGUILayout.PropertyField(pProperty_arrDebugFilter, true);
 
-            var pProperty_arrTest = pSerializeObject.FindProperty($"{nameof(DebugWrapperEditorSetting.arrTest)}");
+            var pProperty_arrTest = pSerializeObject.FindProperty($"{nameof(DebugWrapperEditorSetting.arrBranch)}");
             for (int i = 0; i < pProperty_arrTest.arraySize; i++)
             {
                 SerializedProperty pProperty = pProperty_arrTest.GetArrayElementAtIndex(i);
