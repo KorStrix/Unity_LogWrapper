@@ -104,13 +104,16 @@ public class LogFilter_PerBranchDrawer : PropertyDrawer
 
 
         FieldInfo pFieldInfo_Array = pOwnerType.GetField(property.propertyPath.Split('.').FirstOrDefault());
-        Array pArray = (Array)pFieldInfo_Array.GetValue(pObjectOwner);
+        object pValue = pFieldInfo_Array.GetValue(pObjectOwner);
+        if (pValue is Array pArray)
+        {
+            string strValue = Regex.Match(property.propertyPath, @"\d+").Value;
+            int iIndex = int.Parse(strValue);
 
+            return (LogFilter_PerBranch)pArray.GetValue(iIndex);
+        }
 
-        string strValue = Regex.Match(property.propertyPath, @"\d+").Value;
-        int iIndex = int.Parse(strValue);
-
-        return (LogFilter_PerBranch)pArray.GetValue(iIndex);
+        return (LogFilter_PerBranch)pValue;
     }
 }
 #endif

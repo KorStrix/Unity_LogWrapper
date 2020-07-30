@@ -34,7 +34,7 @@ public class DebugWrapperEditor : EditorWindow
     /* public - Field declaration               */
 
     public DebugWrapperEditorSetting pEditorSetting;
-    public CustomLogType_Enable[] pLogTypeEnableArray = null;
+    public LogFilter_PerBranch pLocalBranch = null;
 
     /* protected & private - Field declaration  */
 
@@ -47,7 +47,7 @@ public class DebugWrapperEditor : EditorWindow
     {
         DebugWrapperEditor pWindow = (DebugWrapperEditor)GetWindow(typeof(DebugWrapperEditor), false);
 
-        pWindow.minSize = new Vector2(300, 300);
+        pWindow.minSize = new Vector2(300, 500);
         pWindow.Show();
     }
 
@@ -78,7 +78,7 @@ public class DebugWrapperEditor : EditorWindow
 
 
             EditorGUILayout.LabelField("Local Editor Setting", EditorStyles.boldLabel);
-            // Draw_LocalEditor_EnableSetting(pSO);
+            Draw_LocalEditor_EnableSetting(pSO);
         }
         else
             EditorGUILayout.LabelField("Require Editor Setting");
@@ -96,16 +96,34 @@ public class DebugWrapperEditor : EditorWindow
 
     #region Private
 
-    private void Get_LogTypeEnable_FromPlayerPrefs()
+    private void Get_LogTypeEnable_FromPlayerPrefs(SerializedObject pSO)
     {
-        if (pLogTypeEnableArray == null)
-            pLogTypeEnableArray = new CustomLogType_Enable[0];
+        bool bIsSave = false;
 
-        bool bIsRequireUpdate_LogTypeEnableArray = CustomLogType.Load_FromPlayerPrefs(const_strPlayerPefs_SaveKey, ref pLogTypeEnableArray) == false;
+        if (pLocalBranch == null)
+        {
+            pLocalBranch = new LogFilter_PerBranch();
+            bIsSave = true;
+        }
+
+        bool bIsRequireUpdate_LogTypeEnableArray = CustomLogType.Load_FromPlayerPrefs(const_strPlayerPefs_SaveKey, ref pLocalBranch) == false;
         if (bIsRequireUpdate_LogTypeEnableArray)
         {
-            CustomLogType_Enable.DoMatch_LogTypeEnableArray(pEditorSetting, ref pLogTypeEnableArray);
-            CustomLogType.Save_ToPlayerPrefs(const_strPlayerPefs_SaveKey, pLogTypeEnableArray);
+            CustomLogType_Enable.DoMatch_LogTypeEnableArray(pEditorSetting, ref pLocalBranch.arrLogTypeEnable);
+            CustomLogType.Save_ToPlayerPrefs(const_strPlayerPefs_SaveKey, pLocalBranch);
+            bIsSave = true;
+        }
+
+        if (pLocalBranch.pEditorSetting != pEditorSetting)
+        {
+            pLocalBranch.pEditorSetting = pEditorSetting;
+            bIsSave = true;
+        }
+
+        if (bIsSave)
+        {
+            pSO.ApplyModifiedProperties();
+            EditorUtility.SetDirty(this);
         }
     }
 
@@ -142,14 +160,16 @@ public class DebugWrapperEditor : EditorWindow
 
     private void Draw_LocalEditor_EnableSetting(SerializedObject pSO)
     {
-        Get_LogTypeEnable_FromPlayerPrefs();
+        Get_LogTypeEnable_FromPlayerPrefs(pSO);
 
-        SerializedProperty pProperty = pSO.FindProperty($"{nameof(pLogTypeEnableArray)}");
-        EditorGUILayout.PropertyField(pProperty);
+        SerializedProperty pProperty = pSO.FindProperty($"{nameof(pLocalBranch)}");
+        EditorGUILayout.PropertyField(pProperty, true);
 
         if (GUI.changed)
         {
-            CustomLogType.Save_ToPlayerPrefs(const_strPlayerPefs_SaveKey, pLogTypeEnableArray);
+            CustomLogType.Save_ToPlayerPrefs(const_strPlayerPefs_SaveKey, pLocalBranch);
+            pSO.ApplyModifiedProperties();
+            EditorUtility.SetDirty(pSO.targetObject);
         }
     }
 
