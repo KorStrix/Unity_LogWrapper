@@ -64,12 +64,14 @@ public class LogFilter_PerBranchDrawer : PropertyDrawer
                 //}
 
                 SerializedProperty pProperty_arrLogTypeEnable = property.FindPropertyRelative(nameof(LogFilter_PerBranch.arrLogTypeEnable));
-                for (int i = 0; i < pProperty_arrLogTypeEnable.arraySize; i++)
-                {
-                    SerializedProperty pPropertyElement = pProperty_arrLogTypeEnable.GetArrayElementAtIndex(i);
-                    EditorGUI.PropertyField(position, pPropertyElement, true);
-                    position.y += const_fHeightPerLine;
-                }
+                EditorGUI.PropertyField(position, pProperty_arrLogTypeEnable, true);
+
+                //for (int i = 0; i < pProperty_arrLogTypeEnable.arraySize; i++)
+                //{
+                //    SerializedProperty pPropertyElement = pProperty_arrLogTypeEnable.GetArrayElementAtIndex(i);
+                //    EditorGUI.PropertyField(position, pPropertyElement, true);
+                //    position.y += const_fHeightPerLine;
+                //}
             }
             EditorGUI.indentLevel--;
 

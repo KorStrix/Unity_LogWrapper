@@ -104,6 +104,7 @@ public class CustomLogType_EnableDrawer : PropertyDrawer
         EditorGUI.BeginProperty(position, label, property);
         {
             position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
+            position.height = 20f;
 
             SerializedProperty pProperty_strCustomLogName = property.FindPropertyRelative(nameof(CustomLogType_Enable.strCustomLogName));
             EditorGUI.PropertyField(CalculateRect(ref position, fLabelWidth_strCustomLogName, fLabelOffset), pProperty_strCustomLogName, GUIContent.none);
