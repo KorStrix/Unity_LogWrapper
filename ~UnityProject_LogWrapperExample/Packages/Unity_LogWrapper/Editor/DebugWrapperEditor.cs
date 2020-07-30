@@ -34,7 +34,7 @@ public class DebugWrapperEditor : EditorWindow
     /* public - Field declaration               */
 
     public DebugWrapperEditorSetting pEditorSetting;
-    public LogFilter_PerBranch pLocalBranch = null;
+    public LogFilter_PerBranch pLocalBranch;
 
     /* protected & private - Field declaration  */
 
@@ -167,9 +167,9 @@ public class DebugWrapperEditor : EditorWindow
 
         if (GUI.changed)
         {
-            CustomLogType.Save_ToPlayerPrefs(const_strPlayerPefs_SaveKey, pLocalBranch);
             pSO.ApplyModifiedProperties();
-            EditorUtility.SetDirty(pSO.targetObject);
+            EditorUtility.SetDirty(this);
+            CustomLogType.Save_ToPlayerPrefs(const_strPlayerPefs_SaveKey, pLocalBranch);
         }
     }
 

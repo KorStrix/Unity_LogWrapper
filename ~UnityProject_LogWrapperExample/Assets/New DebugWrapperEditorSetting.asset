@@ -20,18 +20,25 @@ MonoBehaviour:
   - strLogTypeName: b
     lNumber: 0
     strColorHexCode: FFFFFF
-  arrTest:
+  - strLogTypeName: c
+    lNumber: 0
+    strColorHexCode: FFFFFF
+  arrBranch:
   - pEditorSetting: {fileID: 11400000}
-    strBranchName: 5
+    strBranchName: Alpha
+    arrLogTypeEnable:
+    - strCustomLogName: a
+      bEnable: 0
+    - strCustomLogName: b
+      bEnable: 1
+    - strCustomLogName: c
+      bEnable: 1
+  - pEditorSetting: {fileID: 11400000}
+    strBranchName: Beta
     arrLogTypeEnable:
     - strCustomLogName: a
       bEnable: 1
     - strCustomLogName: b
       bEnable: 1
-  - pEditorSetting: {fileID: 11400000}
-    strBranchName: 3
-    arrLogTypeEnable:
-    - strCustomLogName: a
-      bEnable: 1
-    - strCustomLogName: b
+    - strCustomLogName: c
       bEnable: 1

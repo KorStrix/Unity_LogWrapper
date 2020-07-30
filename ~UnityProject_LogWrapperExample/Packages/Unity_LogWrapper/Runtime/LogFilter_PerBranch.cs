@@ -53,11 +53,13 @@ public class LogFilter_PerBranchDrawer : PropertyDrawer
             position.y += const_fHeightPerLine;
             EditorGUI.indentLevel++;
             {
+                SerializedObject pSO = property.serializedObject;
                 LogFilter_PerBranch pBranch = GetThis(property);
+
                 if (CustomLogType_Enable.DoMatch_LogTypeEnableArray(pEditorSetting, ref pBranch.arrLogTypeEnable))
                 {
-                    property.serializedObject.ApplyModifiedProperties();
-                    EditorUtility.SetDirty(property.serializedObject.targetObject);
+                    pSO.ApplyModifiedProperties();
+                    EditorUtility.SetDirty(pSO.targetObject);
                 }
 
                 CustomLogType_Enable[] arrLogTypeEnable = pBranch.arrLogTypeEnable;

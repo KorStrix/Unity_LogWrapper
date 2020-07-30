@@ -10,62 +10,62 @@ namespace Wrapper
 #pragma warning disable CS1591 // 공개된 형식 또는 멤버에 대한 XML 주석이 없습니다.
         public static void Log(object message, Object context)
         {
-            Log_Custom(strDefaultFlagName, message, context);
+            Log_Custom(Default, message, context);
         }
 
         public static void Log(object message)
         {
-            Log_Custom(strDefaultFlagName, message, null);
+            Log_Custom(Default, message, null);
         }
 
         public static void LogError(object message, Object context)
         {
-            LogError_Custom(strDefaultFlagName, message, context);
+            LogError_Custom(Default, message, context);
         }
 
         public static void LogError(object message)
         {
-            LogError_Custom(strDefaultFlagName, message, null);
+            LogError_Custom(Default, message, null);
         }
 
         public static void LogErrorFormat(string format, params object[] args)
         {
-            LogError_Custom(strDefaultFlagName, string.Format(strDefaultFlagName, args), null);
+            LogError_Custom(Default, string.Format(format, args), null);
         }
 
         public static void LogErrorFormat(Object context, string format, params object[] args)
         {
-            LogError_Custom(strDefaultFlagName, string.Format(strDefaultFlagName, args), context);
+            LogError_Custom(Default, string.Format(format, args), context);
         }
 
         public static void LogFormat(Object context, string format, params object[] args)
         {
-            Log_Custom(strDefaultFlagName, string.Format(strDefaultFlagName, args), context);
+            Log_Custom(Default, string.Format(format, args), context);
         }
 
         public static void LogFormat(string format, params object[] args)
         {
-            Log_Custom(strDefaultFlagName, string.Format(strDefaultFlagName, args), null);
+            Log_Custom(Default, string.Format(format, args), null);
         }
 
         public static void LogWarning(object message)
         {
-            LogWarning_Custom(strDefaultFlagName, message, null);
+            LogWarning_Custom(Default, message, null);
         }
 
         public static void LogWarning(object message, Object context)
         {
-            LogWarning_Custom(strDefaultFlagName, message, context);
+            LogWarning_Custom(Default, message, context);
         }
 
         public static void LogWarningFormat(string format, params object[] args)
         {
-            LogWarning_Custom(strDefaultFlagName, string.Format(strDefaultFlagName, args), null);
+            LogWarning_Custom(Default, string.Format(format, args), null);
         }
 
         public static void LogWarningFormat(Object context, string format, params object[] args)
         {
-            LogWarning_Custom(strDefaultFlagName, string.Format(strDefaultFlagName, args), context);
+            LogWarning_Custom(Default, string.Format(format, args), context);
         }
 
 #pragma warning restore CS1591 // 공개된 형식 또는 멤버에 대한 XML 주석이 없습니다.

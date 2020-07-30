@@ -21,7 +21,7 @@ namespace Wrapper
         public const string const_strDefaultColorHexCode = "008000";
 
 #pragma warning disable CS1591 // 공개된 형식 또는 멤버에 대한 XML 주석이 없습니다.
-        public delegate void PrintLogFormat(object pFilterFlags, object pMessage, out string strMessageResult);
+        public delegate void PrintLogFormat(CustomLogType pFilterFlags, object pMessage, out string strMessageResult);
 #pragma warning restore CS1591 // 공개된 형식 또는 멤버에 대한 XML 주석이 없습니다.
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace Wrapper
         /// <summary>
         /// 플래그를 지정하지 않은 로그에 대한 플래그
         /// </summary>
-        public static string strDefaultFlagName = "Default";
+        public static CustomLogType Default = new CustomLogType(nameof(Default), 1 << 0);
 
         static Dictionary<string, string> _mapColorHexCode_ByString = new Dictionary<string, string>();
         static int _iFilterFlags;
@@ -56,7 +56,7 @@ namespace Wrapper
                 string strHexCode = pFilter.strColorHexCode;
                 strHexCode = strHexCode.Substring(0, 6);
 
-                if (pFilterFlag.Equals(strDefaultFlagName))
+                if (pFilterFlag.Equals(Default))
                 {
                     strDefaultColorHexCode = strHexCode;
                 }
@@ -85,7 +85,7 @@ namespace Wrapper
         /// </summary>
         /// <param name="pFilterFlags">출력할 필터 플래그입니다</param>
         /// <param name="message">로그 메시지</param>
-        public static void Log(object pFilterFlags, object message)
+        public static void Log(CustomLogType pFilterFlags, object message)
         {
             Log_Custom(pFilterFlags, message, null);
         }
@@ -97,7 +97,7 @@ namespace Wrapper
         /// <param name="pFilterFlags">출력할 필터 플래그입니다</param>
         /// <param name="message">로그 메시지</param>
         /// <param name="context">유니티 오브젝트</param>
-        public static void Log(object pFilterFlags, object message, Object context)
+        public static void Log(CustomLogType pFilterFlags, object message, Object context)
         {
             Log_Custom(pFilterFlags, message, context);
         }
@@ -108,7 +108,7 @@ namespace Wrapper
         /// </summary>
         /// <param name="pFilterFlags">출력할 필터 플래그입니다</param>
         /// <param name="message">로그 에러 메시지</param>
-        public static void LogError(object pFilterFlags, object message)
+        public static void LogError(CustomLogType pFilterFlags, object message)
         {
             LogError_Custom(pFilterFlags, message, null);
         }
@@ -119,7 +119,7 @@ namespace Wrapper
         /// </summary>
         /// <param name="pFilterFlags">출력할 필터 플래그입니다</param>
         /// <param name="message">로그 에러 메시지</param>
-        public static void LogError(object pFilterFlags, object message, Object context)
+        public static void LogError(CustomLogType pFilterFlags, object message, Object context)
         {
             LogError_Custom(pFilterFlags, message, context);
         }
@@ -130,7 +130,7 @@ namespace Wrapper
         /// </summary>
         /// <param name="pFilterFlags">출력할 필터 플래그입니다</param>
         /// <param name="message">로그 에러 메시지</param>
-        public static void LogWarning(object pFilterFlags, object message)
+        public static void LogWarning(CustomLogType pFilterFlags, object message)
         {
             LogWarning_Custom(pFilterFlags, message, null);
         }
@@ -141,13 +141,13 @@ namespace Wrapper
         /// </summary>
         /// <param name="pFilterFlags">출력할 필터 플래그입니다</param>
         /// <param name="message">로그 에러 메시지</param>
-        public static void LogWarning(object pFilterFlags, object message, Object context)
+        public static void LogWarning(CustomLogType pFilterFlags, object message, Object context)
         {
             LogWarning_Custom(pFilterFlags, message, context);
         }
 
         #region LogWrapping
-        private static void Log_Custom(object pFilterFlags, object message, Object context)
+        private static void Log_Custom(CustomLogType pFilterFlags, object message, Object context)
         {
             if (Check_IsContainFilter(pFilterFlags) == false)
                 return;
@@ -157,7 +157,7 @@ namespace Wrapper
             UnityEngine.Debug.Log(strMessageOut, context);
         }
 
-        private static void LogError_Custom(object pFilterFlags, object message, Object context)
+        private static void LogError_Custom(CustomLogType pFilterFlags, object message, Object context)
         {
             // 에러는 반드시 출력
             //if (Check_IsFiltering(pFilterFlags))
@@ -168,7 +168,7 @@ namespace Wrapper
             UnityEngine.Debug.LogError(strMessageOut, context);
         }
 
-        private static void LogWarning_Custom(object pFilterFlags, object message, Object context)
+        private static void LogWarning_Custom(CustomLogType pFilterFlags, object message, Object context)
         {
             if (Check_IsContainFilter(pFilterFlags) == false)
                 return;
@@ -197,7 +197,7 @@ namespace Wrapper
         /// <param name="TryFunc">실행할 함수</param>
         /// <param name="pFilterFlags">출력할 필터 플래그입니다</param>
         /// <param name="eLogType">catch시 출력할 로그 타입</param>
-        public static bool TryExecute(System.Action TryFunc, object pFilterFlags, UnityEngine.LogType eLogType = UnityEngine.LogType.Error)
+        public static bool TryExecute(System.Action TryFunc, CustomLogType pFilterFlags, UnityEngine.LogType eLogType = UnityEngine.LogType.Error)
         {
             try
             {
@@ -230,7 +230,7 @@ namespace Wrapper
         /// <param name="pFilterFlags">출력할 필터 플래그입니다</param>
         /// <param name="eLogType">catch시 출력할 로그 타입</param>
         /// <returns></returns>
-        public static bool TryExecute(System.Action TryFunc, object pFilterFlags, Object context, UnityEngine.LogType eLogType = UnityEngine.LogType.Error)
+        public static bool TryExecute(System.Action TryFunc, CustomLogType pFilterFlags, Object context, UnityEngine.LogType eLogType = UnityEngine.LogType.Error)
         {
             try
             {
@@ -258,9 +258,9 @@ namespace Wrapper
         /// <summary>
         /// 현재 Wrapper에 필터가 들어있는지 유무
         /// </summary>
-        public static bool Check_IsContainFilter(object pFilterFlags)
+        public static bool Check_IsContainFilter(CustomLogType pFilterFlags)
         {
-            if (pFilterFlags.Equals(strDefaultFlagName))
+            if (pFilterFlags.Equals(Default))
                 return true;
 
             int iHashCode = pFilterFlags.GetHashCode();
@@ -270,7 +270,7 @@ namespace Wrapper
         /// <summary>
         /// 기본 로그 포멧
         /// </summary>
-        public static void LogFormat_Default(object pFilterFlags, object pMessage, out string strMessageResult)
+        public static void LogFormat_Default(CustomLogType pFilterFlags, object pMessage, out string strMessageResult)
         {
             string strFilterFlag = pFilterFlags.ToString();
 

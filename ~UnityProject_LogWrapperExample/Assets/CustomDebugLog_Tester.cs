@@ -1,11 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Wrapper;
 
 public class CustomDebugLog_Tester : MonoBehaviour
 {
     private void OnEnable()
     {
+        Wrapper.Debug.Log(CustomLogTypeT.Debug, "Test");
         //LogTest("Default");
 
         //Wrapper.Debug.Set_PrintLog_FilterFlag(EFilter.InGame | EFilter.OutGame);
