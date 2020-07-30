@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Wrapper;
+
 #if UNITY_EDITOR
 using UnityEditor;
-using UnityEditorInternal;
 #endif
 
 [Serializable]
@@ -102,8 +102,8 @@ public class CustomLogType_EnableDrawer : PropertyDrawer
     {
         EditorGUI.BeginProperty(position, label, property);
         {
-            position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
-            position.height = 20f;
+            // position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
+            // position.height = 20f;
 
             SerializedProperty pProperty_strCustomLogName = property.FindPropertyRelative(nameof(CustomLogType_Enable.strCustomLogName));
             EditorGUI.PropertyField(CalculateRect(ref position, fLabelWidth_strCustomLogName, fLabelOffset), pProperty_strCustomLogName, GUIContent.none);

@@ -44,11 +44,11 @@ public class LogFilter_PerBranchDrawer : PropertyDrawer
                 return;
             }
 
-            //DebugWrapperEditorSetting pEditorSetting = pProperty_pEditorSetting.objectReferenceValue as DebugWrapperEditorSetting;
-            //if(pEditorSetting == null)
-            //    return;
+            DebugWrapperEditorSetting pEditorSetting = pProperty_pEditorSetting.objectReferenceValue as DebugWrapperEditorSetting;
+            if (pEditorSetting == null)
+                return;
 
-            // CustomLogType[] arrLogType = pEditorSetting.arrLogType;
+            CustomLogType[] arrLogType = pEditorSetting.arrLogType;
 
             position.y += const_fHeightPerLine;
             EditorGUI.indentLevel++;
