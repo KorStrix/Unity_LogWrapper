@@ -12,17 +12,18 @@ namespace Wrapper
     public class CustomCodedom
     {
         private static string const_strClass = @"
-/// 툴로 자동으로 생성되는 코드입니다.
-/// 이 파일을 직접 수정하시면 나중에 툴로 생성할 때 날아갑니다.
+/*	============================================
+ *	Author   			    : Strix
+ *	Summary 		        : 
+ *
+ *  툴로 자동으로 생성되는 코드입니다.
+ *  이 파일을 직접 수정하시면 나중에 툴로 생성할 때 날아갑니다.
+   ============================================= */
 
-namespace {0}
+public partial class {0}
 {
-    public partial class {1}
-    {
-{2}
-    }
+{1}
 }";
-
         private StringBuilder _strBuilder = new StringBuilder();
 
         public CustomCodedom()
@@ -33,7 +34,7 @@ namespace {0}
         /// <summary>
         /// 
         /// </summary>
-        public void DoAddClass(CustomLogType pFlag)
+        public void DoAddClass(CLogType pFlag)
         {
             _strBuilder.AppendLine("        " + pFlag.ToCSharpCodeString());
         }
@@ -45,13 +46,12 @@ namespace {0}
         {
             // string.Format이 안됨;
             //string strFileContent = string.Format(const_strClass, 
-            //    nameof(CustomLogType),
+            //    nameof(CLogType),
             //    _strBuilder.ToString());
 
             string strFileContent = const_strClass.
-                Replace("{0}", nameof(Wrapper)).
-                Replace("{1}", nameof(CustomLogType)).
-                Replace("{2}", _strBuilder.ToString());
+                Replace("{0}", nameof(CLogType)).
+                Replace("{1}", _strBuilder.ToString());
 
 
             File.WriteAllText($"{strFilePath_Absolute}.cs", strFileContent, Encoding.UTF8);

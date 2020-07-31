@@ -15,7 +15,7 @@ public class CustomLogType_Enable
     public bool bEnable = true;
 
     /// <summary>
-    /// <see cref="DebugWrapperEditorSetting"/>에 있는 <see cref="CustomLogType"/>와 내용이 다를 시 arrMatchTarget를 변경시킵니다.
+    /// <see cref="DebugWrapperEditorSetting"/>에 있는 <see cref="CLogType"/>와 내용이 다를 시 arrMatchTarget를 변경시킵니다.
     /// </summary>
     /// <param name="pEditorSetting"></param>
     /// <param name="arrMatchTarget"></param>
@@ -33,7 +33,7 @@ public class CustomLogType_Enable
         if (bIsRequireUpdate_LogTypeEnableArray)
         {
             List<CustomLogType_Enable> listLogTypeEnable = new List<CustomLogType_Enable>();
-            foreach (CustomLogType pLogType in pEditorSetting.arrLogType)
+            foreach (CLogType pLogType in pEditorSetting.arrLogType)
             {
                 var pLogTypeEnable = arrMatchTarget.FirstOrDefault(p => p.strCustomLogName == pLogType.strLogTypeName);
                 if (pLogTypeEnable == null)

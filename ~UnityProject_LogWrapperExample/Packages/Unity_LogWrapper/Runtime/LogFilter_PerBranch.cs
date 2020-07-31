@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
-using Wrapper;
-using Debug = UnityEngine.Debug;
 using System.Linq;
 using System.Text.RegularExpressions;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -48,7 +46,7 @@ public class LogFilter_PerBranchDrawer : PropertyDrawer
             if (pEditorSetting == null)
                 return;
 
-            CustomLogType[] arrLogType = pEditorSetting.arrLogType;
+            CLogType[] arrLogType = pEditorSetting.arrLogType;
 
             position.y += const_fHeightPerLine;
             EditorGUI.indentLevel++;

@@ -1,17 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 #if UNITY_EDITOR
 using UnityEditor;
-using UnityEditorInternal;
 #endif
 
 [Serializable]
 public class DebugWrapperEditorSetting : ScriptableObject
 {
     public string strCSExportPath;
-    public Wrapper.CustomLogType[] arrLogType = new Wrapper.CustomLogType[0];
+    public CLogType[] arrLogType = new CLogType[0];
 
     // 여기에 브렌치별 Log 필터 정보도 넣어야 할듯?
     public LogFilter_PerBranch[] arrBranch;

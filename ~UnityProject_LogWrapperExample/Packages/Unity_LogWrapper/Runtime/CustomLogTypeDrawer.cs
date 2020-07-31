@@ -8,7 +8,7 @@ using UnityEditor;
 namespace Wrapper
 {
 #if UNITY_EDITOR
-    [CustomPropertyDrawer(typeof(CustomLogType))]
+    [CustomPropertyDrawer(typeof(CLogType))]
     public class CustomLogTypeDrawer : PropertyDrawer
     {
         private const float fLabelWidth_strLogTypeName = 100f;
@@ -27,14 +27,14 @@ namespace Wrapper
 
 
 
-                SerializedProperty pProperty_strLogTypeName = property.FindPropertyRelative(nameof(CustomLogType.strLogTypeName));
+                SerializedProperty pProperty_strLogTypeName = property.FindPropertyRelative(nameof(CLogType.strLogTypeName));
                 EditorGUI.PropertyField(CalculateRect(ref position, fLabelWidth_strLogTypeName, fLabelOffset), pProperty_strLogTypeName, GUIContent.none);
 
-                SerializedProperty pProperty_lNumber = property.FindPropertyRelative(nameof(CustomLogType.lNumber));
+                SerializedProperty pProperty_lNumber = property.FindPropertyRelative(nameof(CLogType.lNumber));
                 EditorGUI.PropertyField(CalculateRect(ref position, fLabelWidth_lNumber, fLabelOffset), pProperty_lNumber, GUIContent.none);
 
                 // Color
-                SerializedProperty pProperty_strColorHexCode = property.FindPropertyRelative(nameof(CustomLogType.strColorHexCode));
+                SerializedProperty pProperty_strColorHexCode = property.FindPropertyRelative(nameof(CLogType.strColorHexCode));
 
                 // Editor는 #RGBA를 원하고 Code는 RGB만 필요
                 ColorUtility.TryParseHtmlString("#" + pProperty_strColorHexCode.stringValue + "FF", out Color sColor);

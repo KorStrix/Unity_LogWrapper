@@ -17,8 +17,6 @@ using Wrapper;
 using System.Linq;
 using System.Collections.Generic;
 
-using Debug = UnityEngine.Debug;
-
 /// <summary>
 /// 
 /// </summary>
@@ -106,11 +104,11 @@ public class DebugWrapperEditor : EditorWindow
             bIsSave = true;
         }
 
-        bool bIsRequireUpdate_LogTypeEnableArray = CustomLogType.Load_FromPlayerPrefs(const_strPlayerPefs_SaveKey, ref pLocalBranch) == false;
+        bool bIsRequireUpdate_LogTypeEnableArray = CLogType.Load_FromPlayerPrefs(const_strPlayerPefs_SaveKey, ref pLocalBranch) == false;
         if (bIsRequireUpdate_LogTypeEnableArray)
         {
             CustomLogType_Enable.DoMatch_LogTypeEnableArray(pEditorSetting, ref pLocalBranch.arrLogTypeEnable);
-            CustomLogType.Save_ToPlayerPrefs(const_strPlayerPefs_SaveKey, pLocalBranch);
+            CLogType.Save_ToPlayerPrefs(const_strPlayerPefs_SaveKey, pLocalBranch);
             bIsSave = true;
         }
 
@@ -169,7 +167,7 @@ public class DebugWrapperEditor : EditorWindow
         {
             pSO.ApplyModifiedProperties();
             EditorUtility.SetDirty(this);
-            CustomLogType.Save_ToPlayerPrefs(const_strPlayerPefs_SaveKey, pLocalBranch);
+            CLogType.Save_ToPlayerPrefs(const_strPlayerPefs_SaveKey, pLocalBranch);
         }
     }
 
