@@ -7,23 +7,23 @@ using UnityEngine;
 /// 디버그 필터
 /// </summary>
 [System.Serializable]
-public partial class CLogType : ICustomLogType
+public class CustomLogType : ICustomLogType
 {
     #region DefaultFilter
     /// <summary>
     /// <see cref="Debug.Log(object)"/>로 출력하고 싶은 경우 이 플래그를 넣으시면 됩니다
     /// </summary>
-    public static CLogType Log = new CLogType(nameof(Log), 1 << 0);
+    public static CustomLogType Log = new CustomLogType(nameof(Log), 1 << 0);
 
     /// <summary>
     /// <see cref="Debug.LogWarning(object)"/>로 출력하고 싶은 경우 이 플래그를 넣으시면 됩니다
     /// </summary>
-    public static CLogType Warning = new CLogType(nameof(Warning), 1 << 1, "ffff00");
+    public static CustomLogType Warning = new CustomLogType(nameof(Warning), 1 << 1, "ffff00");
 
     /// <summary>
     /// <see cref="Debug.LogError(object)"/>로 출력하고 싶은 경우 이 플래그를 넣으시면 됩니다.
     /// </summary>
-    public static CLogType Error = new CLogType(nameof(Error), 1 << 2, "ff0000");
+    public static CustomLogType Error = new CustomLogType(nameof(Error), 1 << 2, "ff0000");
     #endregion
 
 
@@ -49,27 +49,8 @@ public partial class CLogType : ICustomLogType
     /// </summary>
     public string strColorHexCode;
 
-    /// <summary>
-    /// 필터의 정보
-    /// </summary>
-    /// <param name="strLogTypeName">디버그 필터 플래그</param>
-    public CLogType(string strLogTypeName)
+    public CustomLogType()
     {
-        this.strLogTypeName = strLogTypeName;
-        this.lNumber = 0;
-        this.strColorHexCode = "ffffff";
-    }
-
-    /// <summary>
-    /// 필터의 정보
-    /// </summary>
-    /// <param name="strLogTypeName">디버그 필터 플래그</param>
-    /// <param name="lNumber">플래그 체크할 숫자</param>
-    public CLogType(string strLogTypeName, ulong lNumber)
-    {
-        this.strLogTypeName = strLogTypeName;
-        this.lNumber = lNumber;
-        this.strColorHexCode = "ffffff";
     }
 
     /// <summary>
@@ -78,7 +59,7 @@ public partial class CLogType : ICustomLogType
     /// <param name="strLogTypeName">디버그 필터 플래그</param>
     /// <param name="lNumber">플래그 체크할 숫자</param>
     /// <param name="strColorHexCode">색상 코드 (Ex. 흰색 : ffffff)</param>
-    public CLogType(string strLogTypeName, ulong lNumber, string strColorHexCode)
+    public CustomLogType(string strLogTypeName, ulong lNumber, string strColorHexCode = "ffffff")
     {
         this.strLogTypeName = strLogTypeName;
         this.lNumber = lNumber;
@@ -87,22 +68,22 @@ public partial class CLogType : ICustomLogType
 
     public string ToCSharpCodeString()
     {
-        return $@"  public static {nameof(CLogType)} {strLogTypeName} = new CLogType(""{strLogTypeName}"", {lNumber}, ""{strColorHexCode}"");";
+        return $@"  public static {nameof(CustomLogType)} {strLogTypeName} = new CustomLogType(""{strLogTypeName}"", {lNumber}, ""{strColorHexCode}"");";
     }
 
     #region operator
 
-    public static CLogType operator |(CLogType a, CLogType b)
+    public static CustomLogType operator |(CustomLogType a, CustomLogType b)
     {
-        CLogType pNewLogType = new CLogType(
+        CustomLogType pNewLogType = new CustomLogType(
             $"({a.strLogTypeName}|{b.strLogTypeName})", a.lNumber | b.lNumber);
 
         return pNewLogType;
     }
 
-    public static CLogType operator &(CLogType a, CLogType b)
+    public static CustomLogType operator &(CustomLogType a, CustomLogType b)
     {
-        CLogType pNewLogType = new CLogType(
+        CustomLogType pNewLogType = new CustomLogType(
             $"({a.strLogTypeName}&{b.strLogTypeName})", a.lNumber & b.lNumber);
 
         return pNewLogType;

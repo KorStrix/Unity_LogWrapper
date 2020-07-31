@@ -6,27 +6,27 @@ public class CustomDebugLog_Tester : MonoBehaviour
 {
     private void OnEnable()
     {
-        Debug.Init_PrintLog_FilterFlag(CLogType.Error);
+        Debug.Init_PrintLog_FilterFlag(CustomLogType.Log);
 
-        Debug.Log(CLogType.Log | CLogType.Warning, "log or warning", this);
-        Debug.Log(CLogType.Log & CLogType.Warning, "log and warning", this);
-        Debug.Log(CLogType.Log, "test", this);
+        Debug.Log(CLogType.a | CustomLogType.Warning, "log or warning", this);
+        Debug.Log(CustomLogType.Log & CustomLogType.Warning, "log and warning", this);
+        Debug.Log(CustomLogType.Log, "test", this);
 
         
-        Debug.Init_PrintLog_FilterFlag(CLogType.Log, CLogType.Warning);
+        Debug.Init_PrintLog_FilterFlag(CustomLogType.Log, CustomLogType.Warning);
 
-        Debug.Log(CLogType.Log | CLogType.Warning, "log or warning", this);
-        Debug.Log(CLogType.Log & CLogType.Warning, "log and warning", this);
-        Debug.Log(CLogType.Log, "test", this);
+        Debug.Log(CustomLogType.Log | CustomLogType.Warning, "log or warning", this);
+        Debug.Log(CustomLogType.Log & CustomLogType.Warning, "log and warning", this);
+        Debug.Log(CustomLogType.Log, "test", this);
 
 
-        Debug.Init_PrintLog_FilterFlag(CLogType.Warning);
+        Debug.Init_PrintLog_FilterFlag(CustomLogType.Warning);
 
-        Debug.Log(CLogType.Log | CLogType.Warning, "log or warning", this);
-        Debug.Log(CLogType.Log & CLogType.Warning, "log and warning", this);
-        Debug.Log(CLogType.Log, "test", this);
+        Debug.Log(CustomLogType.Log | CustomLogType.Warning, "log or warning", this);
+        Debug.Log(CustomLogType.Log & CustomLogType.Warning, "log and warning", this);
+        Debug.Log(CustomLogType.Log, "test", this);
 
-        // Debug.Log(CLogType.Debug, "Test");
+        // Debug.Log(CustomLogType.Debug, "Test");
         //LogTest("Default");
 
         //Wrapper.Debug.Set_PrintLog_FilterFlag(EFilter.InGame | EFilter.OutGame);

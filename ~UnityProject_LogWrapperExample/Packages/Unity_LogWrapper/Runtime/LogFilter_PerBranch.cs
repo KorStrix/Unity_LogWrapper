@@ -46,7 +46,7 @@ public class LogFilter_PerBranchDrawer : PropertyDrawer
             if (pEditorSetting == null)
                 return;
 
-            CLogType[] arrLogType = pEditorSetting.arrLogType;
+            CustomLogType[] arrLogType = pEditorSetting.arrLogType;
 
             position.y += const_fHeightPerLine;
             EditorGUI.indentLevel++;

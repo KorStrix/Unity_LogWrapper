@@ -64,8 +64,8 @@ public class DebugWrapperEditor : EditorWindow
 
         EditorGUILayout.LabelField("Editor Setting", EditorStyles.boldLabel);
         Draw_EditorSetting(pSO);
-        
-        
+
+
 
         EditorGUILayout.Space();
         if (pEditorSetting != null)
@@ -104,11 +104,11 @@ public class DebugWrapperEditor : EditorWindow
             bIsSave = true;
         }
 
-        bool bIsRequireUpdate_LogTypeEnableArray = CLogType.Load_FromPlayerPrefs(const_strPlayerPefs_SaveKey, ref pLocalBranch) == false;
+        bool bIsRequireUpdate_LogTypeEnableArray = CustomLogType.Load_FromPlayerPrefs(const_strPlayerPefs_SaveKey, ref pLocalBranch) == false;
         if (bIsRequireUpdate_LogTypeEnableArray)
         {
             CustomLogType_Enable.DoMatch_LogTypeEnableArray(pEditorSetting, ref pLocalBranch.arrLogTypeEnable);
-            CLogType.Save_ToPlayerPrefs(const_strPlayerPefs_SaveKey, pLocalBranch);
+            CustomLogType.Save_ToPlayerPrefs(const_strPlayerPefs_SaveKey, pLocalBranch);
             bIsSave = true;
         }
 
@@ -167,7 +167,7 @@ public class DebugWrapperEditor : EditorWindow
         {
             pSO.ApplyModifiedProperties();
             EditorUtility.SetDirty(this);
-            CLogType.Save_ToPlayerPrefs(const_strPlayerPefs_SaveKey, pLocalBranch);
+            CustomLogType.Save_ToPlayerPrefs(const_strPlayerPefs_SaveKey, pLocalBranch);
         }
     }
 
@@ -175,25 +175,33 @@ public class DebugWrapperEditor : EditorWindow
     {
         const string strExportCS = "Export CS";
 
-        EditorGUILayout.LabelField($"{strExportCS} Path (Assets/*.cs)");
-        pEditorSetting.strCSExportPath = EditorGUILayout.TextField(pEditorSetting.strCSExportPath);
+        EditorGUILayout.LabelField($"LogFilter Type Name");
+        pEditorSetting.strTypeName = EditorGUILayout.TextField(pEditorSetting.strTypeName);
 
-        if (GUILayout.Button(strExportCS))
+        EditorGUILayout.BeginHorizontal();
         {
-            if (string.IsNullOrEmpty(pEditorSetting.strCSExportPath))
+            EditorGUILayout.LabelField($"{strExportCS} Path (Assets/*.cs)");
+            pEditorSetting.strCSExportPath = EditorGUILayout.TextField(pEditorSetting.strCSExportPath);
+
+            if (GUILayout.Button(strExportCS))
             {
-                Debug.LogError($"{strExportCS} - string.IsNullOrEmpty(_strCSExportPath)");
-                return;
+                if (string.IsNullOrEmpty(pEditorSetting.strCSExportPath))
+                {
+                    Debug.LogError($"{strExportCS} - string.IsNullOrEmpty(_strCSExportPath)");
+                    return;
+                }
+
+                CustomCodedom pCodeDom = new CustomCodedom();
+                foreach (var pFilter in pEditorSetting.arrLogType)
+                    pCodeDom.DoAddClass(pFilter);
+                pCodeDom.DoExportCS(pEditorSetting.strTypeName, $"{Application.dataPath}/{pEditorSetting.strCSExportPath}");
+
+                AssetDatabase.Refresh();
+                Debug.Log($"{strExportCS} Complete");
             }
-
-            CustomCodedom pCodeDom = new CustomCodedom();
-            foreach (var pFilter in pEditorSetting.arrLogType)
-                pCodeDom.DoAddClass(pFilter);
-            pCodeDom.DoExportCS($"{Application.dataPath}/{pEditorSetting.strCSExportPath}");
-
-            AssetDatabase.Refresh();
-            Debug.Log($"{strExportCS} Complete");
         }
+        EditorGUILayout.EndHorizontal();
+
     }
 
     #endregion Private

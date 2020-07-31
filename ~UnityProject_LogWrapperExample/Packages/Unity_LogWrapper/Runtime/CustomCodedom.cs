@@ -34,7 +34,7 @@ public partial class {0}
         /// <summary>
         /// 
         /// </summary>
-        public void DoAddClass(CLogType pFlag)
+        public void DoAddClass(CustomLogType pFlag)
         {
             _strBuilder.AppendLine("        " + pFlag.ToCSharpCodeString());
         }
@@ -42,15 +42,15 @@ public partial class {0}
         /// <summary>
         /// 
         /// </summary>
-        public void DoExportCS(string strFilePath_Absolute)
+        public void DoExportCS(string strTypeName, string strFilePath_Absolute)
         {
             // string.Format이 안됨;
             //string strFileContent = string.Format(const_strClass, 
-            //    nameof(CLogType),
+            //    nameof(CustomLogType),
             //    _strBuilder.ToString());
 
             string strFileContent = const_strClass.
-                Replace("{0}", nameof(CLogType)).
+                Replace("{0}", strTypeName).
                 Replace("{1}", _strBuilder.ToString());
 
 
