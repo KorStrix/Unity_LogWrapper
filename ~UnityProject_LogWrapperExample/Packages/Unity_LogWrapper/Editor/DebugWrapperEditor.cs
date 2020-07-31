@@ -53,13 +53,31 @@ public class DebugWrapperEditor : EditorWindow
     private void OnGUI()
     {
         EditorGUILayout.LabelField("Debug Wrapper Editor", EditorStyles.boldLabel);
+        EditorGUILayout.HelpBox("This tool is for managing log filters by DefineSymbol after building Debog.Log on local PC.", MessageType.Info);
+        EditorGUILayout.Space();
+
+        EditorGUILayout.LabelField("Work sequence", EditorStyles.boldLabel);
+        EditorGUILayout.HelpBox(@"0. Create or set EditorSetting File.
+
+1. Create a LogFilter.
+In addition to the LogType name (required)
+You can adjust Comment, number(for Filter), print color, etc.
+
+2. Set which LogType to output for each branch.
+
+3. The script is automatically generated through ExportCS.
+This is necessary when Nos. 1 and 2 are modified.
+
+4. Set which LogFilter to output from other LocalPC.
+(I used PlayerPrefs.)", MessageType.Info);
+
         EditorGUILayout.Space();
         EditorGUILayout.Space();
 
 
         SerializedObject pSO = new SerializedObject(this);
 
-        EditorGUILayout.LabelField("Editor Setting", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("[0~3]. Editor Setting", EditorStyles.boldLabel);
         Draw_EditorSetting(pSO);
 
 
@@ -72,7 +90,7 @@ public class DebugWrapperEditor : EditorWindow
             EditorGUILayout.Space();
 
 
-            EditorGUILayout.LabelField("Local Editor Setting", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("[4]. Local Editor Setting", EditorStyles.boldLabel);
             Draw_LocalEditor_EnableSetting(pSO);
         }
         else
