@@ -12,33 +12,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8262d5327de05464981bdcc1ca263d05, type: 3}
   m_Name: New DebugWrapperEditorSetting
   m_EditorClassIdentifier: 
-  strCSExportPath: 
+  strTypeName: CLogType
+  strCSExportPath: CLogType
   arrLogType:
-  - strLogTypeName: a
+  - strLogTypeName: asdf
+    strComment: 
     lNumber: 0
-    strColorHexCode: FFFFFF
-  - strLogTypeName: b
+    strColorHexCode: FF0000
+  - strLogTypeName: fdsa
+    strComment: 
     lNumber: 0
-    strColorHexCode: FFFFFF
-  - strLogTypeName: c
+    strColorHexCode: FFD900
+  - strLogTypeName: asddf
+    strComment: asdsadfasfd
     lNumber: 0
-    strColorHexCode: FFFFFF
+    strColorHexCode: 13FF00
   arrBranch:
   - pEditorSetting: {fileID: 11400000}
     strBranchName: Alpha
     arrLogTypeEnable:
-    - strCustomLogName: a
-      bEnable: 0
-    - strCustomLogName: b
+    - strCustomLogName: asdf
       bEnable: 1
-    - strCustomLogName: c
+    - strCustomLogName: fdsa
+      bEnable: 1
+    - strCustomLogName: asddf
       bEnable: 1
   - pEditorSetting: {fileID: 11400000}
     strBranchName: Beta
     arrLogTypeEnable:
-    - strCustomLogName: a
+    - strCustomLogName: asdf
       bEnable: 1
-    - strCustomLogName: b
+    - strCustomLogName: fdsa
       bEnable: 1
-    - strCustomLogName: c
+    - strCustomLogName: asddf
       bEnable: 1

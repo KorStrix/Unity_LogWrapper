@@ -54,7 +54,7 @@ public partial class {0}
 {3}
         }
 
-        Wrapper.Debug.Init_PrintLog_FilterFlag({2}.ToArray());
+        Debug.Init_PrintLog_FilterFlag({2}.ToArray());
     }
 }";
 

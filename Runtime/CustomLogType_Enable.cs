@@ -21,9 +21,6 @@ public class CustomLogType_Enable
     /// <returns>내용물이 서로 틀리면 true</returns>
     public static bool DoMatch_LogTypeEnableArray(DebugWrapperEditorSetting pEditorSetting, ref CustomLogType_Enable[] arrMatchTarget)
     {
-        if (arrMatchTarget == null)
-            arrMatchTarget = new CustomLogType_Enable[0];
-
         string[] arrLogTypeName_EditorSetting = pEditorSetting.arrLogType.Select(p => p.strLogTypeName).ToArray();
         string[] arrLogTypeName_Target = arrMatchTarget.Select(p => p.strCustomLogName).ToArray();
 

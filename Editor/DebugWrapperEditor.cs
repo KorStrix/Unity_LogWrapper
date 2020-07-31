@@ -1,17 +1,19 @@
-#region Header
+﻿#region Header
 /*	============================================
  *	Author   			    : Strix
  *	Initial Creation Date 	: 2020-03-15
  *	Summary 		        : 
  *
+ *
+ * 참고한 코드
+ * - ReorderableList - https://unityindepth.tistory.com/56
  *  Template 		        : For Unity Editor V1
    ============================================ */
 #endregion Header
 
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using System.Linq;
+using Wrapper;
 
 /// <summary>
 /// 
@@ -20,33 +22,27 @@ public class DebugWrapperEditor : EditorWindow
 {
     /* const & readonly declaration             */
 
-    const string strSaveKey = nameof(DebugWrapperSetting);
 
     /* enum & struct declaration                */
 
-    [System.Serializable]
-    public class DebugWrapperSetting
-    {
-        public Wrapper.DebugFilter[] arrDebugFilter = new Wrapper.DebugFilter[0];
-    }
 
     /* public - Field declaration               */
 
-    public DebugWrapperSetting pDebugInfo;
+    public DebugWrapperEditorSetting pEditorSetting;
+    public LogFilter_PerBranch pLocalBranch;
 
     /* protected & private - Field declaration  */
-
 
     // ========================================================================== //
 
     /* public - [Do~Something] Function 	        */
 
     [MenuItem("Tools/DebugWrapper Editor")]
-    static void Init()
+    static void ShowWindow()
     {
         DebugWrapperEditor pWindow = (DebugWrapperEditor)GetWindow(typeof(DebugWrapperEditor), false);
 
-        pWindow.minSize = new Vector2(600, 300);
+        pWindow.minSize = new Vector2(300, 500);
         pWindow.Show();
     }
 
@@ -57,27 +53,37 @@ public class DebugWrapperEditor : EditorWindow
     private void OnGUI()
     {
         EditorGUILayout.LabelField("Debug Wrapper Editor", EditorStyles.boldLabel);
-        EditorGUILayout.Separator();
-
-
-        if (pDebugInfo == null)
-        {
-            pDebugInfo = new DebugWrapperSetting();
-            if (Load_FromEditorPrefs(strSaveKey, ref pDebugInfo) == false)
-                Save_ToEditorPrefs(strSaveKey, pDebugInfo);
-        }
+        EditorGUILayout.Space();
+        EditorGUILayout.Space();
 
 
         SerializedObject pSO = new SerializedObject(this);
-        EditorGUILayout.PropertyField(pSO.FindProperty($"{nameof(pDebugInfo)}"));
+
+        EditorGUILayout.LabelField("Editor Setting", EditorStyles.boldLabel);
+        Draw_EditorSetting(pSO);
+
+
+
+        EditorGUILayout.Space();
+        if (pEditorSetting != null)
+        {
+            Draw_CSExportButton();
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+
+
+            EditorGUILayout.LabelField("Local Editor Setting", EditorStyles.boldLabel);
+            Draw_LocalEditor_EnableSetting(pSO);
+        }
+        else
+            EditorGUILayout.LabelField("Require Editor Setting");
 
         if (GUI.changed)
         {
-            Save_ToEditorPrefs(strSaveKey, pDebugInfo);
+            pSO.ApplyModifiedProperties();
+            EditorUtility.SetDirty(this);
         }
     }
-
-
     /* protected - [abstract & virtual]         */
 
 
@@ -85,96 +91,139 @@ public class DebugWrapperEditor : EditorWindow
 
     #region Private
 
-    public static void Save_ToEditorPrefs(string strKey, object pSerializeObject)
+    private void Get_LogTypeEnable_FromPlayerPrefs(SerializedObject pSO)
     {
-        string strJsonText = JsonUtility.ToJson(pSerializeObject);
-        EditorPrefs.SetString(strKey, strJsonText);
+        bool bIsSave = false;
+
+        if (pLocalBranch == null)
+            pLocalBranch = LogFilter_PerBranch.Get_LogTypeEnable_FromPlayerPrefs(out bIsSave);
+
+        if (bIsSave)
+        {
+            CustomLogType_Enable.DoMatch_LogTypeEnableArray(pEditorSetting, ref pLocalBranch.arrLogTypeEnable);
+            LogWrapperUtility.Save_ToPlayerPrefs(LogFilter_PerBranch.const_strPlayerPefs_SaveKey, pLocalBranch);
+        }
+
+        if (pLocalBranch.pEditorSetting != pEditorSetting)
+        {
+            pLocalBranch.pEditorSetting = pEditorSetting;
+            bIsSave = true;
+        }
+
+        if (bIsSave)
+        {
+            pSO.ApplyModifiedProperties();
+            EditorUtility.SetDirty(this);
+        }
     }
 
-    public static bool Load_FromEditorPrefs<T>(string strKey, ref T pLoadObject_NotNull, System.Action<string> OnError = null)
+    Vector2 _vecScrollPos;
+
+    private void Draw_EditorSetting(SerializedObject pSO)
     {
-        if (EditorPrefs.HasKey(strKey) == false)
+        if (pEditorSetting == null)
         {
-            OnError?.Invoke($"{nameof(Load_FromEditorPrefs)} - PlayerPrefs.HasKey({strKey}) == false");
-
-            return false;
+            if (GUILayout.Button("Create Setting File And Set"))
+            {
+                pEditorSetting = CreateAsset<DebugWrapperEditorSetting>();
+                Debug.Log("Create And Set");
+            }
+        }
+        else
+        {
+            if (GUILayout.Button("Create New Setting File"))
+            {
+                CreateAsset<DebugWrapperEditorSetting>();
+                Debug.Log("Create New");
+            }
         }
 
-        string strJson = EditorPrefs.GetString(strKey);
-        try
+        _vecScrollPos = EditorGUILayout.BeginScrollView(_vecScrollPos, GUILayout.Height(300f));
         {
-            JsonUtility.FromJsonOverwrite(strJson, pLoadObject_NotNull);
+            SerializedProperty pProperty = pSO.FindProperty($"{nameof(pEditorSetting)}");
+            EditorGUILayout.PropertyField(pProperty);
         }
-        catch (System.Exception e)
-        {
-            OnError?.Invoke($"{nameof(Load_FromEditorPrefs)} - FromJsonOverwrite Fail - {strKey} Value : \n{strJson}\n{e}");
-
-            return false;
-        }
-
-        return true;
+        EditorGUILayout.EndScrollView();
+        EditorGUILayout.Separator();
     }
 
+
+    private void Draw_LocalEditor_EnableSetting(SerializedObject pSO)
+    {
+        Get_LogTypeEnable_FromPlayerPrefs(pSO);
+
+        SerializedProperty pProperty = pSO.FindProperty($"{nameof(pLocalBranch)}");
+        EditorGUILayout.PropertyField(pProperty, true);
+
+        if (GUI.changed)
+        {
+            pSO.ApplyModifiedProperties();
+            EditorUtility.SetDirty(this);
+            LogWrapperUtility.Save_ToPlayerPrefs(LogFilter_PerBranch.const_strPlayerPefs_SaveKey, pLocalBranch);
+        }
+    }
+
+    private void Draw_CSExportButton()
+    {
+        const string strExportCS = "Export CS";
+
+        EditorGUILayout.LabelField($"LogFilter Type Name");
+        pEditorSetting.strTypeName = EditorGUILayout.TextField(pEditorSetting.strTypeName);
+
+        EditorGUILayout.BeginHorizontal();
+        {
+            EditorGUILayout.LabelField($"{strExportCS} Path (Assets/*.cs)");
+            pEditorSetting.strCSExportPath = EditorGUILayout.TextField(pEditorSetting.strCSExportPath);
+
+            if (GUILayout.Button(strExportCS))
+            {
+                if (string.IsNullOrEmpty(pEditorSetting.strCSExportPath))
+                {
+                    Debug.LogError($"{strExportCS} - string.IsNullOrEmpty(_strCSExportPath)");
+                    return;
+                }
+
+                ExportCS(strExportCS);
+            }
+        }
+        EditorGUILayout.EndHorizontal();
+
+    }
+
+    private void ExportCS(string strExportCS)
+    {
+        CustomCodedom pCodeDom = new CustomCodedom();
+        foreach (var pFilter in pEditorSetting.arrLogType)
+            pCodeDom.DoAddClass(pFilter);
+
+        foreach (var pBranch in pEditorSetting.arrBranch)
+            pCodeDom.DoAddBranch(pBranch);
+
+        pCodeDom.DoExportCS(pEditorSetting.strTypeName, $"{Application.dataPath}/{pEditorSetting.strCSExportPath}");
+
+        AssetDatabase.Refresh();
+        Debug.Log($"{strExportCS} Complete");
+    }
 
     #endregion Private
-}
 
+    #region Tool
 
-[CustomPropertyDrawer(typeof(DebugWrapperEditor.DebugWrapperSetting))]
-public class DebugWrapperSettingDrawer : PropertyDrawer
-{
-    // Draw the property inside the given rect
-    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    public static T CreateAsset<T>() where T : ScriptableObject
     {
-        property.serializedObject.Update();
+        T asset = ScriptableObject.CreateInstance<T>();
 
-        ArrayGUI(property.FindPropertyRelative("arrDebugFilter"));
+        string assetPathAndName = AssetDatabase.GenerateUniqueAssetPath("Assets/New " + typeof(T) + ".asset");
 
-        property.serializedObject.ApplyModifiedProperties();
+        AssetDatabase.CreateAsset(asset, assetPathAndName);
+
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+        EditorUtility.FocusProjectWindow();
+        Selection.activeObject = asset;
+
+        return asset;
     }
 
-    private void ArrayGUI(SerializedProperty commands)
-    {
-        GUILayout.BeginHorizontal();
-        {
-            if (GUILayout.Button("Add"))
-                commands.arraySize++;
-            if (GUILayout.Button("Remove") && commands.arraySize > 0)
-                commands.arraySize--;
-        }
-        GUILayout.EndHorizontal();
-
-        for (int i = 0; i < commands.arraySize; i++)
-            EditorGUILayout.PropertyField(commands.GetArrayElementAtIndex(i), new GUIContent("Command " + (i + 1).ToString() + ": "));
-    }
-}
-
-[CustomPropertyDrawer(typeof(Wrapper.DebugFilter))]
-public class DebugFilterDrawer : PropertyDrawer
-{
-    // Draw the property inside the given rect
-    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-    {
-        Wrapper.DebugFilter sFilter = null;
-
-        // Using BeginProperty / EndProperty on the parent property means that
-        // prefab override logic works on the entire property.
-        EditorGUI.BeginProperty(position, label, property);
-
-        // Draw label
-        position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
-
-        // Calculate rects
-        var amountRect = new Rect(position.x, position.y, 30, position.height);
-        var unitRect = new Rect(position.x + 35, position.y, 50, position.height);
-
-        // Draw fields - passs GUIContent.none to each so they are drawn without labels
-        // EditorGUI.PropertyField(amountRect, property.FindPropertyRelative(nameof(sFilter.pFilterFlag)), GUIContent.none);
-
-
-        SerializedProperty pProperty_ColorHexCode = property.FindPropertyRelative(nameof(sFilter.strColorHexCode));
-        EditorGUI.PropertyField(unitRect, pProperty_ColorHexCode, GUIContent.none);
-
-        EditorGUI.EndProperty();
-    }
+    #endregion Tool
 }

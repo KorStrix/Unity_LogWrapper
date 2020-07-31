@@ -1,7 +1,7 @@
 {
-	"name" : "com.korstrix.customdebuglog",
+	"name" : "com.korstrix.customlog",
 	"version": "1.0.0",
-	"displayName" :"Custom Debug Log",
+	"displayName" :"Custom Log",
 	"description" :"Unity 기본 Log를 래핑했습니다",
 	"unity": "2018.1",
 	"dependencies": {},

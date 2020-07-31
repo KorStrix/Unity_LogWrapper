@@ -1,10 +1,12 @@
-﻿using Object = UnityEngine.Object;
+﻿using System.Diagnostics;
+using UnityEngine;
+using Object = UnityEngine.Object;
 
 #pragma warning disable CS0419 // cref 특성에 모호한 참조가 있음
 #pragma warning disable CS1573 // 매개 변수와 짝이 맞는 매개 변수 태그가 XML 주석에 없습니다. 다른 매개 변수는 짝이 맞는 태그가 있습니다.
 
-//namespace Wrapper
-//{
+namespace Wrapper {
+
     public static partial class Debug
     {
 #pragma warning disable CS1591 // 공개된 형식 또는 멤버에 대한 XML 주석이 없습니다.
@@ -16,26 +18,6 @@
         public static void Log(object message)
         {
             Log_Custom(Default, message, null);
-        }
-
-        public static void LogError(object message, Object context)
-        {
-            LogError_Custom(Default, message, context);
-        }
-
-        public static void LogError(object message)
-        {
-            LogError_Custom(Default, message, null);
-        }
-
-        public static void LogErrorFormat(string format, params object[] args)
-        {
-            LogError_Custom(Default, string.Format(format, args), null);
-        }
-
-        public static void LogErrorFormat(Object context, string format, params object[] args)
-        {
-            LogError_Custom(Default, string.Format(format, args), context);
         }
 
         public static void LogFormat(Object context, string format, params object[] args)
@@ -68,6 +50,83 @@
             LogWarning_Custom(Default, string.Format(format, args), context);
         }
 
+        public static void LogError(object message, Object context)
+        {
+            LogError_Custom(Default, message, context);
+        }
+
+        public static void LogException(System.Exception exception)
+        {
+            LogException_Custom(Default, exception, null);
+        }
+        public static void LogException(System.Exception exception, Object context)
+        {
+            LogException_Custom(Default, exception, context);
+        }
+
+        public static void LogError(object message)
+        {
+            LogError_Custom(Default, message, null);
+        }
+
+        public static void LogErrorFormat(string format, params object[] args)
+        {
+            LogError_Custom(Default, string.Format(format, args), null);
+        }
+
+        public static void LogErrorFormat(Object context, string format, params object[] args)
+        {
+            LogError_Custom(Default, string.Format(format, args), context);
+        }
+
+    [Conditional("UNITY_ASSERTIONS")]
+        public static void Assert(bool condition)
+        {
+            if (condition)
+                return;
+            UnityEngine.Debug.LogAssertion((object)"Assertion failed");
+        }
+
+        [Conditional("UNITY_ASSERTIONS")]
+        public static void Assert(bool condition, Object context)
+        {
+            if (condition)
+                return;
+            UnityEngine.Debug.LogAssertion((object)"Assertion failed", context);
+        }
+
+        [Conditional("UNITY_ASSERTIONS")]
+        public static void Assert(bool condition, object message)
+        {
+            if (condition)
+                return;
+            UnityEngine.Debug.LogAssertion(message);
+        }
+
+        [Conditional("UNITY_ASSERTIONS")]
+        public static void Assert(bool condition, string message)
+        {
+            if (condition)
+                return;
+            UnityEngine.Debug.LogAssertion((object)message);
+        }
+
+        [Conditional("UNITY_ASSERTIONS")]
+        public static void Assert(bool condition, object message, Object context)
+        {
+            if (condition)
+                return;
+            UnityEngine.Debug.LogAssertion(message, context);
+        }
+
+        [Conditional("UNITY_ASSERTIONS")]
+        public static void Assert(bool condition, string message, Object context)
+        {
+            if (condition)
+                return;
+            UnityEngine.Debug.LogAssertion((object)message, context);
+        }
+
 #pragma warning restore CS1591 // 공개된 형식 또는 멤버에 대한 XML 주석이 없습니다.
     }
-//}
+}

@@ -73,11 +73,32 @@ namespace CustomDebug
         /// <param name="strLogTypeName">디버그 필터 플래그</param>
         /// <param name="lNumber">플래그 체크할 숫자</param>
         /// <param name="strColorHexCode">색상 코드 (Ex. 흰색 : ffffff)</param>
-        public DefaultLogType(string strLogTypeName, ulong lNumber, string strColorHexCode)
+        public DefaultLogType(string strLogTypeName, ulong lNumber, string strColorHexCode = "ffffff")
         {
             this.strLogTypeName = strLogTypeName;
             this.lNumber = lNumber;
             this.strColorHexCode = strColorHexCode;
         }
+
+
+        #region operator
+
+        public static DefaultLogType operator |(DefaultLogType a, DefaultLogType b)
+        {
+            DefaultLogType pNewLogType = new DefaultLogType(
+                $"({a.strLogTypeName}|{b.strLogTypeName})", a.lNumber | b.lNumber);
+
+            return pNewLogType;
+        }
+
+        public static DefaultLogType operator &(DefaultLogType a, DefaultLogType b)
+        {
+            DefaultLogType pNewLogType = new DefaultLogType(
+                $"({a.strLogTypeName}&{b.strLogTypeName})", a.lNumber & b.lNumber);
+
+            return pNewLogType;
+        }
+
+        #endregion
     }
 }

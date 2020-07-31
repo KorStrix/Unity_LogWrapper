@@ -117,7 +117,7 @@ public class DebugWrapperEditor : EditorWindow
         }
     }
 
-    Vector2 _vecScrollPos;
+    Vector2 _vecScrollPos_EditorSetting;
 
     private void Draw_EditorSetting(SerializedObject pSO)
     {
@@ -126,7 +126,7 @@ public class DebugWrapperEditor : EditorWindow
             if (GUILayout.Button("Create Setting File And Set"))
             {
                 pEditorSetting = CreateAsset<DebugWrapperEditorSetting>();
-                Debug.Log("Create And Set");
+                UnityEngine.Debug.Log("Create And Set");
             }
         }
         else
@@ -134,11 +134,11 @@ public class DebugWrapperEditor : EditorWindow
             if (GUILayout.Button("Create New Setting File"))
             {
                 CreateAsset<DebugWrapperEditorSetting>();
-                Debug.Log("Create New");
+                UnityEngine.Debug.Log("Create New");
             }
         }
 
-        _vecScrollPos = EditorGUILayout.BeginScrollView(_vecScrollPos, GUILayout.Height(300f));
+        _vecScrollPos_EditorSetting = EditorGUILayout.BeginScrollView(_vecScrollPos_EditorSetting, GUILayout.Height(300f));
         {
             SerializedProperty pProperty = pSO.FindProperty($"{nameof(pEditorSetting)}");
             EditorGUILayout.PropertyField(pProperty);
@@ -148,12 +148,18 @@ public class DebugWrapperEditor : EditorWindow
     }
 
 
+    Vector2 _vecScrollPos_Local;
+
     private void Draw_LocalEditor_EnableSetting(SerializedObject pSO)
     {
         Get_LogTypeEnable_FromPlayerPrefs(pSO);
 
         SerializedProperty pProperty = pSO.FindProperty($"{nameof(pLocalBranch)}");
-        EditorGUILayout.PropertyField(pProperty, true);
+        _vecScrollPos_Local = EditorGUILayout.BeginScrollView(_vecScrollPos_Local, GUILayout.Height(300f));
+        {
+            EditorGUILayout.PropertyField(pProperty, true);
+        }
+        EditorGUILayout.EndScrollView();
 
         if (GUI.changed)
         {
@@ -179,7 +185,7 @@ public class DebugWrapperEditor : EditorWindow
             {
                 if (string.IsNullOrEmpty(pEditorSetting.strCSExportPath))
                 {
-                    Debug.LogError($"{strExportCS} - string.IsNullOrEmpty(_strCSExportPath)");
+                    UnityEngine.Debug.LogError($"{strExportCS} - string.IsNullOrEmpty(_strCSExportPath)");
                     return;
                 }
 
@@ -202,7 +208,7 @@ public class DebugWrapperEditor : EditorWindow
         pCodeDom.DoExportCS(pEditorSetting.strTypeName, $"{Application.dataPath}/{pEditorSetting.strCSExportPath}");
 
         AssetDatabase.Refresh();
-        Debug.Log($"{strExportCS} Complete");
+        UnityEngine.Debug.Log($"{strExportCS} Complete");
     }
 
     #endregion Private

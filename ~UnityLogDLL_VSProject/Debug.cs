@@ -9,8 +9,8 @@ using System.Text;
 #pragma warning disable CS0419 // cref 특성에 모호한 참조가 있음
 #pragma warning disable CS1573 // 매개 변수와 짝이 맞는 매개 변수 태그가 XML 주석에 없습니다. 다른 매개 변수는 짝이 맞는 태그가 있습니다.
 
-//namespace Wrapper
-//{
+namespace Wrapper {
+
 /// <summary>
 /// <see cref="UnityEngine.Debug"/>를 래핑한 클래스입니다.
 /// </summary>
@@ -175,6 +175,15 @@ public static partial class Debug
         UnityEngine.Debug.LogError(strMessageOut, context);
     }
 
+    private static void LogException_Custom(ICustomLogType pFilterFlags, System.Exception message, Object context)
+    {
+        // 에러는 반드시 출력
+        //if (Check_IsFiltering(pFilterFlags))
+        //    return;
+
+        UnityEngine.Debug.LogException(message, context);
+    }
+
     private static void LogWarning_Custom(ICustomLogType pFilterFlags, object message, Object context)
     {
         if (Check_IsContainFilter(pFilterFlags) == false)
@@ -297,4 +306,4 @@ public static partial class Debug
         strMessageResult = $"<b>[{strFilterFlag}]</b> {pMessage}";
     }
 }
-//}
+}
