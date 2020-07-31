@@ -5,6 +5,11 @@ namespace CustomDebug
     public interface ICustomLogType
     {
         /// <summary>
+        /// 주석
+        /// </summary>
+        string Comment { get; }
+
+        /// <summary>
         /// 디버그 필터 플래그
         /// </summary>
         string LogTypeName { get; }
@@ -34,10 +39,16 @@ namespace CustomDebug
         public static DefaultLogType Default = new DefaultLogType(nameof(Default), 1 << 0, "ffffff");
 
 
+        public string Comment => strComment;
         public string LogTypeName => strLogTypeName;
         public ulong Number => lNumber;
         public string ColorHexCode => strColorHexCode;
 
+
+        /// <summary>
+        /// 주석
+        /// </summary>
+        public string strComment;
 
         /// <summary>
         /// 디버그 필터 플래그
@@ -68,37 +79,5 @@ namespace CustomDebug
             this.lNumber = lNumber;
             this.strColorHexCode = strColorHexCode;
         }
-
-        #region Tool
-        public static void Save_ToPlayerPrefs(string strKey, object pSerializeObject)
-        {
-            string strJsonText = JsonUtility.ToJson(pSerializeObject);
-            PlayerPrefs.SetString(strKey, strJsonText);
-        }
-
-        public static bool Load_FromPlayerPrefs<T>(string strKey, ref T pLoadObject_NotNull, System.Action<string> OnError = null)
-        {
-            if (PlayerPrefs.HasKey(strKey) == false)
-            {
-                OnError?.Invoke($"{nameof(Load_FromPlayerPrefs)} - PlayerPrefs.HasKey({strKey}) == false");
-
-                return false;
-            }
-
-            string strJson = PlayerPrefs.GetString(strKey);
-            try
-            {
-                JsonUtility.FromJsonOverwrite(strJson, pLoadObject_NotNull);
-            }
-            catch (System.Exception e)
-            {
-                OnError?.Invoke($"{nameof(Load_FromPlayerPrefs)} - FromJsonOverwrite Fail - {strKey} Value : \n{strJson}\n{e}");
-
-                return false;
-            }
-
-            return true;
-        }
-        #endregion Tool
     }
 }

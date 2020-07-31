@@ -6,9 +6,9 @@ public class CustomDebugLog_Tester : MonoBehaviour
 {
     private void OnEnable()
     {
-        Debug.Log(CLogType.a | CLogType.b, "log or warning", this);
-        Debug.Log(CLogType.a & CLogType.b, "log and warning", this);
-        Debug.Log(CLogType.a, "test", this);
+        //Debug.Log(CLogType.a | CLogType.b, "log or warning", this);
+        //Debug.Log(CLogType.a & CLogType.b, "log and warning", this);
+        //Debug.Log(CLogType.a, "test", this);
 
 
         

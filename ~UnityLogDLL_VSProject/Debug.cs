@@ -70,7 +70,7 @@ public static partial class Debug
                 _mapColorHexCode_ByString.Add(strLogTypeName, strHexCode);
             }
 
-            strBuilder_ForInitLog.Append($"<color={strHexCode}>{strLogTypeName}</color> /");
+            strBuilder_ForInitLog.Append($"<color=#{strHexCode}>[{strLogTypeName}]</color> /");
         }
 
         UnityEngine.Debug.Log("Log Init - Show Flags\n" + strBuilder_ForInitLog);

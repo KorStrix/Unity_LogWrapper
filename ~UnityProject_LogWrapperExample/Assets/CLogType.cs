@@ -13,15 +13,28 @@ using System.Collections.Generic;
 public partial class CLogType
 {
     // 로그타입 클래스 정의부
-    public static CustomLogType a = new CustomLogType("a", 0, "FFFFFF");
-    public static CustomLogType b = new CustomLogType("b", 0, "FFFFFF");
-    public static CustomLogType c = new CustomLogType("c", 0, "FFFFFF");
+    /// <summary>
+    /// 
+    /// </summary>
+    public static CustomLogType asdf = new CustomLogType("asdf", 0, "FF0000");
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public static CustomLogType fdsa = new CustomLogType("fdsa", 0, "FFD900");
+
+    /// <summary>
+    /// asdsadfasfd
+    /// </summary>
+    public static CustomLogType asddf = new CustomLogType("asddf", 0, "13FF00");
+
 
 
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     public static void Init()
     {
+        Debug.Log("Log Init");
         List<CustomDebug.ICustomLogType> list = new List<CustomDebug.ICustomLogType>();
 
         // 에디터일 경우
@@ -41,15 +54,16 @@ public partial class CLogType
         {
 #if Alpha
 
-            list.Add(b);
-            list.Add(c);
+            list.Add(asdf);
+            list.Add(fdsa);
+            list.Add(asddf);
 
 #endif
 #if Beta
 
-            list.Add(a);
-            list.Add(b);
-            list.Add(c);
+            list.Add(asdf);
+            list.Add(fdsa);
+            list.Add(asddf);
 
 #endif
 

@@ -81,7 +81,7 @@ public partial class {0}
         /// </summary>
         public void DoAddClass(CustomLogType pFlag)
         {
-            mapBuilder[ETextType.DefineClass].AppendLine("    " + pFlag.ToCSharpCodeString());
+            mapBuilder[ETextType.DefineClass].AppendLine(pFlag.ToCSharpCodeString());
         }
 
         public void DoAddBranch(LogFilter_PerBranch pBranch)
