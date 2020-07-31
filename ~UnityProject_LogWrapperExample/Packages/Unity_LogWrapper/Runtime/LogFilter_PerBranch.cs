@@ -3,6 +3,7 @@ using System.Reflection;
 using UnityEngine;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Text;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -11,10 +12,61 @@ using UnityEditor;
 [Serializable]
 public class LogFilter_PerBranch
 {
+    public const string const_strPlayerPefs_SaveKey = nameof(LogFilter_PerBranch);
+
+    private static string const_strFormat =
+@"#if {0}
+
+{1}
+#endif";
     public DebugWrapperEditorSetting pEditorSetting;
 
     public string strBranchName;
     public CustomLogType_Enable[] arrLogTypeEnable;
+
+    public static LogFilter_PerBranch Get_LogTypeEnable_FromPlayerPrefs(out bool bIsChanged)
+    {
+        bIsChanged = false;
+
+        LogFilter_PerBranch pLocalBranch = new LogFilter_PerBranch();
+        bIsChanged = LogWrapperUtility.Load_FromPlayerPrefs(LogFilter_PerBranch.const_strPlayerPefs_SaveKey, ref pLocalBranch) == false;
+
+        return pLocalBranch;
+    }
+
+    public CustomLogType[] GetEnableLogType()
+    {
+        if (pEditorSetting == null)
+        {
+            Debug.Log($"GetEnableLogType - pEditorSetting == null");
+            return new CustomLogType[0];
+        }
+
+        CustomLogType[] arrLogType = pEditorSetting.arrLogType;
+        
+        return arrLogTypeEnable
+            .Where(p => p.bEnable)
+            .Select(p =>
+                arrLogType.FirstOrDefault(pLogType => pLogType.LogTypeName.Equals(p.strCustomLogName)))
+            .Where(p => p != null)
+            .ToArray();
+    }
+
+    public string ToCSharpCodeString(string strListFieldName)
+    {
+        return string.Format(const_strFormat, strBranchName, ToCSharpCode_AddList(strListFieldName));
+    }
+
+    private string ToCSharpCode_AddList(string strListFieldName)
+    {
+        StringBuilder strBuilder = new StringBuilder();
+
+        var arrEnableLogtype = arrLogTypeEnable.Where(p => p.bEnable);
+        foreach(var pLogType in arrEnableLogtype)
+            strBuilder.AppendLine($"            {strListFieldName}.Add({pLogType.strCustomLogName});");
+
+        return strBuilder.ToString();
+    }
 }
 
 

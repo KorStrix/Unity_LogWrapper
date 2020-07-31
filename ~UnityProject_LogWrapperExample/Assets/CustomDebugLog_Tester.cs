@@ -6,21 +6,16 @@ public class CustomDebugLog_Tester : MonoBehaviour
 {
     private void OnEnable()
     {
-        Debug.Init_PrintLog_FilterFlag(CustomLogType.Log);
+        Debug.Log(CLogType.a | CLogType.b, "log or warning", this);
+        Debug.Log(CLogType.a & CLogType.b, "log and warning", this);
+        Debug.Log(CLogType.a, "test", this);
 
-        Debug.Log(CLogType.a | CustomLogType.Warning, "log or warning", this);
-        Debug.Log(CustomLogType.Log & CustomLogType.Warning, "log and warning", this);
-        Debug.Log(CustomLogType.Log, "test", this);
 
         
-        Debug.Init_PrintLog_FilterFlag(CustomLogType.Log, CustomLogType.Warning);
-
         Debug.Log(CustomLogType.Log | CustomLogType.Warning, "log or warning", this);
         Debug.Log(CustomLogType.Log & CustomLogType.Warning, "log and warning", this);
         Debug.Log(CustomLogType.Log, "test", this);
 
-
-        Debug.Init_PrintLog_FilterFlag(CustomLogType.Warning);
 
         Debug.Log(CustomLogType.Log | CustomLogType.Warning, "log or warning", this);
         Debug.Log(CustomLogType.Log & CustomLogType.Warning, "log and warning", this);

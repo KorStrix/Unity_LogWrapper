@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Wrapper;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -52,43 +51,6 @@ public class CustomLogType_Enable
     {
         this.strCustomLogName = strCustomLogName;
     }
-
-
-    //    #region Editor
-    //    private const float fLabelWidth_strCustomLogName = 200f;
-    //    private const float fLabelWidth_bEnable = 50f;
-    //    private const float fLabelOffset = 5f;
-
-    //    public static void DoDrawEditorGUI(Rect position, SerializedProperty property, GUIContent label)
-    //    {
-    //#if UNITY_EDITOR
-    //        EditorGUI.BeginProperty(position, label, property);
-    //        {
-    //            position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
-
-    //            SerializedProperty pProperty_strCustomLogName = property.FindPropertyRelative(nameof(CustomLogType_Enable.strCustomLogName));
-    //            EditorGUI.PropertyField(CalculateRect(ref position, fLabelWidth_strCustomLogName, fLabelOffset), pProperty_strCustomLogName, GUIContent.none);
-
-    //            SerializedProperty pProperty_bEnable = property.FindPropertyRelative(nameof(CustomLogType_Enable.bEnable));
-    //            EditorGUI.PropertyField(CalculateRect(ref position, fLabelWidth_bEnable, fLabelOffset), pProperty_bEnable, GUIContent.none);
-
-    //            label.text = $"{pProperty_strCustomLogName.stringValue}[{pProperty_bEnable.boolValue}]";
-    //        }
-    //        EditorGUI.EndProperty();
-    //#endif
-    //    }
-
-
-    //    private static Rect CalculateRect(ref Rect position, float fLabelWidth, float fOffset)
-    //    {
-    //        var rectFlagName = new Rect(position.x, position.y, fLabelWidth, position.height);
-
-    //        position.x += fLabelWidth + fOffset;
-
-    //        return rectFlagName;
-    //    }
-
-    //    #endregion
 }
 
 

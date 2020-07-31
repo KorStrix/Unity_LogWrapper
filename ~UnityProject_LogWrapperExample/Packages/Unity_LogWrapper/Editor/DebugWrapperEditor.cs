@@ -14,8 +14,6 @@
 using UnityEngine;
 using UnityEditor;
 using Wrapper;
-using System.Linq;
-using System.Collections.Generic;
 
 /// <summary>
 /// 
@@ -24,7 +22,6 @@ public class DebugWrapperEditor : EditorWindow
 {
     /* const & readonly declaration             */
 
-    const string const_strPlayerPefs_SaveKey = nameof(CustomLogType_Enable);
 
     /* enum & struct declaration                */
 
@@ -99,17 +96,12 @@ public class DebugWrapperEditor : EditorWindow
         bool bIsSave = false;
 
         if (pLocalBranch == null)
-        {
-            pLocalBranch = new LogFilter_PerBranch();
-            bIsSave = true;
-        }
+            pLocalBranch = LogFilter_PerBranch.Get_LogTypeEnable_FromPlayerPrefs(out bIsSave);
 
-        bool bIsRequireUpdate_LogTypeEnableArray = CustomLogType.Load_FromPlayerPrefs(const_strPlayerPefs_SaveKey, ref pLocalBranch) == false;
-        if (bIsRequireUpdate_LogTypeEnableArray)
+        if (bIsSave)
         {
             CustomLogType_Enable.DoMatch_LogTypeEnableArray(pEditorSetting, ref pLocalBranch.arrLogTypeEnable);
-            CustomLogType.Save_ToPlayerPrefs(const_strPlayerPefs_SaveKey, pLocalBranch);
-            bIsSave = true;
+            LogWrapperUtility.Save_ToPlayerPrefs(LogFilter_PerBranch.const_strPlayerPefs_SaveKey, pLocalBranch);
         }
 
         if (pLocalBranch.pEditorSetting != pEditorSetting)
@@ -167,7 +159,7 @@ public class DebugWrapperEditor : EditorWindow
         {
             pSO.ApplyModifiedProperties();
             EditorUtility.SetDirty(this);
-            CustomLogType.Save_ToPlayerPrefs(const_strPlayerPefs_SaveKey, pLocalBranch);
+            LogWrapperUtility.Save_ToPlayerPrefs(LogFilter_PerBranch.const_strPlayerPefs_SaveKey, pLocalBranch);
         }
     }
 
@@ -191,17 +183,26 @@ public class DebugWrapperEditor : EditorWindow
                     return;
                 }
 
-                CustomCodedom pCodeDom = new CustomCodedom();
-                foreach (var pFilter in pEditorSetting.arrLogType)
-                    pCodeDom.DoAddClass(pFilter);
-                pCodeDom.DoExportCS(pEditorSetting.strTypeName, $"{Application.dataPath}/{pEditorSetting.strCSExportPath}");
-
-                AssetDatabase.Refresh();
-                Debug.Log($"{strExportCS} Complete");
+                ExportCS(strExportCS);
             }
         }
         EditorGUILayout.EndHorizontal();
 
+    }
+
+    private void ExportCS(string strExportCS)
+    {
+        CustomCodedom pCodeDom = new CustomCodedom();
+        foreach (var pFilter in pEditorSetting.arrLogType)
+            pCodeDom.DoAddClass(pFilter);
+
+        foreach (var pBranch in pEditorSetting.arrBranch)
+            pCodeDom.DoAddBranch(pBranch);
+
+        pCodeDom.DoExportCS(pEditorSetting.strTypeName, $"{Application.dataPath}/{pEditorSetting.strCSExportPath}");
+
+        AssetDatabase.Refresh();
+        Debug.Log($"{strExportCS} Complete");
     }
 
     #endregion Private
