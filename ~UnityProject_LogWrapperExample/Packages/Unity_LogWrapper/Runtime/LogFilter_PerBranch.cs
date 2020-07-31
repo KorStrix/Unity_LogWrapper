@@ -24,12 +24,10 @@ public class LogFilter_PerBranch
     public string strBranchName;
     public CustomLogType_Enable[] arrLogTypeEnable;
 
-    public static LogFilter_PerBranch Get_LogTypeEnable_FromPlayerPrefs(out bool bIsChanged)
+    public static LogFilter_PerBranch Get_LogTypeEnable_FromPlayerPrefs(out bool bIsFail)
     {
-        bIsChanged = false;
-
         LogFilter_PerBranch pLocalBranch = new LogFilter_PerBranch();
-        bIsChanged = LogWrapperUtility.Load_FromPlayerPrefs(LogFilter_PerBranch.const_strPlayerPefs_SaveKey, ref pLocalBranch) == false;
+        bIsFail = LogWrapperUtility.Load_FromPlayerPrefs(LogFilter_PerBranch.const_strPlayerPefs_SaveKey, ref pLocalBranch) == false;
 
         return pLocalBranch;
     }
@@ -38,12 +36,12 @@ public class LogFilter_PerBranch
     {
         if (pEditorSetting == null)
         {
-            Debug.Log($"GetEnableLogType - pEditorSetting == null");
+            Debug.LogError($"GetEnableLogType - pEditorSetting == null");
             return new CustomLogType[0];
         }
 
         CustomLogType[] arrLogType = pEditorSetting.arrLogType;
-        
+
         return arrLogTypeEnable
             .Where(p => p.bEnable)
             .Select(p =>
@@ -62,7 +60,7 @@ public class LogFilter_PerBranch
         StringBuilder strBuilder = new StringBuilder();
 
         var arrEnableLogtype = arrLogTypeEnable.Where(p => p.bEnable);
-        foreach(var pLogType in arrEnableLogtype)
+        foreach (var pLogType in arrEnableLogtype)
             strBuilder.AppendLine($"            {strListFieldName}.Add({pLogType.strCustomLogName});");
 
         return strBuilder.ToString();
@@ -144,7 +142,7 @@ public class LogFilter_PerBranchDrawer : PropertyDrawer
         float fDefaultSize = base.GetPropertyHeight(property, label) + const_fHeightPerLine;
         if (pProperty_arrLogTypeEnable.isExpanded)
             fDefaultSize += (const_fHeightPerLine * (iArrayCount + 1));
-            
+
         return fDefaultSize;
     }
 

@@ -16,21 +16,9 @@ namespace Wrapper {
 /// </summary>
 public static partial class Debug
 {
-    /// <summary>
-    /// 디폴트 색상 코드
-    /// </summary>
-    public const string const_strDefaultColorHexCode = "008000";
-
 #pragma warning disable CS1591 // 공개된 형식 또는 멤버에 대한 XML 주석이 없습니다.
     public delegate void PrintLogFormat(ICustomLogType pFilterFlags, object pMessage, out string strMessageResult);
 #pragma warning restore CS1591 // 공개된 형식 또는 멤버에 대한 XML 주석이 없습니다.
-
-    /// <summary>
-    /// 로그에 출력하는 색상
-    /// <para>Ex) 008000</para>
-    /// <para>RGB</para>
-    /// </summary>
-    public static string strDefaultColorHexCode = const_strDefaultColorHexCode;
 
     /// <summary>
     /// 플래그를 지정하지 않은 로그에 대한 플래그
@@ -52,28 +40,26 @@ public static partial class Debug
         _mapColorHexCode_ByString.Clear();
 
         _ulFilterFlags = 0;
+
+        AddFilter(Default, strBuilder_ForInitLog);
         foreach (var pFilter in arrDebugFilter)
-        {
-            string strLogTypeName = pFilter.LogTypeName;
-            string strHexCode = pFilter.ColorHexCode;
-            strHexCode = strHexCode.Substring(0, 6);
+            AddFilter(pFilter, strBuilder_ForInitLog);
 
-            if (strLogTypeName.Equals(Default.LogTypeName))
-            {
-                strDefaultColorHexCode = strHexCode;
-            }
-            else
-            {
-                // int iHashCode = pFilterFlag.GetHashCode();
-                ulong iHashCode = pFilter.Number;
-                _ulFilterFlags |= iHashCode;
-                _mapColorHexCode_ByString.Add(strLogTypeName, strHexCode);
-            }
+        UnityEngine.Debug.Log($"Log Init Count : {arrDebugFilter.Count()} - Show Flags\n" + strBuilder_ForInitLog);
+    }
 
-            strBuilder_ForInitLog.Append($"<color=#{strHexCode}>[{strLogTypeName}]</color> /");
-        }
+    private static void AddFilter(ICustomLogType pFilter, StringBuilder strBuilder_ForInitLog)
+    {
+        string strLogTypeName = pFilter.LogTypeName;
+        string strHexCode = pFilter.ColorHexCode;
+        strHexCode = strHexCode.Substring(0, 6);
 
-        UnityEngine.Debug.Log("Log Init - Show Flags\n" + strBuilder_ForInitLog);
+        // int iHashCode = pFilterFlag.GetHashCode();
+        ulong iHashCode = pFilter.Number;
+        _ulFilterFlags |= iHashCode;
+        _mapColorHexCode_ByString.Add(strLogTypeName, strHexCode);
+
+        strBuilder_ForInitLog.Append($"<color=#{strHexCode}>[{strLogTypeName}]</color> /");
     }
 
     /// <summary>

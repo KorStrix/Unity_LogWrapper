@@ -71,18 +71,6 @@
             <see cref="T:UnityEngine.Debug"/>를 래핑한 클래스입니다.
             </summary>
         </member>
-        <member name="F:Wrapper.Debug.const_strDefaultColorHexCode">
-            <summary>
-            디폴트 색상 코드
-            </summary>
-        </member>
-        <member name="F:Wrapper.Debug.strDefaultColorHexCode">
-            <summary>
-            로그에 출력하는 색상
-            <para>Ex) 008000</para>
-            <para>RGB</para>
-            </summary>
-        </member>
         <member name="F:Wrapper.Debug.Default">
             <summary>
             플래그를 지정하지 않은 로그에 대한 플래그

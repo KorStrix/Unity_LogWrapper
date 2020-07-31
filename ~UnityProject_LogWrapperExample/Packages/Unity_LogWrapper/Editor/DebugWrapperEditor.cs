@@ -91,17 +91,16 @@ public class DebugWrapperEditor : EditorWindow
 
     #region Private
 
-    private void Get_LogTypeEnable_FromPlayerPrefs(SerializedObject pSO)
+    private void Get_LogTypeEnable_FromPlayerPrefs(SerializedObject pSO_this)
     {
-        bool bIsSave = false;
+        LogFilter_PerBranch pCurrentBranch = LogFilter_PerBranch.Get_LogTypeEnable_FromPlayerPrefs(out bool bIsSave);
+        if (bIsSave || ReferenceEquals(pLocalBranch, pCurrentBranch) == false)
+            pLocalBranch = pCurrentBranch;
 
-        if (pLocalBranch == null)
-            pLocalBranch = LogFilter_PerBranch.Get_LogTypeEnable_FromPlayerPrefs(out bIsSave);
-
-        if (bIsSave)
+        if (CustomLogType_Enable.DoMatch_LogTypeEnableArray(pEditorSetting, ref pLocalBranch.arrLogTypeEnable))
         {
-            CustomLogType_Enable.DoMatch_LogTypeEnableArray(pEditorSetting, ref pLocalBranch.arrLogTypeEnable);
             LogWrapperUtility.Save_ToPlayerPrefs(LogFilter_PerBranch.const_strPlayerPefs_SaveKey, pLocalBranch);
+            bIsSave = true;
         }
 
         if (pLocalBranch.pEditorSetting != pEditorSetting)
@@ -112,8 +111,8 @@ public class DebugWrapperEditor : EditorWindow
 
         if (bIsSave)
         {
-            pSO.ApplyModifiedProperties();
-            EditorUtility.SetDirty(this);
+            pSO_this.ApplyModifiedProperties();
+            EditorUtility.SetDirty(pSO_this.targetObject);
         }
     }
 
@@ -164,7 +163,7 @@ public class DebugWrapperEditor : EditorWindow
         if (GUI.changed)
         {
             pSO.ApplyModifiedProperties();
-            EditorUtility.SetDirty(this);
+            EditorUtility.SetDirty(pSO.targetObject);
             LogWrapperUtility.Save_ToPlayerPrefs(LogFilter_PerBranch.const_strPlayerPefs_SaveKey, pLocalBranch);
         }
     }
@@ -183,9 +182,15 @@ public class DebugWrapperEditor : EditorWindow
 
             if (GUILayout.Button(strExportCS))
             {
+                if (string.IsNullOrEmpty(pEditorSetting.strTypeName))
+                {
+                    UnityEngine.Debug.LogError($"{strExportCS} - string.IsNullOrEmpty({nameof(pEditorSetting.strTypeName)})");
+                    return;
+                }
+
                 if (string.IsNullOrEmpty(pEditorSetting.strCSExportPath))
                 {
-                    UnityEngine.Debug.LogError($"{strExportCS} - string.IsNullOrEmpty(_strCSExportPath)");
+                    UnityEngine.Debug.LogError($"{strExportCS} - string.IsNullOrEmpty({nameof(pEditorSetting.strCSExportPath)})");
                     return;
                 }
 
