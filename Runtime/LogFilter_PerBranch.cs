@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Reflection;
 using UnityEngine;
 using System.Linq;
@@ -19,17 +19,17 @@ public class LogFilter_PerBranch
 
 {1}
 #endif";
-    public DebugWrapperEditorSetting pEditorSetting;
+
+
+    public LogWrapperEditorSetting pEditorSetting;
 
     public string strBranchName;
     public CustomLogType_Enable[] arrLogTypeEnable;
 
-    public static LogFilter_PerBranch Get_LogTypeEnable_FromPlayerPrefs(out bool bIsChanged)
+    public static LogFilter_PerBranch Get_LogTypeEnable_FromPlayerPrefs(out bool bIsFail)
     {
-        bIsChanged = false;
-
         LogFilter_PerBranch pLocalBranch = new LogFilter_PerBranch();
-        bIsChanged = LogWrapperUtility.Load_FromPlayerPrefs(LogFilter_PerBranch.const_strPlayerPefs_SaveKey, ref pLocalBranch) == false;
+        bIsFail = LogWrapperUtility.Load_FromPlayerPrefs(LogFilter_PerBranch.const_strPlayerPefs_SaveKey, ref pLocalBranch) == false;
 
         return pLocalBranch;
     }
@@ -38,7 +38,7 @@ public class LogFilter_PerBranch
     {
         if (pEditorSetting == null)
         {
-            Debug.Log($"GetEnableLogType - pEditorSetting == null");
+            Debug.LogError($"GetEnableLogType - pEditorSetting == null");
             return new CustomLogType[0];
         }
 
@@ -94,7 +94,7 @@ public class LogFilter_PerBranchDrawer : PropertyDrawer
                 return;
             }
 
-            DebugWrapperEditorSetting pEditorSetting = pProperty_pEditorSetting.objectReferenceValue as DebugWrapperEditorSetting;
+            LogWrapperEditorSetting pEditorSetting = pProperty_pEditorSetting.objectReferenceValue as LogWrapperEditorSetting;
             if (pEditorSetting == null)
                 return;
 

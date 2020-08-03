@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 
 #if UNITY_EDITOR
@@ -6,7 +6,7 @@ using UnityEditor;
 #endif
 
 [Serializable]
-public class DebugWrapperEditorSetting : ScriptableObject
+public class LogWrapperEditorSetting : ScriptableObject
 {
     public string strTypeName;
     public string strCSExportPath;
@@ -16,7 +16,8 @@ public class DebugWrapperEditorSetting : ScriptableObject
     public LogFilter_PerBranch[] arrBranch;
 
 
-    public static void DoDrawEditorGUI(SerializedObject pSerializeObject, DebugWrapperEditorSetting pEditorSetting)
+#if UNITY_EDITOR
+    public static void DoDrawEditorGUI(SerializedObject pSerializeObject, LogWrapperEditorSetting pEditorSetting)
     {
         pSerializeObject.Update();
 
@@ -24,10 +25,10 @@ public class DebugWrapperEditorSetting : ScriptableObject
 
         EditorGUI.BeginChangeCheck();
         {
-            var pProperty_arrDebugFilter = pSerializeObject.FindProperty($"{nameof(DebugWrapperEditorSetting.arrLogType)}");
+            var pProperty_arrDebugFilter = pSerializeObject.FindProperty($"{nameof(LogWrapperEditorSetting.arrLogType)}");
             EditorGUILayout.PropertyField(pProperty_arrDebugFilter, true);
 
-            var pProperty_arrTest = pSerializeObject.FindProperty($"{nameof(DebugWrapperEditorSetting.arrBranch)}");
+            var pProperty_arrTest = pSerializeObject.FindProperty($"{nameof(LogWrapperEditorSetting.arrBranch)}");
             for (int i = 0; i < pProperty_arrTest.arraySize; i++)
             {
                 SerializedProperty pProperty = pProperty_arrTest.GetArrayElementAtIndex(i);
@@ -47,6 +48,8 @@ public class DebugWrapperEditorSetting : ScriptableObject
             pSerializeObject.ApplyModifiedProperties();
         }
     }
+#endif
+
 }
 
 #if UNITY_EDITOR
@@ -57,13 +60,13 @@ public class DebugWrapperSetting_Editor : Editor
 {
     public override void OnInspectorGUI()
     {
-        DebugWrapperEditorSetting.DoDrawEditorGUI(serializedObject, target as DebugWrapperEditorSetting);
+        LogWrapperEditorSetting.DoDrawEditorGUI(serializedObject, target as LogWrapperEditorSetting);
     }
 }
 
 // PropertyDrawer 안에 PropertyDrawer가 있으면 ReorderableList가 Select가 안됨;
 // https://stackoverflow.com/questions/54516221/how-to-select-elements-in-nested-reorderablelist-in-a-customeditor
-[CustomPropertyDrawer(typeof(DebugWrapperEditorSetting), true)]
+[CustomPropertyDrawer(typeof(LogWrapperEditorSetting), true)]
 public class DebugWrapperSetting_PropertyDrawer : PropertyDrawer
 {
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
@@ -76,7 +79,7 @@ public class DebugWrapperSetting_PropertyDrawer : PropertyDrawer
             if (property.objectReferenceValue != null)
             {
                 SerializedObject pSOThis = new SerializedObject(property.objectReferenceValue);
-                DebugWrapperEditorSetting.DoDrawEditorGUI(pSOThis, property.objectReferenceValue as DebugWrapperEditorSetting);
+                LogWrapperEditorSetting.DoDrawEditorGUI(pSOThis, property.objectReferenceValue as LogWrapperEditorSetting);
             }
         }
         EditorGUI.EndProperty();

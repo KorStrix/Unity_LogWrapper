@@ -1,4 +1,4 @@
-﻿#region Header
+#region Header
 /*	============================================
  *	Author   			    : Strix
  *	Initial Creation Date 	: 2020-03-15
@@ -11,6 +11,7 @@
    ============================================ */
 #endregion Header
 
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using Wrapper;
@@ -18,7 +19,7 @@ using Wrapper;
 /// <summary>
 /// 
 /// </summary>
-public class DebugWrapperEditor : EditorWindow
+public class LogWrapperEditor : EditorWindow
 {
     /* const & readonly declaration             */
 
@@ -28,19 +29,21 @@ public class DebugWrapperEditor : EditorWindow
 
     /* public - Field declaration               */
 
-    public DebugWrapperEditorSetting pEditorSetting;
+    public LogWrapperEditorSetting pEditorSetting;
     public LogFilter_PerBranch pLocalBranch;
 
     /* protected & private - Field declaration  */
+
+    private bool _bIsShow_WorkSequence;
 
     // ========================================================================== //
 
     /* public - [Do~Something] Function 	        */
 
-    [MenuItem("Tools/DebugWrapper Editor")]
+    [MenuItem("Tools/LogWrapper Editor")]
     static void ShowWindow()
     {
-        DebugWrapperEditor pWindow = (DebugWrapperEditor)GetWindow(typeof(DebugWrapperEditor), false);
+        LogWrapperEditor pWindow = (LogWrapperEditor)GetWindow(typeof(LogWrapperEditor), false);
 
         pWindow.minSize = new Vector2(300, 500);
         pWindow.Show();
@@ -52,14 +55,16 @@ public class DebugWrapperEditor : EditorWindow
 
     private void OnGUI()
     {
-        EditorGUILayout.LabelField("Debug Wrapper Editor", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("Log Wrapper Editor", EditorStyles.boldLabel);
+        EditorGUILayout.HelpBox("This tool is for managing log filters by DefineSymbol after building Debog.Log on local PC.", MessageType.Info);
         EditorGUILayout.Space();
-        EditorGUILayout.Space();
+
+        ShowWorkSequence();
 
 
         SerializedObject pSO = new SerializedObject(this);
 
-        EditorGUILayout.LabelField("Editor Setting", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("[0~3]. Editor Setting", EditorStyles.boldLabel);
         Draw_EditorSetting(pSO);
 
 
@@ -72,7 +77,7 @@ public class DebugWrapperEditor : EditorWindow
             EditorGUILayout.Space();
 
 
-            EditorGUILayout.LabelField("Local Editor Setting", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("[4]. Local Editor Setting", EditorStyles.boldLabel);
             Draw_LocalEditor_EnableSetting(pSO);
         }
         else
@@ -82,8 +87,13 @@ public class DebugWrapperEditor : EditorWindow
         {
             pSO.ApplyModifiedProperties();
             EditorUtility.SetDirty(this);
+
+            // Editor에서 플레이중인 경우
+            if (Application.isPlaying)
+                SetCurrentLogFilter();
         }
     }
+
     /* protected - [abstract & virtual]         */
 
 
@@ -91,17 +101,77 @@ public class DebugWrapperEditor : EditorWindow
 
     #region Private
 
-    private void Get_LogTypeEnable_FromPlayerPrefs(SerializedObject pSO)
+    private static void SetCurrentLogFilter()
     {
-        bool bIsSave = false;
+        List<CustomDebug.ICustomLogType> list = new List<CustomDebug.ICustomLogType>();
 
-        if (pLocalBranch == null)
-            pLocalBranch = LogFilter_PerBranch.Get_LogTypeEnable_FromPlayerPrefs(out bIsSave);
-
-        if (bIsSave)
+        LogFilter_PerBranch pLocalBranch = LogFilter_PerBranch.Get_LogTypeEnable_FromPlayerPrefs(out bool bIsChange);
+        if (bIsChange)
         {
-            CustomLogType_Enable.DoMatch_LogTypeEnableArray(pEditorSetting, ref pLocalBranch.arrLogTypeEnable);
+            UnityEngine.Debug.LogError($"Get LogTypeEnable FromPlayerPrefs Fail");
+            return;
+        }
+
+        list.AddRange(pLocalBranch.GetEnableLogType());
+
+        Wrapper.Debug.Init_PrintLog_FilterFlag(list.ToArray());
+    }
+
+    private void ShowWorkSequence()
+    {
+        _bIsShow_WorkSequence = PlayerPrefs.GetInt(nameof(_bIsShow_WorkSequence)) == 0;
+
+        EditorGUILayout.LabelField("Work sequence", EditorStyles.boldLabel);
+
+        if (_bIsShow_WorkSequence)
+        {
+            if (GUILayout.Button("Hide WorkSequence"))
+            {
+                _bIsShow_WorkSequence = false;
+                PlayerPrefs.SetInt(nameof(_bIsShow_WorkSequence), 1);
+            }
+        }
+        else
+        {
+            if (GUILayout.Button("Show WorkSequence"))
+            {
+                _bIsShow_WorkSequence = true;
+                PlayerPrefs.SetInt(nameof(_bIsShow_WorkSequence), 0);
+            }
+        }
+
+
+        if (_bIsShow_WorkSequence)
+        {
+            EditorGUILayout.HelpBox(@"0. Create or set EditorSetting File.
+
+1. Create a LogFilter.
+In addition to the LogType name (required)
+You can adjust Comment, number(for Filter), print color, etc.
+
+2. Set which LogType to output for each branch.
+
+3. The script is automatically generated through ExportCS.
+This is necessary when Nos. 1 and 2 are modified.
+
+4. Set which LogFilter to output from other LocalPC.
+(I used PlayerPrefs.)", MessageType.Info);
+        }
+
+        EditorGUILayout.Space();
+        EditorGUILayout.Space();
+    }
+
+    private void Get_LogTypeEnable_FromPlayerPrefs(SerializedObject pSO_this)
+    {
+        LogFilter_PerBranch pCurrentBranch = LogFilter_PerBranch.Get_LogTypeEnable_FromPlayerPrefs(out bool bIsSave);
+        if (bIsSave || ReferenceEquals(pLocalBranch, pCurrentBranch) == false)
+            pLocalBranch = pCurrentBranch;
+
+        if (CustomLogType_Enable.DoMatch_LogTypeEnableArray(pEditorSetting, ref pLocalBranch.arrLogTypeEnable))
+        {
             LogWrapperUtility.Save_ToPlayerPrefs(LogFilter_PerBranch.const_strPlayerPefs_SaveKey, pLocalBranch);
+            bIsSave = true;
         }
 
         if (pLocalBranch.pEditorSetting != pEditorSetting)
@@ -112,12 +182,12 @@ public class DebugWrapperEditor : EditorWindow
 
         if (bIsSave)
         {
-            pSO.ApplyModifiedProperties();
-            EditorUtility.SetDirty(this);
+            pSO_this.ApplyModifiedProperties();
+            EditorUtility.SetDirty(pSO_this.targetObject);
         }
     }
 
-    Vector2 _vecScrollPos;
+    Vector2 _vecScrollPos_EditorSetting;
 
     private void Draw_EditorSetting(SerializedObject pSO)
     {
@@ -125,20 +195,20 @@ public class DebugWrapperEditor : EditorWindow
         {
             if (GUILayout.Button("Create Setting File And Set"))
             {
-                pEditorSetting = CreateAsset<DebugWrapperEditorSetting>();
-                Debug.Log("Create And Set");
+                pEditorSetting = CreateAsset<LogWrapperEditorSetting>();
+                UnityEngine.Debug.Log("Create And Set");
             }
         }
         else
         {
             if (GUILayout.Button("Create New Setting File"))
             {
-                CreateAsset<DebugWrapperEditorSetting>();
-                Debug.Log("Create New");
+                CreateAsset<LogWrapperEditorSetting>();
+                UnityEngine.Debug.Log("Create New");
             }
         }
 
-        _vecScrollPos = EditorGUILayout.BeginScrollView(_vecScrollPos, GUILayout.Height(300f));
+        _vecScrollPos_EditorSetting = EditorGUILayout.BeginScrollView(_vecScrollPos_EditorSetting, GUILayout.Height(300f));
         {
             SerializedProperty pProperty = pSO.FindProperty($"{nameof(pEditorSetting)}");
             EditorGUILayout.PropertyField(pProperty);
@@ -148,17 +218,23 @@ public class DebugWrapperEditor : EditorWindow
     }
 
 
+    Vector2 _vecScrollPos_Local;
+
     private void Draw_LocalEditor_EnableSetting(SerializedObject pSO)
     {
         Get_LogTypeEnable_FromPlayerPrefs(pSO);
 
         SerializedProperty pProperty = pSO.FindProperty($"{nameof(pLocalBranch)}");
-        EditorGUILayout.PropertyField(pProperty, true);
+        _vecScrollPos_Local = EditorGUILayout.BeginScrollView(_vecScrollPos_Local, GUILayout.Height(300f));
+        {
+            EditorGUILayout.PropertyField(pProperty, true);
+        }
+        EditorGUILayout.EndScrollView();
 
         if (GUI.changed)
         {
             pSO.ApplyModifiedProperties();
-            EditorUtility.SetDirty(this);
+            EditorUtility.SetDirty(pSO.targetObject);
             LogWrapperUtility.Save_ToPlayerPrefs(LogFilter_PerBranch.const_strPlayerPefs_SaveKey, pLocalBranch);
         }
     }
@@ -177,9 +253,15 @@ public class DebugWrapperEditor : EditorWindow
 
             if (GUILayout.Button(strExportCS))
             {
+                if (string.IsNullOrEmpty(pEditorSetting.strTypeName))
+                {
+                    UnityEngine.Debug.LogError($"{strExportCS} - string.IsNullOrEmpty({nameof(pEditorSetting.strTypeName)})");
+                    return;
+                }
+
                 if (string.IsNullOrEmpty(pEditorSetting.strCSExportPath))
                 {
-                    Debug.LogError($"{strExportCS} - string.IsNullOrEmpty(_strCSExportPath)");
+                    UnityEngine.Debug.LogError($"{strExportCS} - string.IsNullOrEmpty({nameof(pEditorSetting.strCSExportPath)})");
                     return;
                 }
 
@@ -202,7 +284,7 @@ public class DebugWrapperEditor : EditorWindow
         pCodeDom.DoExportCS(pEditorSetting.strTypeName, $"{Application.dataPath}/{pEditorSetting.strCSExportPath}");
 
         AssetDatabase.Refresh();
-        Debug.Log($"{strExportCS} Complete");
+        UnityEngine.Debug.Log($"{strExportCS} Complete");
     }
 
     #endregion Private

@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Text;
 using System.Collections.Generic;
 
@@ -42,7 +42,7 @@ public partial class {0}
             LogFilter_PerBranch pLocalBranch = LogFilter_PerBranch.Get_LogTypeEnable_FromPlayerPrefs(out bool bIsChange);
             if (bIsChange)
             {
-                Debug.LogError($""Get LogTypeEnable FromPlayerPrefs Fail - Show {nameof(DebugWrapperEditor)}"");
+                Debug.LogError($""Get LogTypeEnable FromPlayerPrefs Fail"");
                 return;
             }
 
@@ -54,7 +54,7 @@ public partial class {0}
 {3}
         }
 
-        Debug.Init_PrintLog_FilterFlag({2}.ToArray());
+        Wrapper.Debug.Init_PrintLog_FilterFlag({2}.ToArray());
     }
 }";
 
