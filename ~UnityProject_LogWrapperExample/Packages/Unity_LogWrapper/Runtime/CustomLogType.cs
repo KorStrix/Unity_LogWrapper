@@ -14,24 +14,6 @@ using UnityEditor;
 [System.Serializable]
 public class CustomLogType : ICustomLogType
 {
-    #region DefaultFilter
-    /// <summary>
-    /// <see cref="Debug.Log(object)"/>로 출력하고 싶은 경우 이 플래그를 넣으시면 됩니다
-    /// </summary>
-    public static CustomLogType Log = new CustomLogType(nameof(Log), 1 << 0);
-
-    /// <summary>
-    /// <see cref="Debug.LogWarning(object)"/>로 출력하고 싶은 경우 이 플래그를 넣으시면 됩니다
-    /// </summary>
-    public static CustomLogType Warning = new CustomLogType(nameof(Warning), 1 << 1, "ffff00");
-
-    /// <summary>
-    /// <see cref="Debug.LogError(object)"/>로 출력하고 싶은 경우 이 플래그를 넣으시면 됩니다.
-    /// </summary>
-    public static CustomLogType Error = new CustomLogType(nameof(Error), 1 << 2, "ff0000");
-    #endregion
-
-
     public string Comment { get; }
     public string LogTypeName => strLogTypeName;
     public ulong Number => lNumber;

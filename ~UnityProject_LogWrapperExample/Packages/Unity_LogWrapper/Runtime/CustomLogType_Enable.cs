@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -11,15 +11,15 @@ using UnityEditor;
 public class CustomLogType_Enable
 {
     public string strCustomLogName;
-    public bool bEnable = true;
+    public bool bEnable;
 
     /// <summary>
-    /// <see cref="DebugWrapperEditorSetting"/>에 있는 <see cref="CustomLogType"/>와 내용이 다를 시 arrMatchTarget를 변경시킵니다.
+    /// <see cref="LogWrapperEditorSetting"/>에 있는 <see cref="CustomLogType"/>와 내용이 다를 시 arrMatchTarget를 변경시킵니다.
     /// </summary>
     /// <param name="pEditorSetting"></param>
     /// <param name="arrMatchTarget"></param>
     /// <returns>내용물이 서로 틀리면 true</returns>
-    public static bool DoMatch_LogTypeEnableArray(DebugWrapperEditorSetting pEditorSetting, ref CustomLogType_Enable[] arrMatchTarget)
+    public static bool DoMatch_LogTypeEnableArray(LogWrapperEditorSetting pEditorSetting, ref CustomLogType_Enable[] arrMatchTarget)
     {
         if (arrMatchTarget == null)
             arrMatchTarget = new CustomLogType_Enable[0];

@@ -36,7 +36,7 @@ namespace CustomDebug
         /// <summary>
         /// <see cref="Debug.Log(object)"/>로 출력하고 싶은 경우 이 플래그를 넣으시면 됩니다
         /// </summary>
-        public static DefaultLogType Default = new DefaultLogType(nameof(Default), 1 << 0, "ffffff");
+        public static DefaultLogType Default = new DefaultLogType(nameof(Default), 0, "ffffff");
 
 
         public string Comment => strComment;

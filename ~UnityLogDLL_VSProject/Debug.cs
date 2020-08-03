@@ -265,8 +265,12 @@ public static partial class Debug
         if (pFilterFlags.Equals(Default))
             return true;
 
+
         // int iHashCode = pFilterFlags.GetHashCode();
         ulong iHashCode = pFilterFlags.Number;
+
+        UnityEngine.Debug.Log($"_ulFilterFlags : {_ulFilterFlags} // iHashCode : {iHashCode} // (_ulFilterFlags & iHashCode) != 0 : {(_ulFilterFlags & iHashCode) != 0}");
+
         return (_ulFilterFlags & iHashCode) != 0;
     }
 

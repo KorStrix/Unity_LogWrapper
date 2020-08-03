@@ -15,17 +15,17 @@ MonoBehaviour:
   strTypeName: CLogType
   strCSExportPath: CLogType
   arrLogType:
-  - strLogTypeName: asdf
-    strComment: 
-    lNumber: 0
+  - strLogTypeName: Log
+    strComment: aa
+    lNumber: 1
     strColorHexCode: FF0000
-  - strLogTypeName: fdsa
-    strComment: 
-    lNumber: 0
+  - strLogTypeName: Warning
+    strComment: bb
+    lNumber: 2
     strColorHexCode: FFD900
-  - strLogTypeName: asddf
-    strComment: asdsadfasfd
-    lNumber: 0
+  - strLogTypeName: Error
+    strComment: cc
+    lNumber: 4
     strColorHexCode: 13FF00
   arrBranch:
   - pEditorSetting: {fileID: 11400000}

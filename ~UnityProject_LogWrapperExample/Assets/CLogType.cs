@@ -14,19 +14,19 @@ public partial class CLogType
 {
     // 로그타입 클래스 정의부
     /// <summary>
-    /// 
+    /// aa
     /// </summary>
-    public static CustomLogType asdf = new CustomLogType("asdf", 0, "FF0000");
+    public static CustomLogType Log = new CustomLogType("Log", 1, "FF0000");
 
     /// <summary>
-    /// 
+    /// bb
     /// </summary>
-    public static CustomLogType fdsa = new CustomLogType("fdsa", 0, "FFD900");
+    public static CustomLogType Warning = new CustomLogType("Warning", 2, "FFD900");
 
     /// <summary>
-    /// asdsadfasfd
+    /// cc
     /// </summary>
-    public static CustomLogType asddf = new CustomLogType("asddf", 0, "13FF00");
+    public static CustomLogType Error = new CustomLogType("Error", 4, "13FF00");
 
 
 
@@ -43,7 +43,7 @@ public partial class CLogType
             LogFilter_PerBranch pLocalBranch = LogFilter_PerBranch.Get_LogTypeEnable_FromPlayerPrefs(out bool bIsChange);
             if (bIsChange)
             {
-                Debug.LogError($"Get LogTypeEnable FromPlayerPrefs Fail - Show {nameof(DebugWrapperEditor)}");
+                Debug.LogError($"Get LogTypeEnable FromPlayerPrefs Fail");
                 return;
             }
 
@@ -69,6 +69,6 @@ public partial class CLogType
 
         }
 
-        Debug.Init_PrintLog_FilterFlag(list.ToArray());
+        Wrapper.Debug.Init_PrintLog_FilterFlag(list.ToArray());
     }
 }

@@ -1,11 +1,11 @@
 {
-	"name" : "com.korstrix.logwrapper",
+	"name" : "com.korstrix.customlog",
 	"version": "1.0.0",
-	"displayName" :"LogWrapper",
-	"description" :"Unity Log를 디파인 심벌 및 필터별로 어떻게 출력할지 세팅할 수 있는 플러그인입니다.",
+	"displayName" :"Custom Log",
+	"description" :"Unity 기본 Log를 래핑했습니다",
 	"unity": "2018.1",
 	"dependencies": {},
-	"keywords": ["utility"],
+	"keywords": ["utility","debug","log"],
 	"author":
 	{
 		"name":"KorStrix",
