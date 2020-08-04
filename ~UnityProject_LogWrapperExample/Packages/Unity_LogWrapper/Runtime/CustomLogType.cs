@@ -14,7 +14,7 @@ using UnityEditor;
 [System.Serializable]
 public class CustomLogType : ICustomLogType
 {
-    public string Comment { get; }
+    public string Comment => strComment;
     public string LogTypeName => strLogTypeName;
     public ulong Number => lNumber;
     public string ColorHexCode => strColorHexCode;
@@ -64,7 +64,7 @@ public class CustomLogType : ICustomLogType
         strBuilder.AppendLine("    /// <summary>");
         strBuilder.AppendLine($"    /// {strComment}");
         strBuilder.AppendLine("    /// </summary>");
-        strBuilder.AppendLine($"    public static {nameof(CustomLogType)} {strLogTypeName} = new CustomLogType(\"{strLogTypeName}\", {lNumber}, \"{strColorHexCode}\");");
+        strBuilder.AppendLine($"    public static {nameof(CustomLogType)} {strLogTypeName} => new CustomLogType(\"{strLogTypeName}\", {lNumber}, \"{strColorHexCode}\");");
 
         return strBuilder.ToString();
     }

@@ -2,6 +2,13 @@
 
 namespace CustomDebug
 {
+    public enum EOperatorType
+    {
+        None,
+        OR,
+        AND,
+    }
+
     public interface ICustomLogType
     {
         /// <summary>
@@ -25,6 +32,8 @@ namespace CustomDebug
         /// <para>Ex) 빨간색 : ff0000</para>
         /// </summary>
         string ColorHexCode { get; }
+
+        EOperatorType eOperatorType { get; }
     }
 
     /// <summary>
@@ -43,6 +52,7 @@ namespace CustomDebug
         public string LogTypeName => strLogTypeName;
         public ulong Number => lNumber;
         public string ColorHexCode => strColorHexCode;
+        public EOperatorType eOperatorType => _eOperatorType;
 
 
         /// <summary>
@@ -66,6 +76,9 @@ namespace CustomDebug
         /// <para>Ex) 빨간색 : ff0000</para>
         /// </summary>
         public string strColorHexCode;
+
+        private EOperatorType _eOperatorType;
+
 
         /// <summary>
         /// 필터의 정보

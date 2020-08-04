@@ -269,7 +269,7 @@ public static partial class Debug
         // int iHashCode = pFilterFlags.GetHashCode();
         ulong iHashCode = pFilterFlags.Number;
 
-        UnityEngine.Debug.Log($"_ulFilterFlags : {_ulFilterFlags} // iHashCode : {iHashCode} // (_ulFilterFlags & iHashCode) != 0 : {(_ulFilterFlags & iHashCode) != 0}");
+        UnityEngine.Debug.Log($"LogTypeName : {pFilterFlags.LogTypeName} // _ulFilterFlags : {_ulFilterFlags} // iHashCode : {iHashCode} // (_ulFilterFlags & iHashCode) : {(_ulFilterFlags & iHashCode)}");
 
         return (_ulFilterFlags & iHashCode) != 0;
     }

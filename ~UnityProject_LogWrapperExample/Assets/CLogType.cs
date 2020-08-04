@@ -16,7 +16,7 @@ public partial class CLogType
     /// <summary>
     /// aa
     /// </summary>
-    public static CustomLogType Log = new CustomLogType("Log", 1, "FF0000");
+    public static CustomLogType Log = new CustomLogType("Log", 1, "00FF24");
 
     /// <summary>
     /// bb
@@ -26,7 +26,7 @@ public partial class CLogType
     /// <summary>
     /// cc
     /// </summary>
-    public static CustomLogType Error = new CustomLogType("Error", 4, "13FF00");
+    public static CustomLogType Error = new CustomLogType("Error", 4, "FF1500");
 
 
 
