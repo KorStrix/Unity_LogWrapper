@@ -11,20 +11,20 @@ using UnityEditor;
 /// <para><see cref="Resources.Load(string)"/>를 통해 얻어오기 때문에 Resources 폴더 안에 있어야 합니다.</para>
 /// </summary>
 [Serializable]
-public class LogWrapperEditorSetting : ScriptableObject
+public class LogWrapperSetting : ScriptableObject
 {
-    public static LogWrapperEditorSetting pCurrentSetting
+    public static LogWrapperSetting pCurrentSetting
     {
         get
         {
             if (_pCurrentSetting == null)
             {
-                LogWrapperEditorSetting[] arrSetting = Resources.LoadAll<LogWrapperEditorSetting>("");
+                LogWrapperSetting[] arrSetting = Resources.LoadAll<LogWrapperSetting>("");
 
                 int iCurrentSettingCount = arrSetting.Count(p => p.bIsCurrent);
                 if (iCurrentSettingCount > 1)
                 {
-                    UnityEngine.Debug.LogWarning($"{nameof(LogWrapperEditorSetting)} - iCurrentSettingCount({iCurrentSettingCount}) > 1");
+                    UnityEngine.Debug.LogWarning($"{nameof(LogWrapperSetting)} - iCurrentSettingCount({iCurrentSettingCount}) > 1");
                 }
 
                 _pCurrentSetting = arrSetting.FirstOrDefault(p => p.bIsCurrent);
@@ -36,13 +36,13 @@ public class LogWrapperEditorSetting : ScriptableObject
                     {
                         if (Application.isEditor)
                         {
-                            _pCurrentSetting = LogWrapperUtility.CreateAsset<LogWrapperEditorSetting>();
-                            UnityEngine.Debug.Log($"{nameof(LogWrapperEditorSetting)} is null / auto create default setting", _pCurrentSetting);
+                            _pCurrentSetting = LogWrapperUtility.CreateAsset<LogWrapperSetting>();
+                            UnityEngine.Debug.Log($"{nameof(LogWrapperSetting)} is null / auto create default setting", _pCurrentSetting);
                         }
                         else
                         {
-                            _pCurrentSetting = CreateInstance<LogWrapperEditorSetting>();
-                            UnityEngine.Debug.LogWarning($"{nameof(LogWrapperEditorSetting)} is null / auto create default setting");
+                            _pCurrentSetting = CreateInstance<LogWrapperSetting>();
+                            UnityEngine.Debug.LogWarning($"{nameof(LogWrapperSetting)} is null / auto create default setting");
                         }
                     }
 
@@ -54,7 +54,7 @@ public class LogWrapperEditorSetting : ScriptableObject
         }
     }
 
-    static LogWrapperEditorSetting _pCurrentSetting;
+    static LogWrapperSetting _pCurrentSetting;
 
     public bool bIsCurrent;
     public string strTypeName;
@@ -66,7 +66,7 @@ public class LogWrapperEditorSetting : ScriptableObject
 
 
 #if UNITY_EDITOR
-    public static void DoDrawEditorGUI(SerializedObject pSerializeObject, LogWrapperEditorSetting pEditorSetting)
+    public static void DoDrawEditorGUI(SerializedObject pSerializeObject, LogWrapperSetting pSetting)
     {
         pSerializeObject.Update();
 
@@ -74,20 +74,20 @@ public class LogWrapperEditorSetting : ScriptableObject
 
         EditorGUI.BeginChangeCheck();
         {
-            var pProperty_bIsCurrent = pSerializeObject.FindProperty($"{nameof(LogWrapperEditorSetting.bIsCurrent)}");
+            var pProperty_bIsCurrent = pSerializeObject.FindProperty($"{nameof(LogWrapperSetting.bIsCurrent)}");
             EditorGUILayout.PropertyField(pProperty_bIsCurrent, true);
 
-            var pProperty_arrDebugFilter = pSerializeObject.FindProperty($"{nameof(LogWrapperEditorSetting.arrLogType)}");
+            var pProperty_arrDebugFilter = pSerializeObject.FindProperty($"{nameof(LogWrapperSetting.arrLogType)}");
             EditorGUILayout.PropertyField(pProperty_arrDebugFilter, true);
 
-            var pProperty_arrTest = pSerializeObject.FindProperty($"{nameof(LogWrapperEditorSetting.arrBranch)}");
+            var pProperty_arrTest = pSerializeObject.FindProperty($"{nameof(LogWrapperSetting.arrBranch)}");
             for (int i = 0; i < pProperty_arrTest.arraySize; i++)
             {
                 SerializedProperty pProperty = pProperty_arrTest.GetArrayElementAtIndex(i);
-                SerializedProperty pPropertySetting = pProperty.FindPropertyRelative($"{nameof(LogFilter_PerBranch.pEditorSetting)}");
+                SerializedProperty pPropertySetting = pProperty.FindPropertyRelative($"{nameof(LogFilter_PerBranch.pSetting)}");
                 if (pPropertySetting.objectReferenceValue == null)
                 {
-                    pPropertySetting.objectReferenceValue = pEditorSetting;
+                    pPropertySetting.objectReferenceValue = pSetting;
                     bIsSet_EditorSetting = true;
                 }
             }
@@ -112,13 +112,13 @@ public class DebugWrapperSetting_Editor : Editor
 {
     public override void OnInspectorGUI()
     {
-        LogWrapperEditorSetting.DoDrawEditorGUI(serializedObject, target as LogWrapperEditorSetting);
+        LogWrapperSetting.DoDrawEditorGUI(serializedObject, target as LogWrapperSetting);
     }
 }
 
 // PropertyDrawer 안에 PropertyDrawer가 있으면 ReorderableList가 Select가 안됨;
 // https://stackoverflow.com/questions/54516221/how-to-select-elements-in-nested-reorderablelist-in-a-customeditor
-[CustomPropertyDrawer(typeof(LogWrapperEditorSetting), true)]
+[CustomPropertyDrawer(typeof(LogWrapperSetting), true)]
 public class DebugWrapperSetting_PropertyDrawer : PropertyDrawer
 {
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
@@ -131,7 +131,7 @@ public class DebugWrapperSetting_PropertyDrawer : PropertyDrawer
             if (property.objectReferenceValue != null)
             {
                 SerializedObject pSOThis = new SerializedObject(property.objectReferenceValue);
-                LogWrapperEditorSetting.DoDrawEditorGUI(pSOThis, property.objectReferenceValue as LogWrapperEditorSetting);
+                LogWrapperSetting.DoDrawEditorGUI(pSOThis, property.objectReferenceValue as LogWrapperSetting);
             }
         }
         EditorGUI.EndProperty();

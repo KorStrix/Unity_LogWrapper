@@ -40,7 +40,7 @@ public partial class {0}
         if (Application.isEditor)
         {
             LogFilter_PerBranch pLocalBranch = LogFilter_PerBranch.Get_LogTypeEnable_FromPlayerPrefs(out bool bIsChange);
-            pLocalBranch.pEditorSetting = LogWrapperEditorSetting.pCurrentSetting;
+            pLocalBranch.pSetting = LogWrapperSetting.pCurrentSetting;
 
             if (bIsChange)
             {

@@ -21,7 +21,7 @@ public class LogFilter_PerBranch
 #endif";
 
 
-    public LogWrapperEditorSetting pEditorSetting;
+    public LogWrapperSetting pSetting;
 
     public string strBranchName;
     public CustomLogType_Enable[] arrLogTypeEnable;
@@ -36,13 +36,13 @@ public class LogFilter_PerBranch
 
     public CustomLogType[] GetEnableLogType()
     {
-        if (pEditorSetting == null)
+        if (pSetting == null)
         {
-            Debug.LogError($"GetEnableLogType - pEditorSetting == null");
+            Debug.LogError($"GetEnableLogType - pSetting == null");
             return new CustomLogType[0];
         }
 
-        CustomLogType[] arrLogType = pEditorSetting.arrLogType;
+        CustomLogType[] arrLogType = pSetting.arrLogType;
         
         return arrLogTypeEnable
             .Where(p => p.bEnable)
@@ -86,15 +86,15 @@ public class LogFilter_PerBranchDrawer : PropertyDrawer
             EditorGUI.PropertyField(position, pProperty_strBranchName, true);
             label.text = $"{pProperty_strBranchName.stringValue}";
 
-            SerializedProperty pProperty_pEditorSetting = property.FindPropertyRelative(nameof(LogFilter_PerBranch.pEditorSetting));
+            SerializedProperty pProperty_pEditorSetting = property.FindPropertyRelative(nameof(LogFilter_PerBranch.pSetting));
             if (pProperty_pEditorSetting == null)
             {
                 Debug.LogError($"{label.text} - Error pProperty_pEditorSetting == null");
                 return;
             }
 
-            LogWrapperEditorSetting pEditorSetting = pProperty_pEditorSetting.objectReferenceValue as LogWrapperEditorSetting;
-            if (pEditorSetting == null)
+            LogWrapperSetting pSetting = pProperty_pEditorSetting.objectReferenceValue as LogWrapperSetting;
+            if (pSetting == null)
                 return;
 
             position.y += const_fHeightPerLine;
@@ -103,7 +103,7 @@ public class LogFilter_PerBranchDrawer : PropertyDrawer
                 SerializedObject pSO = property.serializedObject;
                 LogFilter_PerBranch pBranch = GetThis(property);
 
-                if (CustomLogType_Enable.DoMatch_LogTypeEnableArray(pEditorSetting, ref pBranch.arrLogTypeEnable))
+                if (CustomLogType_Enable.DoMatch_LogTypeEnableArray(pSetting, ref pBranch.arrLogTypeEnable))
                 {
                     pSO.ApplyModifiedProperties();
                     EditorUtility.SetDirty(pSO.targetObject);
