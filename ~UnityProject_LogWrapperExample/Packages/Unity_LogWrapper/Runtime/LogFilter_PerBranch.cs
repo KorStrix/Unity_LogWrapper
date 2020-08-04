@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Reflection;
 using UnityEngine;
 using System.Linq;
@@ -46,8 +46,7 @@ public class LogFilter_PerBranch
         
         return arrLogTypeEnable
             .Where(p => p.bEnable)
-            .Select(p =>
-                arrLogType.FirstOrDefault(pLogType => pLogType.LogTypeName.Equals(p.strCustomLogName)))
+            .Select(p => arrLogType.FirstOrDefault(pLogType => pLogType.LogTypeName.Equals(p.strCustomLogName)))
             .Where(p => p != null)
             .ToArray();
     }
@@ -61,8 +60,8 @@ public class LogFilter_PerBranch
     {
         StringBuilder strBuilder = new StringBuilder();
 
-        var arrEnableLogtype = arrLogTypeEnable.Where(p => p.bEnable);
-        foreach(var pLogType in arrEnableLogtype)
+        var arrEnableLogType = arrLogTypeEnable.Where(p => p.bEnable);
+        foreach(var pLogType in arrEnableLogType)
             strBuilder.AppendLine($"            {strListFieldName}.Add({pLogType.strCustomLogName});");
 
         return strBuilder.ToString();
@@ -98,8 +97,6 @@ public class LogFilter_PerBranchDrawer : PropertyDrawer
             if (pEditorSetting == null)
                 return;
 
-            CustomLogType[] arrLogType = pEditorSetting.arrLogType;
-
             position.y += const_fHeightPerLine;
             EditorGUI.indentLevel++;
             {
@@ -112,23 +109,8 @@ public class LogFilter_PerBranchDrawer : PropertyDrawer
                     EditorUtility.SetDirty(pSO.targetObject);
                 }
 
-                CustomLogType_Enable[] arrLogTypeEnable = pBranch.arrLogTypeEnable;
-
-                //for (int i = 0; i < arrLogTypeEnable.Length; i++)
-                //{
-                //    SerializedProperty pPropertyElement = pProperty_arrLogTypeEnable.GetArrayElementAtIndex(i);
-                //    // arrLogTypeEnable[i].DoDrawEditorGUI(position, pPropertyElement);
-                //}
-
                 SerializedProperty pProperty_arrLogTypeEnable = property.FindPropertyRelative(nameof(LogFilter_PerBranch.arrLogTypeEnable));
                 EditorGUI.PropertyField(position, pProperty_arrLogTypeEnable, true);
-
-                //for (int i = 0; i < pProperty_arrLogTypeEnable.arraySize; i++)
-                //{
-                //    SerializedProperty pPropertyElement = pProperty_arrLogTypeEnable.GetArrayElementAtIndex(i);
-                //    EditorGUI.PropertyField(position, pPropertyElement, true);
-                //    position.y += const_fHeightPerLine;
-                //}
             }
             EditorGUI.indentLevel--;
 

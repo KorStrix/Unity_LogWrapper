@@ -1,4 +1,4 @@
-#region Header
+﻿#region Header
 /*	============================================
  *	Author   			    : Strix
  *	Initial Creation Date 	: 2020-03-15
@@ -165,14 +165,13 @@ This is necessary when Nos. 1 and 2 are modified.
     private void Get_LogTypeEnable_FromPlayerPrefs(SerializedObject pSO_this)
     {
         LogFilter_PerBranch pCurrentBranch = LogFilter_PerBranch.Get_LogTypeEnable_FromPlayerPrefs(out bool bIsSave);
-        if (bIsSave || ReferenceEquals(pLocalBranch, pCurrentBranch) == false)
-            pLocalBranch = pCurrentBranch;
-
-        if (CustomLogType_Enable.DoMatch_LogTypeEnableArray(pEditorSetting, ref pLocalBranch.arrLogTypeEnable))
+        if (bIsSave || pLocalBranch == null || pLocalBranch.arrLogTypeEnable.Length != pCurrentBranch.arrLogTypeEnable.Length)
         {
-            LogWrapperUtility.Save_ToPlayerPrefs(LogFilter_PerBranch.const_strPlayerPefs_SaveKey, pLocalBranch);
+            pLocalBranch = pCurrentBranch;
             bIsSave = true;
         }
+
+        bIsSave = CustomLogType_Enable.DoMatch_LogTypeEnableArray(pEditorSetting, ref pLocalBranch.arrLogTypeEnable);
 
         if (pLocalBranch.pEditorSetting != pEditorSetting)
         {
@@ -182,6 +181,7 @@ This is necessary when Nos. 1 and 2 are modified.
 
         if (bIsSave)
         {
+            LogWrapperUtility.Save_ToPlayerPrefs(LogFilter_PerBranch.const_strPlayerPefs_SaveKey, pLocalBranch);
             pSO_this.ApplyModifiedProperties();
             EditorUtility.SetDirty(pSO_this.targetObject);
         }
