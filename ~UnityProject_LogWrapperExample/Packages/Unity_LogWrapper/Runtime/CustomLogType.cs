@@ -18,6 +18,7 @@ public class CustomLogType : ICustomLogType
     public string LogTypeName => strLogTypeName;
     public ulong Number => lNumber;
     public string ColorHexCode => strColorHexCode;
+    public EOperatorType eOperatorType => _eOperatorType;
 
     /// <summary>
     /// 디버그 필터 플래그
@@ -41,6 +42,9 @@ public class CustomLogType : ICustomLogType
     /// </summary>
     public string strColorHexCode;
 
+    EOperatorType _eOperatorType;
+
+
     public CustomLogType()
     {
     }
@@ -56,6 +60,7 @@ public class CustomLogType : ICustomLogType
         this.strLogTypeName = strLogTypeName;
         this.lNumber = lNumber;
         this.strColorHexCode = strColorHexCode;
+        _eOperatorType = EOperatorType.None;
     }
 
     public string ToCSharpCodeString()
@@ -73,16 +78,14 @@ public class CustomLogType : ICustomLogType
 
     public static CustomLogType operator |(CustomLogType a, CustomLogType b)
     {
-        CustomLogType pNewLogType = new CustomLogType(
-            $"({a.strLogTypeName}|{b.strLogTypeName})", a.lNumber | b.lNumber);
-
-        return pNewLogType;
+        return new CustomLogType($"({a.strLogTypeName}|{b.strLogTypeName})", a.lNumber | b.lNumber);
     }
 
     public static CustomLogType operator &(CustomLogType a, CustomLogType b)
     {
         CustomLogType pNewLogType = new CustomLogType(
-            $"({a.strLogTypeName}&{b.strLogTypeName})", a.lNumber & b.lNumber);
+            $"({a.strLogTypeName}&{b.strLogTypeName})", a.lNumber | b.lNumber);
+        pNewLogType._eOperatorType = EOperatorType.AND;
 
         return pNewLogType;
     }
@@ -98,7 +101,7 @@ public class CustomLogType : ICustomLogType
 public class CustomLogTypeDrawer : PropertyDrawer
 {
     private const float fLabelWidth_strLogTypeName = 100f;
-    private const float fLabelWidth_lNumber = 50f;
+    private const float fLabelWidth_lNumber = 75f;
     private const float fLabelWidth_strColorHexCode = 50f;
 
 

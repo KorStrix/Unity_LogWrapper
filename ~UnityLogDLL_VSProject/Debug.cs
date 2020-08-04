@@ -265,13 +265,13 @@ public static partial class Debug
         if (pFilterFlags.Equals(Default))
             return true;
 
-
-        // int iHashCode = pFilterFlags.GetHashCode();
         ulong iHashCode = pFilterFlags.Number;
+        // UnityEngine.Debug.Log($"LogTypeName : {pFilterFlags.LogTypeName} // _ulFilterFlags : {_ulFilterFlags} // iHashCode : {iHashCode} // (_ulFilterFlags & iHashCode) : {(_ulFilterFlags & iHashCode)} // pFilterFlags.eOperatorType: {pFilterFlags.eOperatorType}");
 
-        UnityEngine.Debug.Log($"LogTypeName : {pFilterFlags.LogTypeName} // _ulFilterFlags : {_ulFilterFlags} // iHashCode : {iHashCode} // (_ulFilterFlags & iHashCode) : {(_ulFilterFlags & iHashCode)}");
-
-        return (_ulFilterFlags & iHashCode) != 0;
+        if (pFilterFlags.eOperatorType == EOperatorType.AND)
+            return (_ulFilterFlags & iHashCode) == iHashCode;
+        else
+            return (_ulFilterFlags & iHashCode) != 0;
     }
 
     /// <summary>

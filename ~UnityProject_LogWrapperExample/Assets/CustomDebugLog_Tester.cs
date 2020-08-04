@@ -31,10 +31,10 @@ public class CustomDebugLog_Tester : MonoBehaviour
         // 프로그래머 예측 값 : log or warning 및 log and warning 출력
         // 실제 값: log or warning만 출력
 
-        Wrapper.Debug.Log(CLogType.Log | CLogType.Error, "log and error", this);
+        Wrapper.Debug.Log(CLogType.Log | CLogType.Error, "log or error", this);
         Wrapper.Debug.Log(CLogType.Log & CLogType.Error, "log and error", this);
 
-        Wrapper.Debug.Log(CLogType.Log, "test", this);
+        Wrapper.Debug.Log(CLogType.Log, "log", this);
         Wrapper.Debug.Log(CLogType.Warning, "warning", this);
         Wrapper.Debug.Log(CLogType.Error, "error", this);
     }

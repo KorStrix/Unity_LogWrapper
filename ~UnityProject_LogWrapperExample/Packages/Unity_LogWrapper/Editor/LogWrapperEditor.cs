@@ -34,6 +34,7 @@ public class LogWrapperEditor : EditorWindow
 
     /* protected & private - Field declaration  */
 
+    private bool _bIsShow_LogSetting;
     private bool _bIsShow_WorkSequence;
 
     // ========================================================================== //
@@ -45,6 +46,7 @@ public class LogWrapperEditor : EditorWindow
     {
         LogWrapperEditor pWindow = (LogWrapperEditor)GetWindow(typeof(LogWrapperEditor), false);
 
+        pWindow.pEditorSetting = LogWrapperEditorSetting.pCurrentSetting;
         pWindow.minSize = new Vector2(300, 500);
         pWindow.Show();
     }
@@ -59,7 +61,7 @@ public class LogWrapperEditor : EditorWindow
         EditorGUILayout.HelpBox("This tool is for managing log filters by DefineSymbol after building Debog.Log on local PC.", MessageType.Info);
         EditorGUILayout.Space();
 
-        ShowWorkSequence();
+        Draw_WorkSequence();
 
 
         SerializedObject pSO = new SerializedObject(this);
@@ -117,32 +119,17 @@ public class LogWrapperEditor : EditorWindow
         Wrapper.Debug.Init_PrintLog_FilterFlag(list.ToArray());
     }
 
-    private void ShowWorkSequence()
+    private void Draw_WorkSequence()
     {
-        _bIsShow_WorkSequence = PlayerPrefs.GetInt(nameof(_bIsShow_WorkSequence)) == 0;
-
         EditorGUILayout.LabelField("Work sequence", EditorStyles.boldLabel);
 
-        if (_bIsShow_WorkSequence)
+        if (IsShowSetting(nameof(_bIsShow_WorkSequence)))
         {
             if (GUILayout.Button("Hide WorkSequence"))
             {
-                _bIsShow_WorkSequence = false;
-                PlayerPrefs.SetInt(nameof(_bIsShow_WorkSequence), 1);
+                SaveSetting_Hide(nameof(_bIsShow_WorkSequence), ref _bIsShow_WorkSequence);
             }
-        }
-        else
-        {
-            if (GUILayout.Button("Show WorkSequence"))
-            {
-                _bIsShow_WorkSequence = true;
-                PlayerPrefs.SetInt(nameof(_bIsShow_WorkSequence), 0);
-            }
-        }
 
-
-        if (_bIsShow_WorkSequence)
-        {
             EditorGUILayout.HelpBox(@"0. Create or set EditorSetting File.
 
 1. Create a LogFilter.
@@ -157,6 +144,13 @@ This is necessary when Nos. 1 and 2 are modified.
 4. Set which LogFilter to output from other LocalPC.
 (I used PlayerPrefs.)", MessageType.Info);
         }
+        else
+        {
+            if (GUILayout.Button("Show WorkSequence"))
+            {
+                SaveSetting_Show(nameof(_bIsShow_WorkSequence), ref _bIsShow_WorkSequence);
+            }
+        }
 
         EditorGUILayout.Space();
         EditorGUILayout.Space();
@@ -165,7 +159,7 @@ This is necessary when Nos. 1 and 2 are modified.
     private void Get_LogTypeEnable_FromPlayerPrefs(SerializedObject pSO_this)
     {
         LogFilter_PerBranch pCurrentBranch = LogFilter_PerBranch.Get_LogTypeEnable_FromPlayerPrefs(out bool bIsSave);
-        if (bIsSave || pLocalBranch == null || pLocalBranch.arrLogTypeEnable.Length != pCurrentBranch.arrLogTypeEnable.Length)
+        if (bIsSave || pLocalBranch == null || pLocalBranch.arrLogTypeEnable == null || pLocalBranch.arrLogTypeEnable.Length != pCurrentBranch.arrLogTypeEnable.Length)
         {
             pLocalBranch = pCurrentBranch;
             bIsSave = true;
@@ -191,30 +185,45 @@ This is necessary when Nos. 1 and 2 are modified.
 
     private void Draw_EditorSetting(SerializedObject pSO)
     {
-        if (pEditorSetting == null)
+        if (IsShowSetting(nameof(_bIsShow_LogSetting)))
         {
-            if (GUILayout.Button("Create Setting File And Set"))
+            if (GUILayout.Button("Hide LogSetting"))
             {
-                pEditorSetting = CreateAsset<LogWrapperEditorSetting>();
-                UnityEngine.Debug.Log("Create And Set");
+                SaveSetting_Hide(nameof(_bIsShow_LogSetting), ref _bIsShow_LogSetting);
             }
+
+            if (pEditorSetting == null)
+            {
+                if (GUILayout.Button("Create Setting File And Set"))
+                {
+                    pEditorSetting = LogWrapperUtility.CreateAsset<LogWrapperEditorSetting>();
+                    UnityEngine.Debug.Log("Create And Set");
+                }
+            }
+            else
+            {
+                if (GUILayout.Button("Create New Setting File"))
+                {
+                    LogWrapperUtility.CreateAsset<LogWrapperEditorSetting>();
+                    UnityEngine.Debug.Log("Create New");
+                }
+            }
+
+            _vecScrollPos_EditorSetting = EditorGUILayout.BeginScrollView(_vecScrollPos_EditorSetting, GUILayout.Height(300f));
+            {
+                SerializedProperty pProperty = pSO.FindProperty($"{nameof(pEditorSetting)}");
+                EditorGUILayout.PropertyField(pProperty);
+            }
+            EditorGUILayout.EndScrollView();
+            EditorGUILayout.Separator();
         }
         else
         {
-            if (GUILayout.Button("Create New Setting File"))
+            if (GUILayout.Button("Show LogSetting"))
             {
-                CreateAsset<LogWrapperEditorSetting>();
-                UnityEngine.Debug.Log("Create New");
+                SaveSetting_Show(nameof(_bIsShow_LogSetting), ref _bIsShow_LogSetting);
             }
         }
-
-        _vecScrollPos_EditorSetting = EditorGUILayout.BeginScrollView(_vecScrollPos_EditorSetting, GUILayout.Height(300f));
-        {
-            SerializedProperty pProperty = pSO.FindProperty($"{nameof(pEditorSetting)}");
-            EditorGUILayout.PropertyField(pProperty);
-        }
-        EditorGUILayout.EndScrollView();
-        EditorGUILayout.Separator();
     }
 
 
@@ -287,25 +296,22 @@ This is necessary when Nos. 1 and 2 are modified.
         UnityEngine.Debug.Log($"{strExportCS} Complete");
     }
 
-    #endregion Private
-
-    #region Tool
-
-    public static T CreateAsset<T>() where T : ScriptableObject
+    private bool IsShowSetting(string strSaveKey)
     {
-        T asset = ScriptableObject.CreateInstance<T>();
-
-        string assetPathAndName = AssetDatabase.GenerateUniqueAssetPath("Assets/New " + typeof(T) + ".asset");
-
-        AssetDatabase.CreateAsset(asset, assetPathAndName);
-
-        AssetDatabase.SaveAssets();
-        AssetDatabase.Refresh();
-        EditorUtility.FocusProjectWindow();
-        Selection.activeObject = asset;
-
-        return asset;
+        return PlayerPrefs.GetInt(strSaveKey) == 0;
     }
 
-    #endregion Tool
+    private void SaveSetting_Show(string strSaveKey, ref bool bValue)
+    {
+        bValue = true;
+        PlayerPrefs.SetInt(strSaveKey, 0);
+    }
+
+    private void SaveSetting_Hide(string strSaveKey, ref bool bValue)
+    {
+        bValue = false;
+        PlayerPrefs.SetInt(strSaveKey, 1);
+    }
+
+    #endregion Private
 }

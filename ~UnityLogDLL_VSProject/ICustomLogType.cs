@@ -2,13 +2,18 @@
 
 namespace CustomDebug
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public enum EOperatorType
     {
         None,
-        OR,
         AND,
     }
 
+    /// <summary xml:lang="fr">
+    /// Custom <see cref="Debug"/> 로그 출력에 필요한 Interface
+    /// </summary>
     public interface ICustomLogType
     {
         /// <summary>
@@ -32,7 +37,6 @@ namespace CustomDebug
         /// <para>Ex) 빨간색 : ff0000</para>
         /// </summary>
         string ColorHexCode { get; }
-
         EOperatorType eOperatorType { get; }
     }
 

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8262d5327de05464981bdcc1ca263d05, type: 3}
   m_Name: New DebugWrapperEditorSetting
   m_EditorClassIdentifier: 
+  bIsCurrent: 0
   strTypeName: CLogType
   strCSExportPath: CLogType
   arrLogType:
@@ -31,18 +32,18 @@ MonoBehaviour:
   - pEditorSetting: {fileID: 11400000}
     strBranchName: Alpha
     arrLogTypeEnable:
-    - strCustomLogName: asdf
-      bEnable: 1
-    - strCustomLogName: fdsa
-      bEnable: 1
-    - strCustomLogName: asddf
-      bEnable: 1
+    - strCustomLogName: Log
+      bEnable: 0
+    - strCustomLogName: Warning
+      bEnable: 0
+    - strCustomLogName: Error
+      bEnable: 0
   - pEditorSetting: {fileID: 11400000}
     strBranchName: Beta
     arrLogTypeEnable:
-    - strCustomLogName: asdf
-      bEnable: 1
-    - strCustomLogName: fdsa
-      bEnable: 1
-    - strCustomLogName: asddf
-      bEnable: 1
+    - strCustomLogName: Log
+      bEnable: 0
+    - strCustomLogName: Warning
+      bEnable: 0
+    - strCustomLogName: Error
+      bEnable: 0

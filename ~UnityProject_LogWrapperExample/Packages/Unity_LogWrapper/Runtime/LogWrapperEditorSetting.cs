@@ -1,13 +1,62 @@
-using System;
+﻿using System;
 using UnityEngine;
+using System.Linq;
 
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
+/// <summary>
+/// LogWrapper에 대한 세팅값들
+/// <para><see cref="Resources.Load(string)"/>를 통해 얻어오기 때문에 Resources 폴더 안에 있어야 합니다.</para>
+/// </summary>
 [Serializable]
 public class LogWrapperEditorSetting : ScriptableObject
 {
+    public static LogWrapperEditorSetting pCurrentSetting
+    {
+        get
+        {
+            if (_pCurrentSetting == null)
+            {
+                LogWrapperEditorSetting[] arrSetting = Resources.LoadAll<LogWrapperEditorSetting>("");
+
+                int iCurrentSettingCount = arrSetting.Count(p => p.bIsCurrent);
+                if (iCurrentSettingCount > 1)
+                {
+                    UnityEngine.Debug.LogWarning($"{nameof(LogWrapperEditorSetting)} - iCurrentSettingCount({iCurrentSettingCount}) > 1");
+                }
+
+                _pCurrentSetting = arrSetting.FirstOrDefault(p => p.bIsCurrent);
+                if (_pCurrentSetting == null)
+                {
+                    // 일단 현재 존재하는 것 중에 찾아서 넣습니다.
+                    _pCurrentSetting = arrSetting.FirstOrDefault();
+                    if (_pCurrentSetting == null)
+                    {
+                        if (Application.isEditor)
+                        {
+                            _pCurrentSetting = LogWrapperUtility.CreateAsset<LogWrapperEditorSetting>();
+                            UnityEngine.Debug.Log($"{nameof(LogWrapperEditorSetting)} is null / auto create default setting", _pCurrentSetting);
+                        }
+                        else
+                        {
+                            _pCurrentSetting = CreateInstance<LogWrapperEditorSetting>();
+                            UnityEngine.Debug.LogWarning($"{nameof(LogWrapperEditorSetting)} is null / auto create default setting");
+                        }
+                    }
+
+                    _pCurrentSetting.bIsCurrent = true;
+                }
+            }
+
+            return _pCurrentSetting;
+        }
+    }
+
+    static LogWrapperEditorSetting _pCurrentSetting;
+
+    public bool bIsCurrent;
     public string strTypeName;
     public string strCSExportPath;
     public CustomLogType[] arrLogType = new CustomLogType[0];
@@ -25,6 +74,9 @@ public class LogWrapperEditorSetting : ScriptableObject
 
         EditorGUI.BeginChangeCheck();
         {
+            var pProperty_bIsCurrent = pSerializeObject.FindProperty($"{nameof(LogWrapperEditorSetting.bIsCurrent)}");
+            EditorGUILayout.PropertyField(pProperty_bIsCurrent, true);
+
             var pProperty_arrDebugFilter = pSerializeObject.FindProperty($"{nameof(LogWrapperEditorSetting.arrLogType)}");
             EditorGUILayout.PropertyField(pProperty_arrDebugFilter, true);
 

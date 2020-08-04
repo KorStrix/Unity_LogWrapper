@@ -41,6 +41,8 @@ public partial class CLogType
         if (Application.isEditor)
         {
             LogFilter_PerBranch pLocalBranch = LogFilter_PerBranch.Get_LogTypeEnable_FromPlayerPrefs(out bool bIsChange);
+            pLocalBranch.pEditorSetting = LogWrapperEditorSetting.pCurrentSetting;
+
             if (bIsChange)
             {
                 Debug.LogError($"Get LogTypeEnable FromPlayerPrefs Fail");

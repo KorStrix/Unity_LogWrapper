@@ -4,6 +4,16 @@
         <name>UnityLogWrapper</name>
     </assembly>
     <members>
+        <member name="T:CustomDebug.EOperatorType">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:CustomDebug.ICustomLogType">
+            <summary xml:lang="fr">
+            Custom <see cref="T:UnityEngine.Debug"/> 로그 출력에 필요한 Interface
+            </summary>
+        </member>
         <member name="P:CustomDebug.ICustomLogType.Comment">
             <summary>
             주석

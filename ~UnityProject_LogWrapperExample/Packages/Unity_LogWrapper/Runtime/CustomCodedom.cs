@@ -1,4 +1,4 @@
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using System.Collections.Generic;
 
@@ -40,6 +40,8 @@ public partial class {0}
         if (Application.isEditor)
         {
             LogFilter_PerBranch pLocalBranch = LogFilter_PerBranch.Get_LogTypeEnable_FromPlayerPrefs(out bool bIsChange);
+            pLocalBranch.pEditorSetting = LogWrapperEditorSetting.pCurrentSetting;
+
             if (bIsChange)
             {
                 Debug.LogError($""Get LogTypeEnable FromPlayerPrefs Fail"");
