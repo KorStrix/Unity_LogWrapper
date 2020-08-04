@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Reflection;
 using UnityEngine;
 using System.Linq;
@@ -12,7 +12,7 @@ using UnityEditor;
 [Serializable]
 public class LogFilter_PerBranch
 {
-    public const string const_strPlayerPefs_SaveKey = nameof(LogFilter_PerBranch);
+    public const string const_strPlayerPrefs_SaveKey = nameof(LogFilter_PerBranch);
 
     private static string const_strFormat =
 @"#if {0}
@@ -29,7 +29,7 @@ public class LogFilter_PerBranch
     public static LogFilter_PerBranch Get_LogTypeEnable_FromPlayerPrefs(out bool bIsFail)
     {
         LogFilter_PerBranch pLocalBranch = new LogFilter_PerBranch();
-        bIsFail = LogWrapperUtility.Load_FromPlayerPrefs(LogFilter_PerBranch.const_strPlayerPefs_SaveKey, ref pLocalBranch) == false;
+        bIsFail = LogWrapperUtility.Load_FromPlayerPrefs(LogFilter_PerBranch.const_strPlayerPrefs_SaveKey, ref pLocalBranch) == false;
 
         return pLocalBranch;
     }
@@ -82,9 +82,19 @@ public class LogFilter_PerBranchDrawer : PropertyDrawer
     {
         EditorGUI.BeginProperty(position, label, property);
         {
+            Type pFieldType = fieldInfo.FieldType;
+
             SerializedProperty pProperty_strBranchName = property.FindPropertyRelative(nameof(LogFilter_PerBranch.strBranchName));
-            EditorGUI.PropertyField(position, pProperty_strBranchName, true);
-            label.text = $"{pProperty_strBranchName.stringValue}";
+
+            // 단일형일 때는 Branch 이름을 적지 않습니다.
+            bool bIsDraw_BranchField = pFieldType.IsArray || pFieldType.IsGenericType;
+            if (bIsDraw_BranchField)
+            {
+                EditorGUI.PropertyField(position, pProperty_strBranchName, true);
+                label.text = $"{pProperty_strBranchName.stringValue}";
+
+                position.y += const_fHeightPerLine;
+            }
 
             SerializedProperty pProperty_pEditorSetting = property.FindPropertyRelative(nameof(LogFilter_PerBranch.pSetting));
             if (pProperty_pEditorSetting == null)
@@ -97,8 +107,8 @@ public class LogFilter_PerBranchDrawer : PropertyDrawer
             if (pSetting == null)
                 return;
 
-            position.y += const_fHeightPerLine;
-            EditorGUI.indentLevel++;
+            if(bIsDraw_BranchField)
+                EditorGUI.indentLevel++;
             {
                 SerializedObject pSO = property.serializedObject;
                 LogFilter_PerBranch pBranch = GetThis(property);
@@ -112,8 +122,8 @@ public class LogFilter_PerBranchDrawer : PropertyDrawer
                 SerializedProperty pProperty_arrLogTypeEnable = property.FindPropertyRelative(nameof(LogFilter_PerBranch.arrLogTypeEnable));
                 EditorGUI.PropertyField(position, pProperty_arrLogTypeEnable, true);
             }
-            EditorGUI.indentLevel--;
-
+            if (bIsDraw_BranchField)
+                EditorGUI.indentLevel--;
         }
         EditorGUI.EndProperty();
     }

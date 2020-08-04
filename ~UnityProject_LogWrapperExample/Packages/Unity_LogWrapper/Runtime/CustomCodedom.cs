@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Text;
 using System.Collections.Generic;
 
@@ -46,7 +46,8 @@ public partial class {0}
 
             if (bIsChange)
             {
-                Debug.LogError($""Get LogTypeEnable FromPlayerPrefs Fail"");
+                Debug.LogError($""Get LogTypeEnable FromPlayerPrefs Fail - Created Default"");
+                LogWrapperUtility.Save_ToPlayerPrefs(LogFilter_PerBranch.const_strPlayerPrefs_SaveKey, pLocalBranch);
                 return;
             }
 

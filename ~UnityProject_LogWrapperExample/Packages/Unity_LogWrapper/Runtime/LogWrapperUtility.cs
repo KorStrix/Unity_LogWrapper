@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.IO;
 
 #if UNITY_EDITOR
@@ -55,9 +55,11 @@ public static class LogWrapperUtility
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
         EditorUtility.FocusProjectWindow();
-        Selection.activeObject = asset;
+
+        T pCreatedAsset = (T)AssetDatabase.LoadAssetAtPath(assetPathAndName, typeof(T));
+        Selection.activeObject = pCreatedAsset;
 #endif
 
-        return asset;
+        return pCreatedAsset;
     }
 }

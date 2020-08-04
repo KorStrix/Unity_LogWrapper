@@ -1,4 +1,4 @@
-﻿#region Header
+#region Header
 /*	============================================
  *	Author   			    : Strix
  *	Initial Creation Date 	: 2020-03-15
@@ -74,7 +74,9 @@ public class LogWrapperEditor : EditorWindow
         EditorGUILayout.Space();
         if (pSetting != null)
         {
-            Draw_CSExportButton();
+            if(IsShowSetting(nameof(_bIsShow_LogSetting)))
+                Draw_CSExportButton();
+
             EditorGUILayout.Space();
             EditorGUILayout.Space();
 
@@ -175,7 +177,7 @@ This is necessary when Nos. 1 and 2 are modified.
 
         if (bIsSave)
         {
-            LogWrapperUtility.Save_ToPlayerPrefs(LogFilter_PerBranch.const_strPlayerPefs_SaveKey, pLocalBranch);
+            LogWrapperUtility.Save_ToPlayerPrefs(LogFilter_PerBranch.const_strPlayerPrefs_SaveKey, pLocalBranch);
             pSO_this.ApplyModifiedProperties();
             EditorUtility.SetDirty(pSO_this.targetObject);
         }
@@ -244,7 +246,7 @@ This is necessary when Nos. 1 and 2 are modified.
         {
             pSO.ApplyModifiedProperties();
             EditorUtility.SetDirty(pSO.targetObject);
-            LogWrapperUtility.Save_ToPlayerPrefs(LogFilter_PerBranch.const_strPlayerPefs_SaveKey, pLocalBranch);
+            LogWrapperUtility.Save_ToPlayerPrefs(LogFilter_PerBranch.const_strPlayerPrefs_SaveKey, pLocalBranch);
         }
     }
 
