@@ -14,17 +14,17 @@ public class CustomLogType_Enable
     public bool bEnable;
 
     /// <summary>
-    /// <see cref="LogWrapperEditorSetting"/>에 있는 <see cref="CustomLogType"/>와 내용이 다를 시 arrMatchTarget를 변경시킵니다.
+    /// <see cref="LogWrapperSetting"/>에 있는 <see cref="CustomLogType"/>와 내용이 다를 시 arrMatchTarget를 변경시킵니다.
     /// </summary>
-    /// <param name="pEditorSetting"></param>
+    /// <param name="pSetting"></param>
     /// <param name="arrMatchTarget"></param>
     /// <returns>내용물이 서로 틀리면 true</returns>
-    public static bool DoMatch_LogTypeEnableArray(LogWrapperEditorSetting pEditorSetting, ref CustomLogType_Enable[] arrMatchTarget)
+    public static bool DoMatch_LogTypeEnableArray(LogWrapperSetting pSetting, ref CustomLogType_Enable[] arrMatchTarget)
     {
         if (arrMatchTarget == null)
             arrMatchTarget = new CustomLogType_Enable[0];
 
-        string[] arrLogTypeName_EditorSetting = pEditorSetting.arrLogType.Select(p => p.strLogTypeName).ToArray();
+        string[] arrLogTypeName_EditorSetting = pSetting.arrLogType.Select(p => p.strLogTypeName).ToArray();
         string[] arrLogTypeName_Target = arrMatchTarget.Select(p => p.strCustomLogName).ToArray();
 
         var arrIntersect = arrLogTypeName_EditorSetting.Intersect(arrLogTypeName_Target);
@@ -35,7 +35,7 @@ public class CustomLogType_Enable
         if (bIsRequireUpdate_LogTypeEnableArray)
         {
             List<CustomLogType_Enable> listLogTypeEnable = new List<CustomLogType_Enable>();
-            foreach (CustomLogType pLogType in pEditorSetting.arrLogType)
+            foreach (CustomLogType pLogType in pSetting.arrLogType)
             {
                 var pLogTypeEnable = arrMatchTarget.FirstOrDefault(p => p.strCustomLogName == pLogType.strLogTypeName);
                 if (pLogTypeEnable == null)

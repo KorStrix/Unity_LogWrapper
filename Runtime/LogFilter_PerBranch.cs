@@ -12,7 +12,7 @@ using UnityEditor;
 [Serializable]
 public class LogFilter_PerBranch
 {
-    public const string const_strPlayerPefs_SaveKey = nameof(LogFilter_PerBranch);
+    public const string const_strPlayerPrefs_SaveKey = nameof(LogFilter_PerBranch);
 
     private static string const_strFormat =
 @"#if {0}
@@ -21,7 +21,7 @@ public class LogFilter_PerBranch
 #endif";
 
 
-    public LogWrapperEditorSetting pEditorSetting;
+    public LogWrapperSetting pSetting;
 
     public string strBranchName;
     public CustomLogType_Enable[] arrLogTypeEnable;
@@ -29,25 +29,24 @@ public class LogFilter_PerBranch
     public static LogFilter_PerBranch Get_LogTypeEnable_FromPlayerPrefs(out bool bIsFail)
     {
         LogFilter_PerBranch pLocalBranch = new LogFilter_PerBranch();
-        bIsFail = LogWrapperUtility.Load_FromPlayerPrefs(LogFilter_PerBranch.const_strPlayerPefs_SaveKey, ref pLocalBranch) == false;
+        bIsFail = LogWrapperUtility.Load_FromPlayerPrefs(LogFilter_PerBranch.const_strPlayerPrefs_SaveKey, ref pLocalBranch) == false;
 
         return pLocalBranch;
     }
 
     public CustomLogType[] GetEnableLogType()
     {
-        if (pEditorSetting == null)
+        if (pSetting == null)
         {
-            Debug.LogError($"GetEnableLogType - pEditorSetting == null");
+            Debug.LogError($"GetEnableLogType - pSetting == null");
             return new CustomLogType[0];
         }
 
-        CustomLogType[] arrLogType = pEditorSetting.arrLogType;
+        CustomLogType[] arrLogType = pSetting.arrLogType;
         
         return arrLogTypeEnable
             .Where(p => p.bEnable)
-            .Select(p =>
-                arrLogType.FirstOrDefault(pLogType => pLogType.LogTypeName.Equals(p.strCustomLogName)))
+            .Select(p => arrLogType.FirstOrDefault(pLogType => pLogType.LogTypeName.Equals(p.strCustomLogName)))
             .Where(p => p != null)
             .ToArray();
     }
@@ -61,8 +60,8 @@ public class LogFilter_PerBranch
     {
         StringBuilder strBuilder = new StringBuilder();
 
-        var arrEnableLogtype = arrLogTypeEnable.Where(p => p.bEnable);
-        foreach(var pLogType in arrEnableLogtype)
+        var arrEnableLogType = arrLogTypeEnable.Where(p => p.bEnable);
+        foreach(var pLogType in arrEnableLogType)
             strBuilder.AppendLine($"            {strListFieldName}.Add({pLogType.strCustomLogName});");
 
         return strBuilder.ToString();
@@ -83,55 +82,48 @@ public class LogFilter_PerBranchDrawer : PropertyDrawer
     {
         EditorGUI.BeginProperty(position, label, property);
         {
-            SerializedProperty pProperty_strBranchName = property.FindPropertyRelative(nameof(LogFilter_PerBranch.strBranchName));
-            EditorGUI.PropertyField(position, pProperty_strBranchName, true);
-            label.text = $"{pProperty_strBranchName.stringValue}";
+            Type pFieldType = fieldInfo.FieldType;
 
-            SerializedProperty pProperty_pEditorSetting = property.FindPropertyRelative(nameof(LogFilter_PerBranch.pEditorSetting));
+            SerializedProperty pProperty_strBranchName = property.FindPropertyRelative(nameof(LogFilter_PerBranch.strBranchName));
+
+            // 단일형일 때는 Branch 이름을 적지 않습니다.
+            bool bIsDraw_BranchField = pFieldType.IsArray || pFieldType.IsGenericType;
+            if (bIsDraw_BranchField)
+            {
+                EditorGUI.PropertyField(position, pProperty_strBranchName, true);
+                label.text = $"{pProperty_strBranchName.stringValue}";
+
+                position.y += const_fHeightPerLine;
+            }
+
+            SerializedProperty pProperty_pEditorSetting = property.FindPropertyRelative(nameof(LogFilter_PerBranch.pSetting));
             if (pProperty_pEditorSetting == null)
             {
                 Debug.LogError($"{label.text} - Error pProperty_pEditorSetting == null");
                 return;
             }
 
-            LogWrapperEditorSetting pEditorSetting = pProperty_pEditorSetting.objectReferenceValue as LogWrapperEditorSetting;
-            if (pEditorSetting == null)
+            LogWrapperSetting pSetting = pProperty_pEditorSetting.objectReferenceValue as LogWrapperSetting;
+            if (pSetting == null)
                 return;
 
-            CustomLogType[] arrLogType = pEditorSetting.arrLogType;
-
-            position.y += const_fHeightPerLine;
-            EditorGUI.indentLevel++;
+            if(bIsDraw_BranchField)
+                EditorGUI.indentLevel++;
             {
                 SerializedObject pSO = property.serializedObject;
                 LogFilter_PerBranch pBranch = GetThis(property);
 
-                if (CustomLogType_Enable.DoMatch_LogTypeEnableArray(pEditorSetting, ref pBranch.arrLogTypeEnable))
+                if (CustomLogType_Enable.DoMatch_LogTypeEnableArray(pSetting, ref pBranch.arrLogTypeEnable))
                 {
                     pSO.ApplyModifiedProperties();
                     EditorUtility.SetDirty(pSO.targetObject);
                 }
 
-                CustomLogType_Enable[] arrLogTypeEnable = pBranch.arrLogTypeEnable;
-
-                //for (int i = 0; i < arrLogTypeEnable.Length; i++)
-                //{
-                //    SerializedProperty pPropertyElement = pProperty_arrLogTypeEnable.GetArrayElementAtIndex(i);
-                //    // arrLogTypeEnable[i].DoDrawEditorGUI(position, pPropertyElement);
-                //}
-
                 SerializedProperty pProperty_arrLogTypeEnable = property.FindPropertyRelative(nameof(LogFilter_PerBranch.arrLogTypeEnable));
                 EditorGUI.PropertyField(position, pProperty_arrLogTypeEnable, true);
-
-                //for (int i = 0; i < pProperty_arrLogTypeEnable.arraySize; i++)
-                //{
-                //    SerializedProperty pPropertyElement = pProperty_arrLogTypeEnable.GetArrayElementAtIndex(i);
-                //    EditorGUI.PropertyField(position, pPropertyElement, true);
-                //    position.y += const_fHeightPerLine;
-                //}
             }
-            EditorGUI.indentLevel--;
-
+            if (bIsDraw_BranchField)
+                EditorGUI.indentLevel--;
         }
         EditorGUI.EndProperty();
     }

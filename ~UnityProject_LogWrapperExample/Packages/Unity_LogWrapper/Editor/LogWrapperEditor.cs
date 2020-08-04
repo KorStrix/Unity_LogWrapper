@@ -29,7 +29,7 @@ public class LogWrapperEditor : EditorWindow
 
     /* public - Field declaration               */
 
-    public LogWrapperEditorSetting pEditorSetting;
+    public LogWrapperSetting pSetting;
     public LogFilter_PerBranch pLocalBranch;
 
     /* protected & private - Field declaration  */
@@ -46,7 +46,7 @@ public class LogWrapperEditor : EditorWindow
     {
         LogWrapperEditor pWindow = (LogWrapperEditor)GetWindow(typeof(LogWrapperEditor), false);
 
-        pWindow.pEditorSetting = LogWrapperEditorSetting.pCurrentSetting;
+        pWindow.pSetting = LogWrapperSetting.pCurrentSetting;
         pWindow.minSize = new Vector2(300, 500);
         pWindow.Show();
     }
@@ -72,7 +72,7 @@ public class LogWrapperEditor : EditorWindow
 
 
         EditorGUILayout.Space();
-        if (pEditorSetting != null)
+        if (pSetting != null)
         {
             Draw_CSExportButton();
             EditorGUILayout.Space();
@@ -165,11 +165,11 @@ This is necessary when Nos. 1 and 2 are modified.
             bIsSave = true;
         }
 
-        bIsSave = CustomLogType_Enable.DoMatch_LogTypeEnableArray(pEditorSetting, ref pLocalBranch.arrLogTypeEnable);
+        bIsSave = CustomLogType_Enable.DoMatch_LogTypeEnableArray(pSetting, ref pLocalBranch.arrLogTypeEnable);
 
-        if (pLocalBranch.pEditorSetting != pEditorSetting)
+        if (pLocalBranch.pSetting != pSetting)
         {
-            pLocalBranch.pEditorSetting = pEditorSetting;
+            pLocalBranch.pSetting = pSetting;
             bIsSave = true;
         }
 
@@ -192,11 +192,11 @@ This is necessary when Nos. 1 and 2 are modified.
                 SaveSetting_Hide(nameof(_bIsShow_LogSetting), ref _bIsShow_LogSetting);
             }
 
-            if (pEditorSetting == null)
+            if (pSetting == null)
             {
                 if (GUILayout.Button("Create Setting File And Set"))
                 {
-                    pEditorSetting = LogWrapperUtility.CreateAsset<LogWrapperEditorSetting>();
+                    pSetting = LogWrapperUtility.CreateAsset<LogWrapperSetting>();
                     UnityEngine.Debug.Log("Create And Set");
                 }
             }
@@ -204,14 +204,14 @@ This is necessary when Nos. 1 and 2 are modified.
             {
                 if (GUILayout.Button("Create New Setting File"))
                 {
-                    LogWrapperUtility.CreateAsset<LogWrapperEditorSetting>();
+                    LogWrapperUtility.CreateAsset<LogWrapperSetting>();
                     UnityEngine.Debug.Log("Create New");
                 }
             }
 
             _vecScrollPos_EditorSetting = EditorGUILayout.BeginScrollView(_vecScrollPos_EditorSetting, GUILayout.Height(300f));
             {
-                SerializedProperty pProperty = pSO.FindProperty($"{nameof(pEditorSetting)}");
+                SerializedProperty pProperty = pSO.FindProperty($"{nameof(pSetting)}");
                 EditorGUILayout.PropertyField(pProperty);
             }
             EditorGUILayout.EndScrollView();
@@ -253,24 +253,24 @@ This is necessary when Nos. 1 and 2 are modified.
         const string strExportCS = "Export CS";
 
         EditorGUILayout.LabelField($"LogFilter Type Name");
-        pEditorSetting.strTypeName = EditorGUILayout.TextField(pEditorSetting.strTypeName);
+        pSetting.strTypeName = EditorGUILayout.TextField(pSetting.strTypeName);
 
         EditorGUILayout.BeginHorizontal();
         {
             EditorGUILayout.LabelField($"{strExportCS} Path (Assets/*.cs)");
-            pEditorSetting.strCSExportPath = EditorGUILayout.TextField(pEditorSetting.strCSExportPath);
+            pSetting.strCSExportPath = EditorGUILayout.TextField(pSetting.strCSExportPath);
 
             if (GUILayout.Button(strExportCS))
             {
-                if (string.IsNullOrEmpty(pEditorSetting.strTypeName))
+                if (string.IsNullOrEmpty(pSetting.strTypeName))
                 {
-                    UnityEngine.Debug.LogError($"{strExportCS} - string.IsNullOrEmpty({nameof(pEditorSetting.strTypeName)})");
+                    UnityEngine.Debug.LogError($"{strExportCS} - string.IsNullOrEmpty({nameof(pSetting.strTypeName)})");
                     return;
                 }
 
-                if (string.IsNullOrEmpty(pEditorSetting.strCSExportPath))
+                if (string.IsNullOrEmpty(pSetting.strCSExportPath))
                 {
-                    UnityEngine.Debug.LogError($"{strExportCS} - string.IsNullOrEmpty({nameof(pEditorSetting.strCSExportPath)})");
+                    UnityEngine.Debug.LogError($"{strExportCS} - string.IsNullOrEmpty({nameof(pSetting.strCSExportPath)})");
                     return;
                 }
 
@@ -284,13 +284,13 @@ This is necessary when Nos. 1 and 2 are modified.
     private void ExportCS(string strExportCS)
     {
         CustomCodedom pCodeDom = new CustomCodedom();
-        foreach (var pFilter in pEditorSetting.arrLogType)
+        foreach (var pFilter in pSetting.arrLogType)
             pCodeDom.DoAddClass(pFilter);
 
-        foreach (var pBranch in pEditorSetting.arrBranch)
+        foreach (var pBranch in pSetting.arrBranch)
             pCodeDom.DoAddBranch(pBranch);
 
-        pCodeDom.DoExportCS(pEditorSetting.strTypeName, $"{Application.dataPath}/{pEditorSetting.strCSExportPath}");
+        pCodeDom.DoExportCS(pSetting.strTypeName, $"{Application.dataPath}/{pSetting.strCSExportPath}");
 
         AssetDatabase.Refresh();
         UnityEngine.Debug.Log($"{strExportCS} Complete");

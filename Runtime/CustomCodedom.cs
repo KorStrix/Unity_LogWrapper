@@ -19,6 +19,8 @@ namespace Wrapper
  *
  *  툴로 자동으로 생성되는 코드입니다.
  *  이 파일을 직접 수정하시면 나중에 툴로 생성할 때 날아갑니다.
+
+ *  UnityEditor Tabs - Tools - LogWrapperEditor Window를 통해 수정할 수 있습니다.
    ============================================= */
 
 using UnityEngine;
@@ -40,9 +42,12 @@ public partial class {0}
         if (Application.isEditor)
         {
             LogFilter_PerBranch pLocalBranch = LogFilter_PerBranch.Get_LogTypeEnable_FromPlayerPrefs(out bool bIsChange);
+            pLocalBranch.pSetting = LogWrapperSetting.pCurrentSetting;
+
             if (bIsChange)
             {
-                Debug.LogError($""Get LogTypeEnable FromPlayerPrefs Fail"");
+                Debug.LogError($""Get LogTypeEnable FromPlayerPrefs Fail - Created Default"");
+                LogWrapperUtility.Save_ToPlayerPrefs(LogFilter_PerBranch.const_strPlayerPrefs_SaveKey, pLocalBranch);
                 return;
             }
 

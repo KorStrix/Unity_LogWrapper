@@ -14,28 +14,11 @@ using UnityEditor;
 [System.Serializable]
 public class CustomLogType : ICustomLogType
 {
-    #region DefaultFilter
-    /// <summary>
-    /// <see cref="Debug.Log(object)"/>로 출력하고 싶은 경우 이 플래그를 넣으시면 됩니다
-    /// </summary>
-    public static CustomLogType Log = new CustomLogType(nameof(Log), 1 << 0);
-
-    /// <summary>
-    /// <see cref="Debug.LogWarning(object)"/>로 출력하고 싶은 경우 이 플래그를 넣으시면 됩니다
-    /// </summary>
-    public static CustomLogType Warning = new CustomLogType(nameof(Warning), 1 << 1, "ffff00");
-
-    /// <summary>
-    /// <see cref="Debug.LogError(object)"/>로 출력하고 싶은 경우 이 플래그를 넣으시면 됩니다.
-    /// </summary>
-    public static CustomLogType Error = new CustomLogType(nameof(Error), 1 << 2, "ff0000");
-    #endregion
-
-
-    public string Comment { get; }
+    public string Comment => strComment;
     public string LogTypeName => strLogTypeName;
     public ulong Number => lNumber;
     public string ColorHexCode => strColorHexCode;
+    public EOperatorType eOperatorType => _eOperatorType;
 
     /// <summary>
     /// 디버그 필터 플래그
@@ -59,6 +42,9 @@ public class CustomLogType : ICustomLogType
     /// </summary>
     public string strColorHexCode;
 
+    EOperatorType _eOperatorType;
+
+
     public CustomLogType()
     {
     }
@@ -74,6 +60,7 @@ public class CustomLogType : ICustomLogType
         this.strLogTypeName = strLogTypeName;
         this.lNumber = lNumber;
         this.strColorHexCode = strColorHexCode;
+        _eOperatorType = EOperatorType.None;
     }
 
     public string ToCSharpCodeString()
@@ -82,7 +69,7 @@ public class CustomLogType : ICustomLogType
         strBuilder.AppendLine("    /// <summary>");
         strBuilder.AppendLine($"    /// {strComment}");
         strBuilder.AppendLine("    /// </summary>");
-        strBuilder.AppendLine($"    public static {nameof(CustomLogType)} {strLogTypeName} = new CustomLogType(\"{strLogTypeName}\", {lNumber}, \"{strColorHexCode}\");");
+        strBuilder.AppendLine($"    public static {nameof(CustomLogType)} {strLogTypeName} => new CustomLogType(\"{strLogTypeName}\", {lNumber}, \"{strColorHexCode}\");");
 
         return strBuilder.ToString();
     }
@@ -91,16 +78,14 @@ public class CustomLogType : ICustomLogType
 
     public static CustomLogType operator |(CustomLogType a, CustomLogType b)
     {
-        CustomLogType pNewLogType = new CustomLogType(
-            $"({a.strLogTypeName}|{b.strLogTypeName})", a.lNumber | b.lNumber);
-
-        return pNewLogType;
+        return new CustomLogType($"({a.strLogTypeName}|{b.strLogTypeName})", a.lNumber | b.lNumber);
     }
 
     public static CustomLogType operator &(CustomLogType a, CustomLogType b)
     {
         CustomLogType pNewLogType = new CustomLogType(
-            $"({a.strLogTypeName}&{b.strLogTypeName})", a.lNumber & b.lNumber);
+            $"({a.strLogTypeName}&{b.strLogTypeName})", a.lNumber | b.lNumber);
+        pNewLogType._eOperatorType = EOperatorType.AND;
 
         return pNewLogType;
     }
@@ -116,7 +101,7 @@ public class CustomLogType : ICustomLogType
 public class CustomLogTypeDrawer : PropertyDrawer
 {
     private const float fLabelWidth_strLogTypeName = 100f;
-    private const float fLabelWidth_lNumber = 50f;
+    private const float fLabelWidth_lNumber = 75f;
     private const float fLabelWidth_strColorHexCode = 50f;
 
 

@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
+using System.IO;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public static class LogWrapperUtility
 {
@@ -33,5 +35,31 @@ public static class LogWrapperUtility
         }
 
         return true;
+    }
+
+    public static T CreateAsset<T>() where T : ScriptableObject
+    {
+        T asset = ScriptableObject.CreateInstance<T>();
+
+#if UNITY_EDITOR
+        const string strCreateAssetPath = "Resources";
+
+        string strAbsoluteDirectory = Application.dataPath + $"/{strCreateAssetPath}";
+        if (Directory.Exists(strAbsoluteDirectory) == false)
+            Directory.CreateDirectory(strAbsoluteDirectory);
+
+        string assetPathAndName = AssetDatabase.GenerateUniqueAssetPath($"Assets/{strCreateAssetPath}/New {typeof(T)}.asset");
+
+        AssetDatabase.CreateAsset(asset, assetPathAndName);
+
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+        EditorUtility.FocusProjectWindow();
+
+        T pCreatedAsset = (T)AssetDatabase.LoadAssetAtPath(assetPathAndName, typeof(T));
+        Selection.activeObject = pCreatedAsset;
+#endif
+
+        return pCreatedAsset;
     }
 }
