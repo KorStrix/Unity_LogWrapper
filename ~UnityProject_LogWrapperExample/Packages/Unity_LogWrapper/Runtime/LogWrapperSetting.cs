@@ -17,7 +17,7 @@ public class LogWrapperSetting : ScriptableObject
     {
         get
         {
-            if (_pCurrentSetting == null)
+            //if (_pCurrentSetting == null)
             {
                 LogWrapperSetting[] arrSetting = Resources.LoadAll<LogWrapperSetting>("");
 

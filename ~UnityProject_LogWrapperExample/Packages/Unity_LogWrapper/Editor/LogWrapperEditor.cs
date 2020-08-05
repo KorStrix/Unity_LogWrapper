@@ -177,9 +177,8 @@ This is necessary when Nos. 1 and 2 are modified.
 
         if (bIsSave)
         {
+            SaveSO(pSO_this);
             LogWrapperUtility.Save_ToPlayerPrefs(LogFilter_PerBranch.const_strPlayerPrefs_SaveKey, pLocalBranch);
-            pSO_this.ApplyModifiedProperties();
-            EditorUtility.SetDirty(pSO_this.targetObject);
         }
     }
 
@@ -214,7 +213,12 @@ This is necessary when Nos. 1 and 2 are modified.
             _vecScrollPos_EditorSetting = EditorGUILayout.BeginScrollView(_vecScrollPos_EditorSetting, GUILayout.Height(300f));
             {
                 SerializedProperty pProperty = pSO.FindProperty($"{nameof(pSetting)}");
-                EditorGUILayout.PropertyField(pProperty);
+                EditorGUI.BeginChangeCheck();
+                {
+                    EditorGUILayout.PropertyField(pProperty);
+                }
+                if (EditorGUI.EndChangeCheck())
+                    SaveSO(pProperty.serializedObject);
             }
             EditorGUILayout.EndScrollView();
             EditorGUILayout.Separator();
@@ -244,8 +248,7 @@ This is necessary when Nos. 1 and 2 are modified.
 
         if (GUI.changed)
         {
-            pSO.ApplyModifiedProperties();
-            EditorUtility.SetDirty(pSO.targetObject);
+            SaveSO(pSO);
             LogWrapperUtility.Save_ToPlayerPrefs(LogFilter_PerBranch.const_strPlayerPrefs_SaveKey, pLocalBranch);
         }
     }
@@ -313,6 +316,13 @@ This is necessary when Nos. 1 and 2 are modified.
     {
         bValue = false;
         PlayerPrefs.SetInt(strSaveKey, 1);
+    }
+
+    private static void SaveSO(SerializedObject pSettingSO)
+    {
+        pSettingSO.ApplyModifiedProperties();
+        EditorUtility.SetDirty(pSettingSO.targetObject);
+        AssetDatabase.SaveAssets();
     }
 
     #endregion Private

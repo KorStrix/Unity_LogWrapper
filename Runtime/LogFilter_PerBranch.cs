@@ -43,7 +43,7 @@ public class LogFilter_PerBranch
         }
 
         CustomLogType[] arrLogType = pSetting.arrLogType;
-        
+
         return arrLogTypeEnable
             .Where(p => p.bEnable)
             .Select(p => arrLogType.FirstOrDefault(pLogType => pLogType.LogTypeName.Equals(p.strCustomLogName)))

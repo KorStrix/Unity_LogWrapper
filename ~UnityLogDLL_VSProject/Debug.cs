@@ -59,7 +59,7 @@ public static partial class Debug
         _ulFilterFlags |= iHashCode;
         _mapColorHexCode_ByString.Add(strLogTypeName, strHexCode);
 
-        strBuilder_ForInitLog.Append($"<color=#{strHexCode}>[{strLogTypeName}]</color> /");
+        strBuilder_ForInitLog.Append($"<color=#{strHexCode}>[{strLogTypeName}]({iHashCode})</color> /");
     }
 
     /// <summary>
