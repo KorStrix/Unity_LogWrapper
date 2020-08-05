@@ -118,7 +118,7 @@ public class LogWrapperEditor : EditorWindow
 
         list.AddRange(pLocalBranch.GetEnableLogType());
 
-        Wrapper.Debug.Init_PrintLog_FilterFlag(list.ToArray());
+        Wrapper.Debug.DoInit_PrintLog_FilterFlag(list.ToArray());
     }
 
     private void Draw_WorkSequence()

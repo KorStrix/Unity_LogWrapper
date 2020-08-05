@@ -6,15 +6,15 @@ public class CustomDebugLog_Tester : MonoBehaviour
 {
     private void OnEnable()
     {
-        Wrapper.Debug.Init_PrintLog_FilterFlag(CLogType.Log);
+        Wrapper.Debug.DoInit_PrintLog_FilterFlag(CLogType.Log);
         PrintLog();
 
 
-        //Wrapper.Debug.Init_PrintLog_FilterFlag(CLogType.Warning);
+        //Wrapper.Debug.DoInit_PrintLog_FilterFlag(CLogType.Warning);
         //PrintLog();
 
 
-        Wrapper.Debug.Init_PrintLog_FilterFlag(CLogType.Log, CLogType.Warning);
+        Wrapper.Debug.DoInit_PrintLog_FilterFlag(CLogType.Log, CLogType.Warning);
         PrintLog();
     }
 

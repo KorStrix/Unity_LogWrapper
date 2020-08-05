@@ -71,6 +71,6 @@ public partial class CLogType
 
         }
 
-        Wrapper.Debug.Init_PrintLog_FilterFlag(list.ToArray());
+        Wrapper.Debug.DoInit_PrintLog_FilterFlag(list.ToArray());
     }
 }
