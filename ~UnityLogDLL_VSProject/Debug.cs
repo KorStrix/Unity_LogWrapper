@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CustomDebug;
 using System.Text;
-
+using System.Text.RegularExpressions;
 using Object = UnityEngine.Object;
 
 #pragma warning disable CS0419 // cref 특성에 모호한 참조가 있음
@@ -24,7 +24,7 @@ namespace Wrapper
 
         static Dictionary<string, string> _mapColorHexCode_ByString = new Dictionary<string, string>();
         static ulong _ulFilterFlags;
-        static ILogPrinter _OnLogFormat = new DefaultLogFormat_Editor();
+        static ILogPrinter _OnLogFormat = new DefaultLogFormat_Without_CallStack();
 
         private static Dictionary<ulong, List<ILogLogic>> _mapOnPrintLog_LogicList = new Dictionary<ulong, List<ILogLogic>>();
 
@@ -74,8 +74,8 @@ namespace Wrapper
         {
             switch (eName)
             {
-                case EDefaultLogFormatName.DefaultLogFormat_Editor: _OnLogFormat = new DefaultLogFormat_Editor(); break;
-                case EDefaultLogFormatName.DefaultLogFormat_Build: _OnLogFormat = new DefaultLogFormat_Build(); break;
+                case EDefaultLogFormatName.DefaultLogFormat_Without_CallStack: _OnLogFormat = new DefaultLogFormat_Without_CallStack(); break;
+                case EDefaultLogFormatName.DefaultLogFormat_With_CallStack: _OnLogFormat = new DefaultLogFormat_With_CallStack(); break;
             }
         }
 
@@ -195,7 +195,18 @@ namespace Wrapper
 
         private static void PrintLog(ICustomLogType pFilterFlags, object message, Object context, LogType eLogType, string strMemberName, string strFilePath, int iSourceLineNumber)
         {
-            _OnLogFormat.ILogPrinter_OnPrintLog(_mapColorHexCode_ByString.OrderBy(p => p.Key.Length * -1), new LogPrintInfo(pFilterFlags, message, context, strMemberName, strFilePath, iSourceLineNumber), out var strMessageOut);
+            string strFilterFlag = pFilterFlags.LogTypeName;
+
+            foreach (var pColorString in _mapColorHexCode_ByString.OrderBy(p => p.Key.Length * -1))
+            {
+                string strKey = pColorString.Key;
+                string strPattern = $"(?={strKey}([^a-z|A-Z|<|_]|))({strKey})";
+
+                strFilterFlag = Regex.Replace(strFilterFlag, strPattern, $"<color=#{pColorString.Value}>{strKey}</color>");
+            }
+
+
+            _OnLogFormat.ILogPrinter_OnPrintLog(strFilterFlag, new LogPrintInfo(pFilterFlags, message, context, strMemberName, strFilePath, iSourceLineNumber), out var strMessageOut);
 
             var arrExecuteLogic = _mapOnPrintLog_LogicList.Where(p => Check_IsContainFilter(p.Key, pFilterFlags)).Select(p => p.Value);
 

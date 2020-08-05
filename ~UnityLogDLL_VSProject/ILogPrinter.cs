@@ -40,56 +40,38 @@ public struct LogPrintInfo
 
 public interface ILogPrinter
 {
-    void ILogPrinter_OnPrintLog(IEnumerable<KeyValuePair<string, string>> arrHexCode_ByString, LogPrintInfo sLogPrintInfo, out string strMessageResult);
+    void ILogPrinter_OnPrintLog(string strFilterFlag, LogPrintInfo sLogPrintInfo, out string strMessageResult);
 }
 
 namespace CustomDebug
 {
-    public enum EDefaultLogFormatName
+    public enum EDefaultLogFormatName // Enum의 Value와 타입 명이 일치해야 합니다.
+
     {
-        DefaultLogFormat_Editor,
-        DefaultLogFormat_Build,
+        DefaultLogFormat_Without_CallStack,
+        DefaultLogFormat_With_CallStack,
     }
 
-    public class DefaultLogFormat_Editor : ILogPrinter
+    public class DefaultLogFormat_Without_CallStack : ILogPrinter
     {
         /// <summary>
         /// 기본 로그 포멧
         /// </summary>
-        public void ILogPrinter_OnPrintLog(IEnumerable<KeyValuePair<string, string>> arrHexCode_ByString, LogPrintInfo sLogPrintInfo, out string strMessageResult)
+        public void ILogPrinter_OnPrintLog(string strFilterFlag, LogPrintInfo sLogPrintInfo, out string strMessageResult)
         {
-            string strFilterFlag = sLogPrintInfo.iLogType.LogTypeName;
-
-            foreach (var pColorString in arrHexCode_ByString)
-            {
-                string strKey = pColorString.Key;
-                string strPattern = $"(?={strKey}([^a-z|A-Z|<|_]|))({strKey})";
-
-                strFilterFlag = Regex.Replace(strFilterFlag, strPattern, $"<color=#{pColorString.Value}>{strKey}</color>");
-            }
-
             strMessageResult = $"<b>[{strFilterFlag}]</b> {sLogPrintInfo.pLogMessage}";
         }
     }
 
-    public class DefaultLogFormat_Build : ILogPrinter
+    public class DefaultLogFormat_With_CallStack : ILogPrinter
     {
         /// <summary>
-        /// 기본 로그 포멧
+        /// 기본 로그 포멧 - 파일
         /// </summary>
-        public void ILogPrinter_OnPrintLog(IEnumerable<KeyValuePair<string, string>> arrHexCode_ByString, LogPrintInfo sLogPrintInfo, out string strMessageResult)
+        public void ILogPrinter_OnPrintLog(string strFilterFlag, LogPrintInfo sLogPrintInfo, out string strMessageResult)
         {
-            string strFilterFlag = sLogPrintInfo.iLogType.LogTypeName;
             string strFilePath = sLogPrintInfo.strFilePath.Replace('\\', '/');
             string strFileName = Path.GetFileNameWithoutExtension(strFilePath);
-
-            foreach (var pColorString in arrHexCode_ByString)
-            {
-                string strKey = pColorString.Key;
-                string strPattern = $"(?={strKey}([^a-z|A-Z|<|_]|))({strKey})";
-
-                strFilterFlag = Regex.Replace(strFilterFlag, strPattern, $"<color=#{pColorString.Value}>{strKey}</color>");
-            }
 
             strMessageResult = $"[{strFilterFlag}] [{strFileName}.{sLogPrintInfo.strMember}.{sLogPrintInfo.iSourceLineNumber}] -  {sLogPrintInfo.pLogMessage}";
         }
