@@ -39,7 +39,7 @@ public static class LogWrapperUtility
 
     public static T CreateAsset<T>() where T : ScriptableObject
     {
-        T asset = ScriptableObject.CreateInstance<T>();
+        T pAsset = ScriptableObject.CreateInstance<T>();
 
 #if UNITY_EDITOR
         const string strCreateAssetPath = "Resources";
@@ -50,16 +50,16 @@ public static class LogWrapperUtility
 
         string assetPathAndName = AssetDatabase.GenerateUniqueAssetPath($"Assets/{strCreateAssetPath}/New {typeof(T)}.asset");
 
-        AssetDatabase.CreateAsset(asset, assetPathAndName);
+        AssetDatabase.CreateAsset(pAsset, assetPathAndName);
 
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
         EditorUtility.FocusProjectWindow();
 
-        T pCreatedAsset = (T)AssetDatabase.LoadAssetAtPath(assetPathAndName, typeof(T));
-        Selection.activeObject = pCreatedAsset;
+        pAsset = (T)AssetDatabase.LoadAssetAtPath(assetPathAndName, typeof(T));
+        Selection.activeObject = pAsset;
 #endif
 
-        return pCreatedAsset;
+        return pAsset;
     }
 }

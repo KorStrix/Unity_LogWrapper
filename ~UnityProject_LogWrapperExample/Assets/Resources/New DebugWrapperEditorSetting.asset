@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8262d5327de05464981bdcc1ca263d05, type: 3}
   m_Name: New DebugWrapperEditorSetting
   m_EditorClassIdentifier: 
-  bIsCurrent: 0
+  bIsCurrent: 1
   strTypeName: CLogType
   strCSExportPath: CLogType
   arrLogType:
@@ -29,7 +29,7 @@ MonoBehaviour:
     lNumber: 4
     strColorHexCode: 13FF00
   arrBranch:
-  - pEditorSetting: {fileID: 11400000}
+  - pSetting: {fileID: 0}
     strBranchName: Alpha
     arrLogTypeEnable:
     - strCustomLogName: Log
@@ -38,7 +38,7 @@ MonoBehaviour:
       bEnable: 0
     - strCustomLogName: Error
       bEnable: 0
-  - pEditorSetting: {fileID: 11400000}
+  - pSetting: {fileID: 0}
     strBranchName: Beta
     arrLogTypeEnable:
     - strCustomLogName: Log
