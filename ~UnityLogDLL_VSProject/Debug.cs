@@ -164,7 +164,15 @@ namespace Wrapper
         /// <summary>
         /// 현재 Wrapper에 필터가 들어있는지 유무
         /// </summary>
-        public static bool Check_IsContainFilter(ulong ulFilterFlags, ICustomLogType pFilterFlags)
+        public static bool Check_IsContainFilter(ICustomLogType pFilterFlags)
+        {
+            return Check_IsContainFilter(_ulFilterFlags, pFilterFlags);
+        }
+
+        /// <summary>
+        /// 현재 Wrapper에 필터가 들어있는지 유무
+        /// </summary>
+        static bool Check_IsContainFilter(ulong ulFilterFlags, ICustomLogType pFilterFlags)
         {
             if (pFilterFlags.Equals(Default))
                 return true;

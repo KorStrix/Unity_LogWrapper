@@ -82,7 +82,7 @@ namespace Wrapper
 
         #region LogWrapping
 
-        private static void Log_Custom(ICustomLogType pFilterFlags, object message, Object context, string strMemberName, string strFilePath, int iSourceLineNumber)
+        private static void Log_Custom(ICustomLogType pFilterFlags, object message, Object context, string strMemberName = "", string strFilePath = "", int iSourceLineNumber = -1)
         {
             if (Check_IsContainFilter(_ulFilterFlags, pFilterFlags) == false)
                 return;
@@ -90,7 +90,7 @@ namespace Wrapper
             PrintLog(pFilterFlags, message, context, LogType.Log, strMemberName, strFilePath, iSourceLineNumber);
         }
 
-        private static void LogWarning_Custom(ICustomLogType pFilterFlags, object message, Object context, string strMemberName, string strFilePath, int iSourceLineNumber)
+        private static void LogWarning_Custom(ICustomLogType pFilterFlags, object message, Object context, string strMemberName = "", string strFilePath = "", int iSourceLineNumber = -1)
         {
             if (Check_IsContainFilter(_ulFilterFlags, pFilterFlags) == false)
                 return;
@@ -98,7 +98,7 @@ namespace Wrapper
             PrintLog(pFilterFlags, message, context, LogType.Warning, strMemberName, strFilePath, iSourceLineNumber);
         }
 
-        private static void LogError_Custom(ICustomLogType pFilterFlags, object message, Object context, string strMemberName, string strFilePath, int iSourceLineNumber)
+        private static void LogError_Custom(ICustomLogType pFilterFlags, object message, Object context, string strMemberName = "", string strFilePath = "", int iSourceLineNumber = -1)
         {
             PrintLog(pFilterFlags, message, context, LogType.Error, strMemberName, strFilePath, iSourceLineNumber);
         }

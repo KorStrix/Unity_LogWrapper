@@ -10,14 +10,14 @@ namespace Wrapper {
     public static partial class Debug
     {
 #pragma warning disable CS1591 // 공개된 형식 또는 멤버에 대한 XML 주석이 없습니다.
-        public static void Log(object message, Object context, [CallerMemberName] string strMemberName = "", [CallerFilePath] string strFilePath = "", [CallerLineNumber] int iSourceLineNumber = -1)
+        public static void Log(object message, Object context)
         {
-            Log_Custom(Default, message, context, strMemberName, strFilePath, iSourceLineNumber);
+            Log_Custom(Default, message, context);
         }
 
-        public static void Log(object message, [CallerMemberName] string strMemberName = "", [CallerFilePath] string strFilePath = "", [CallerLineNumber] int iSourceLineNumber = -1)
+        public static void Log(object message)
         {
-            Log_Custom(Default, message, null, strMemberName, strFilePath, iSourceLineNumber);
+            Log_Custom(Default, message, null);
         }
 
         public static void LogFormat(Object context, string format, params object[] args)
@@ -30,14 +30,14 @@ namespace Wrapper {
             Log_Custom(Default, string.Format(format, args), null, "", "", -1);
         }
 
-        public static void LogWarning(object message, [CallerMemberName] string strMemberName = "", [CallerFilePath] string strFilePath = "", [CallerLineNumber] int iSourceLineNumber = -1)
+        public static void LogWarning(object message)
         {
-            LogWarning_Custom(Default, message, null, strMemberName, strFilePath, iSourceLineNumber);
+            LogWarning_Custom(Default, message, null);
         }
 
-        public static void LogWarning(object message, Object context, [CallerMemberName] string strMemberName = "", [CallerFilePath] string strFilePath = "", [CallerLineNumber] int iSourceLineNumber = -1)
+        public static void LogWarning(object message, Object context)
         {
-            LogWarning_Custom(Default, message, context, strMemberName, strFilePath, iSourceLineNumber);
+            LogWarning_Custom(Default, message, context);
         }
 
         public static void LogWarningFormat(string format, params object[] args)
@@ -50,9 +50,9 @@ namespace Wrapper {
             LogWarning_Custom(Default, string.Format(format, args), context, "", "", -1);
         }
 
-        public static void LogError(object message, Object context, [CallerMemberName] string strMemberName = "", [CallerFilePath] string strFilePath = "", [CallerLineNumber] int iSourceLineNumber = -1)
+        public static void LogError(object message, Object context)
         {
-            LogError_Custom(Default, message, context, strMemberName, strFilePath, iSourceLineNumber);
+            LogError_Custom(Default, message, context);
         }
 
         public static void LogException(System.Exception exception)
@@ -64,9 +64,9 @@ namespace Wrapper {
             LogException_Custom(exception, context);
         }
 
-        public static void LogError(object message, [CallerMemberName] string strMemberName = "", [CallerFilePath] string strFilePath = "", [CallerLineNumber] int iSourceLineNumber = -1)
+        public static void LogError(object message)
         {
-            LogError_Custom(Default, message, null, strMemberName, strFilePath, iSourceLineNumber);
+            LogError_Custom(Default, message, null);
         }
 
         public static void LogErrorFormat(string format, params object[] args)

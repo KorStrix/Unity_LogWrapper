@@ -74,11 +74,11 @@ public class LogWrapperSetting : ScriptableObject
 
         EditorGUI.BeginChangeCheck();
         {
-            var pProperty_bIsCurrent = pSerializeObject.FindProperty($"{nameof(LogWrapperSetting.bIsCurrent)}");
-            EditorGUILayout.PropertyField(pProperty_bIsCurrent, true);
+            EditorGUILayout.PropertyField(pSerializeObject.FindProperty($"{nameof(LogWrapperSetting.bIsCurrent)}"));
+            EditorGUILayout.PropertyField(pSerializeObject.FindProperty($"{nameof(LogWrapperSetting.strTypeName)}"));
+            EditorGUILayout.PropertyField(pSerializeObject.FindProperty($"{nameof(LogWrapperSetting.strCSExportPath)}"));
 
-            var pProperty_arrDebugFilter = pSerializeObject.FindProperty($"{nameof(LogWrapperSetting.arrLogType)}");
-            EditorGUILayout.PropertyField(pProperty_arrDebugFilter, true);
+            EditorGUILayout.PropertyField(pSerializeObject.FindProperty($"{nameof(LogWrapperSetting.arrLogType)}"), true);
 
             var pProperty_arrTest = pSerializeObject.FindProperty($"{nameof(LogWrapperSetting.arrBranch)}");
             for (int i = 0; i < pProperty_arrTest.arraySize; i++)

@@ -11,10 +11,11 @@
    ============================================ */
 #endregion Header
 
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using Wrapper;
+using System.Linq;
+using CustomDebug;
 
 /// <summary>
 /// 
@@ -58,7 +59,7 @@ public class LogWrapperEditor : EditorWindow
     private void OnGUI()
     {
         EditorGUILayout.LabelField("Log Wrapper Editor", EditorStyles.boldLabel);
-        EditorGUILayout.HelpBox("This tool is for managing log filters by DefineSymbol after building Debog.Log on local PC.", MessageType.Info);
+        EditorGUILayout.HelpBox("This tool is for managing log filters by DefineSymbol after building Debug.Log on local PC.", MessageType.Info);
         EditorGUILayout.Space();
 
         Draw_WorkSequence();
@@ -107,8 +108,6 @@ public class LogWrapperEditor : EditorWindow
 
     private static void SetCurrentLogFilter()
     {
-        List<CustomDebug.ICustomLogType> list = new List<CustomDebug.ICustomLogType>();
-
         LogFilter_PerBranch pLocalBranch = LogFilter_PerBranch.Get_LogTypeEnable_FromPlayerPrefs(out bool bIsChange);
         if (bIsChange)
         {
@@ -116,9 +115,7 @@ public class LogWrapperEditor : EditorWindow
             return;
         }
 
-        list.AddRange(pLocalBranch.GetEnableLogType());
-
-        Wrapper.Debug.Init_PrintLog_FilterFlag(list.ToArray());
+        Wrapper.Debug.DoInit_PrintLog_FilterFlag(pLocalBranch.GetEnableLogType().OfType<ICustomLogType>().ToArray());
     }
 
     private void Draw_WorkSequence()
@@ -255,16 +252,10 @@ This is necessary when Nos. 1 and 2 are modified.
 
     private void Draw_CSExportButton()
     {
-        const string strExportCS = "Export CS";
-
-        EditorGUILayout.LabelField($"LogFilter Type Name");
-        pSetting.strTypeName = EditorGUILayout.TextField(pSetting.strTypeName);
+        string strExportCS = $"Export Editor Setting // Path is (Assets/{pSetting.strCSExportPath}.cs)";
 
         EditorGUILayout.BeginHorizontal();
         {
-            EditorGUILayout.LabelField($"{strExportCS} Path (Assets/*.cs)");
-            pSetting.strCSExportPath = EditorGUILayout.TextField(pSetting.strCSExportPath);
-
             if (GUILayout.Button(strExportCS))
             {
                 if (string.IsNullOrEmpty(pSetting.strTypeName))

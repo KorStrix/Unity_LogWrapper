@@ -105,6 +105,11 @@
             <param name="eLogType">catch시 출력할 로그 타입</param>
             <returns></returns>
         </member>
+        <member name="M:Wrapper.Debug.Check_IsContainFilter(CustomDebug.ICustomLogType)">
+            <summary>
+            현재 Wrapper에 필터가 들어있는지 유무
+            </summary>
+        </member>
         <member name="M:Wrapper.Debug.Check_IsContainFilter(System.UInt64,CustomDebug.ICustomLogType)">
             <summary>
             현재 Wrapper에 필터가 들어있는지 유무
