@@ -1,4 +1,4 @@
-# 개요
+# 1. 개요
 
 유니티 Debug.Log를 기능을 추가한 래핑한 클래스입니다.
 
@@ -40,9 +40,23 @@ private void PrintLog()
 }
 ```
 
-# 설치 방법
+![](https://github.com/KorStrix/Unity_LogWrapper/blob/master/ForGithub/Example.gif?raw=true)
+
+# 2. 설치 방법
 
 [링크](https://github.com/KorStrix/Unity_DevelopmentDocs/blob/master/GitHub/UnityPackage.md)를 참고바랍니다.
 
-**Unity Editor 상단탭/Tools/LogWrapper Editor 메뉴가 뜨면 설치 성공!**
+# 3. 사용 방법
+
+## 3-1. 세팅 방법
+
+1. Unity Editor 상단 탭 - Tools - LogWrapper Editor를 클릭합니다.
+2. 기존에 Setting 파일이 없을 경우 Asset/Resource에 자동으로 Setting파일이 생성됩니다.
+3. 여기서 로그의 타입이름과 해당 로그타입의 이름을 **출력할 CS파일 이름**을 설정합니다.
+4. 로그 타입을 정의합니다.
+5. Export 버튼을 눌러 로그타입이 담긴 cs파일을 생성합니다.
+
+![](https://github.com/KorStrix/Unity_LogWrapper/blob/master/ForGithub/SettingExample.gif?raw=true)
+
+**Unity 프로젝트에서 Assets/Resources/ 에 3번에서 설정한 .cs파일이 있으면 성공!**
 
