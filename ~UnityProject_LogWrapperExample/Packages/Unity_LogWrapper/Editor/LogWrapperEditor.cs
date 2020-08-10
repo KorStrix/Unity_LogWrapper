@@ -108,7 +108,7 @@ public class LogWrapperEditor : EditorWindow
 
     private static void SetCurrentLogFilter()
     {
-        LogFilter_PerBranch pLocalBranch = LogFilter_PerBranch.Get_LogTypeEnable_FromPlayerPrefs(out bool bIsChange);
+        LogFilter_PerBranch pLocalBranch = LogFilter_PerBranch.Get_LogTypeEnable_FromEditorPrefs(out bool bIsChange);
         if (bIsChange)
         {
             UnityEngine.Debug.LogError($"Get LogTypeEnable FromPlayerPrefs Fail");
@@ -157,7 +157,7 @@ This is necessary when Nos. 1 and 2 are modified.
 
     private void Get_LogTypeEnable_FromPlayerPrefs(SerializedObject pSO_this)
     {
-        LogFilter_PerBranch pCurrentBranch = LogFilter_PerBranch.Get_LogTypeEnable_FromPlayerPrefs(out bool bIsSave);
+        LogFilter_PerBranch pCurrentBranch = LogFilter_PerBranch.Get_LogTypeEnable_FromEditorPrefs(out bool bIsSave);
         if (bIsSave || pLocalBranch == null || pLocalBranch.arrLogTypeEnable == null || pLocalBranch.arrLogTypeEnable.Length != pCurrentBranch.arrLogTypeEnable.Length)
         {
             pLocalBranch = pCurrentBranch;
@@ -175,7 +175,7 @@ This is necessary when Nos. 1 and 2 are modified.
         if (bIsSave)
         {
             SaveSO(pSO_this);
-            LogWrapperUtility.Save_ToPlayerPrefs(LogFilter_PerBranch.const_strPlayerPrefs_SaveKey, pLocalBranch);
+            LogWrapperUtility.Save_ToEditorPrefs(LogFilter_PerBranch.const_strPlayerPrefs_SaveKey, pLocalBranch);
         }
     }
 
@@ -246,7 +246,7 @@ This is necessary when Nos. 1 and 2 are modified.
         if (GUI.changed)
         {
             SaveSO(pSO);
-            LogWrapperUtility.Save_ToPlayerPrefs(LogFilter_PerBranch.const_strPlayerPrefs_SaveKey, pLocalBranch);
+            LogWrapperUtility.Save_ToEditorPrefs(LogFilter_PerBranch.const_strPlayerPrefs_SaveKey, pLocalBranch);
         }
     }
 

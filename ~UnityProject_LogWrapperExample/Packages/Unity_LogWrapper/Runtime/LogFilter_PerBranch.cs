@@ -26,10 +26,10 @@ public class LogFilter_PerBranch
     public string strBranchName;
     public CustomLogType_Enable[] arrLogTypeEnable;
 
-    public static LogFilter_PerBranch Get_LogTypeEnable_FromPlayerPrefs(out bool bIsFail)
+    public static LogFilter_PerBranch Get_LogTypeEnable_FromEditorPrefs(out bool bIsFail)
     {
         LogFilter_PerBranch pLocalBranch = new LogFilter_PerBranch();
-        bIsFail = LogWrapperUtility.Load_FromPlayerPrefs(LogFilter_PerBranch.const_strPlayerPrefs_SaveKey, ref pLocalBranch) == false;
+        bIsFail = LogWrapperUtility.Load_FromEditorPrefs(LogFilter_PerBranch.const_strPlayerPrefs_SaveKey, ref pLocalBranch) == false;
 
         return pLocalBranch;
     }

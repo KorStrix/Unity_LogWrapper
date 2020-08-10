@@ -41,13 +41,13 @@ public partial class {0}
         // 에디터일 경우
         if (Application.isEditor)
         {
-            LogFilter_PerBranch pLocalBranch = LogFilter_PerBranch.Get_LogTypeEnable_FromPlayerPrefs(out bool bIsChange);
+            LogFilter_PerBranch pLocalBranch = LogFilter_PerBranch.Get_LogTypeEnable_FromEditorPrefs(out bool bIsChange);
             pLocalBranch.pSetting = LogWrapperSetting.pCurrentSetting;
 
             if (bIsChange)
             {
                 Debug.LogError($""Get LogTypeEnable FromPlayerPrefs Fail - Created Default"");
-                LogWrapperUtility.Save_ToPlayerPrefs(LogFilter_PerBranch.const_strPlayerPrefs_SaveKey, pLocalBranch);
+                LogWrapperUtility.Save_ToEditorPrefs(LogFilter_PerBranch.const_strPlayerPrefs_SaveKey, pLocalBranch);
                 return;
             }
 

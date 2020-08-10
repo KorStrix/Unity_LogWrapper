@@ -7,32 +7,36 @@ using UnityEditor;
 
 public static class LogWrapperUtility
 {
-    public static void Save_ToPlayerPrefs(string strKey, object pSerializeObject)
+    public static void Save_ToEditorPrefs(string strKey, object pSerializeObject)
     {
+#if UNITY_EDITOR
         string strJsonText = JsonUtility.ToJson(pSerializeObject);
-        PlayerPrefs.SetString(strKey, strJsonText);
+        EditorPrefs.SetString(strKey, strJsonText);
+#endif
     }
 
-    public static bool Load_FromPlayerPrefs<T>(string strKey, ref T pLoadObject_NotNull, System.Action<string> OnError = null)
+    public static bool Load_FromEditorPrefs<T>(string strKey, ref T pLoadObject_NotNull, System.Action<string> OnError = null)
     {
-        if (PlayerPrefs.HasKey(strKey) == false)
+#if UNITY_EDITOR
+        if (EditorPrefs.HasKey(strKey) == false)
         {
-            OnError?.Invoke($"{nameof(Load_FromPlayerPrefs)} - PlayerPrefs.HasKey({strKey}) == false");
+            OnError?.Invoke($"{nameof(Load_FromEditorPrefs)} - PlayerPrefs.HasKey({strKey}) == false");
 
             return false;
         }
 
-        string strJson = PlayerPrefs.GetString(strKey);
+        string strJson = EditorPrefs.GetString(strKey);
         try
         {
             JsonUtility.FromJsonOverwrite(strJson, pLoadObject_NotNull);
         }
         catch (System.Exception e)
         {
-            OnError?.Invoke($"{nameof(Load_FromPlayerPrefs)} - FromJsonOverwrite Fail - {strKey} Value : \n{strJson}\n{e}");
+            OnError?.Invoke($"{nameof(Load_FromEditorPrefs)} - FromJsonOverwrite Fail - {strKey} Value : \n{strJson}\n{e}");
 
             return false;
         }
+#endif
 
         return true;
     }
