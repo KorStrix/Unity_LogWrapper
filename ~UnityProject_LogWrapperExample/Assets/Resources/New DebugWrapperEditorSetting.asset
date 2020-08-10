@@ -19,7 +19,7 @@ MonoBehaviour:
   - strLogTypeName: Log
     strComment: aa
     lNumber: 1
-    strColorHexCode: FF0000
+    strColorHexCode: 00FF0B
   - strLogTypeName: Warning
     strComment: bb
     lNumber: 2
@@ -27,9 +27,9 @@ MonoBehaviour:
   - strLogTypeName: Error
     strComment: cc
     lNumber: 4
-    strColorHexCode: 13FF00
+    strColorHexCode: FF0021
   arrBranch:
-  - pSetting: {fileID: 0}
+  - pSetting: {fileID: 11400000}
     strBranchName: Alpha
     arrLogTypeEnable:
     - strCustomLogName: Log
@@ -38,7 +38,7 @@ MonoBehaviour:
       bEnable: 0
     - strCustomLogName: Error
       bEnable: 0
-  - pSetting: {fileID: 0}
+  - pSetting: {fileID: 11400000}
     strBranchName: Beta
     arrLogTypeEnable:
     - strCustomLogName: Log

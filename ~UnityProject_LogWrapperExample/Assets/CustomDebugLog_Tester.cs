@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class CustomDebugLog_Tester : MonoBehaviour
 {
-    private void OnEnable()
+    private void Awake()
     {
         Wrapper.Debug.DoInit_PrintLog_FilterFlag(CLogType.Log);
         PrintLog();
 
-
-        //Wrapper.Debug.DoInit_PrintLog_FilterFlag(CLogType.Warning);
-        //PrintLog();
-
-
         Wrapper.Debug.DoInit_PrintLog_FilterFlag(CLogType.Log, CLogType.Warning);
+        PrintLog();
+    }
+
+    private void OnEnable()
+    {
         PrintLog();
     }
 

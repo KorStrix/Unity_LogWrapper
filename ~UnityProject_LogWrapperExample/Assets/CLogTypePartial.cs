@@ -15,6 +15,6 @@ public partial class CLogType
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     public static void Init2()
     {
-        Wrapper.Debug.DoSet_OnLogFormat_Default(CustomDebug.EDefaultLogFormatName.DefaultLogFormat_With_CallStack);
+        Wrapper.Debug.DoSet_OnLogFormat_Default(CustomDebug.EDefaultLogFormatName.DefaultLogFormat_Without_CallStack);
     }
 }
