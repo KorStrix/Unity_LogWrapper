@@ -1,9 +1,8 @@
-﻿using CustomDebug;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Text.RegularExpressions;
-using UnityEngine;
+using CustomDebug;
+
+using Object = UnityEngine.Object;
 
 public struct LogPrintInfo
 {
@@ -13,6 +12,7 @@ public struct LogPrintInfo
 
     public string strMember;
     public string strFilePath;
+    public string strStackTrace;
     public int iSourceLineNumber;
 
     public LogPrintInfo(ICustomLogType iLogType, object pLogMessage, Object pContextObject)
@@ -21,17 +21,19 @@ public struct LogPrintInfo
         this.pLogMessage = pLogMessage;
         this.pContextObject = pContextObject;
 
+        this.strStackTrace = "";
         this.strMember = "";
         this.strFilePath = "";
         iSourceLineNumber = -1;
     }
 
-    public LogPrintInfo(ICustomLogType iLogType, object pLogMessage, Object pContextObject, string strMember, string strFilePath, int iSourceLineNumber)
+    public LogPrintInfo(ICustomLogType iLogType, object pLogMessage, Object pContextObject, string strStackTrace, string strMember, string strFilePath, int iSourceLineNumber)
     {
         this.iLogType = iLogType;
         this.pLogMessage = pLogMessage;
         this.pContextObject = pContextObject;
 
+        this.strStackTrace = strStackTrace;
         this.strMember = strMember;
         this.strFilePath = strFilePath;
         this.iSourceLineNumber = iSourceLineNumber;
@@ -66,14 +68,15 @@ namespace CustomDebug
     public class DefaultLogFormat_With_CallStack : ILogPrinter
     {
         /// <summary>
-        /// 기본 로그 포멧 - 파일
+        /// 기본 로그 포멧 - 콜스택 포함용
         /// </summary>
         public void ILogPrinter_OnPrintLog(string strFilterFlag, LogPrintInfo sLogPrintInfo, out string strMessageResult)
         {
             string strFilePath = sLogPrintInfo.strFilePath.Replace('\\', '/');
             string strFileName = Path.GetFileNameWithoutExtension(strFilePath);
 
-            strMessageResult = $"[{strFilterFlag}] [{strFileName}.{sLogPrintInfo.strMember}.{sLogPrintInfo.iSourceLineNumber}] -  {sLogPrintInfo.pLogMessage}";
+            strMessageResult = $"[{strFilterFlag}] [{strFileName}.{sLogPrintInfo.strMember}.{sLogPrintInfo.iSourceLineNumber}] -  {sLogPrintInfo.pLogMessage}\n" +
+            $"{sLogPrintInfo.strStackTrace}";
         }
     }
 }

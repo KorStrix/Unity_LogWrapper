@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Object = UnityEngine.Object;
 
@@ -12,47 +13,47 @@ namespace Wrapper {
 #pragma warning disable CS1591 // 공개된 형식 또는 멤버에 대한 XML 주석이 없습니다.
         public static void Log(object message, Object context)
         {
-            Log_Custom(Default, message, context);
+            Log_Custom(Default, Environment.StackTrace, message, context);
         }
 
         public static void Log(object message)
         {
-            Log_Custom(Default, message, null);
+            Log_Custom(Default, Environment.StackTrace, message, null);
         }
 
         public static void LogFormat(Object context, string format, params object[] args)
         {
-            Log_Custom(Default, string.Format(format, args), context, "", "", -1);
+            Log_Custom(Default, Environment.StackTrace, string.Format(format, args), context, "", "", -1);
         }
 
         public static void LogFormat(string format, params object[] args)
         {
-            Log_Custom(Default, string.Format(format, args), null, "", "", -1);
+            Log_Custom(Default, Environment.StackTrace, string.Format(format, args), null, "", "", -1);
         }
 
         public static void LogWarning(object message)
         {
-            LogWarning_Custom(Default, message, null);
+            LogWarning_Custom(Default, Environment.StackTrace, message, null);
         }
 
         public static void LogWarning(object message, Object context)
         {
-            LogWarning_Custom(Default, message, context);
+            LogWarning_Custom(Default, Environment.StackTrace, message, context);
         }
 
         public static void LogWarningFormat(string format, params object[] args)
         {
-            LogWarning_Custom(Default, string.Format(format, args), null, "", "", -1);
+            LogWarning_Custom(Default, Environment.StackTrace, string.Format(format, args), null, "", "", -1);
         }
 
         public static void LogWarningFormat(Object context, string format, params object[] args)
         {
-            LogWarning_Custom(Default, string.Format(format, args), context, "", "", -1);
+            LogWarning_Custom(Default, Environment.StackTrace, string.Format(format, args), context, "", "", -1);
         }
 
         public static void LogError(object message, Object context)
         {
-            LogError_Custom(Default, message, context);
+            LogError_Custom(Default, Environment.StackTrace, message, context);
         }
 
         public static void LogException(System.Exception exception)
@@ -66,17 +67,17 @@ namespace Wrapper {
 
         public static void LogError(object message)
         {
-            LogError_Custom(Default, message, null);
+            LogError_Custom(Default, Environment.StackTrace, message, null);
         }
 
         public static void LogErrorFormat(string format, params object[] args)
         {
-            LogError_Custom(Default, string.Format(format, args), null, "", "", -1);
+            LogError_Custom(Default, Environment.StackTrace, string.Format(format, args), null, "", "", -1);
         }
 
         public static void LogErrorFormat(Object context, string format, params object[] args)
         {
-            LogError_Custom(Default, string.Format(format, args), context, "", "", -1);
+            LogError_Custom(Default, Environment.StackTrace, string.Format(format, args), context, "", "", -1);
         }
 
         [Conditional("UNITY_ASSERTIONS")]

@@ -201,7 +201,7 @@ namespace Wrapper
             strBuilder_ForInitLog.Append($"<color=#{strHexCode}>[{strLogTypeName}]({iHashCode})</color> /");
         }
 
-        private static void PrintLog(ICustomLogType pFilterFlags, object message, Object context, LogType eLogType, string strMemberName, string strFilePath, int iSourceLineNumber)
+        private static void PrintLog(ICustomLogType pFilterFlags, string strStacktrace, object message, Object context, LogType eLogType, string strMemberName, string strFilePath, int iSourceLineNumber)
         {
             string strFilterFlag = pFilterFlags.LogTypeName;
 
@@ -214,7 +214,8 @@ namespace Wrapper
             }
 
 
-            _OnLogFormat.ILogPrinter_OnPrintLog(strFilterFlag, new LogPrintInfo(pFilterFlags, message, context, strMemberName, strFilePath, iSourceLineNumber), out var strMessageOut);
+            _OnLogFormat.ILogPrinter_OnPrintLog(strFilterFlag, new LogPrintInfo(pFilterFlags, message, context,
+                strStacktrace, strMemberName, strFilePath, iSourceLineNumber), out var strMessageOut);
 
             var arrExecuteLogic = _mapOnPrintLog_LogicList.Where(p => Check_IsContainFilter(p.Key, pFilterFlags)).Select(p => p.Value);
 

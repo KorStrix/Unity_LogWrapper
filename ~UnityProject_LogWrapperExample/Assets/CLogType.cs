@@ -40,7 +40,7 @@ public partial class CLogType
         // 에디터일 경우
         if (Application.isEditor)
         {
-            LogFilter_PerBranch pLocalBranch = LogFilter_PerBranch.Get_LogTypeEnable_FromPlayerPrefs(out bool bIsChange);
+            LogFilter_PerBranch pLocalBranch = LogFilter_PerBranch.Get_LogTypeEnable_FromEditorPrefs(out bool bIsChange);
             pLocalBranch.pSetting = LogWrapperSetting.pCurrentSetting;
 
             if (bIsChange)
