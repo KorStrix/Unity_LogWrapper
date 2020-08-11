@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using CustomDebug;
-
+using UnityEngine;
 using Object = UnityEngine.Object;
 
 public struct LogPrintInfo
@@ -42,35 +42,56 @@ public struct LogPrintInfo
 
 public interface ILogPrinter
 {
-    void ILogPrinter_OnPrintLog(string strFilterFlag, LogPrintInfo sLogPrintInfo, out string strMessageResult);
+    void ILogPrinter_OnPrintLog(LogType eLogType, string strFilterFlag, LogPrintInfo sLogPrintInfo, out string strMessageResult);
 }
 
 namespace CustomDebug
 {
     public enum EDefaultLogFormatName // Enum의 Value와 타입 명이 일치해야 합니다.
-
     {
+        /// <summary>
+        /// 기본 로그 포멧
+        /// <para>$"<b>[{strFilterFlag}]</b> {sLogPrintInfo.pLogMessage}"</para>
+        /// </summary>
         DefaultLogFormat_Without_CallStack,
+
+        /// <summary>
+        /// 기본 로그 포멧 - 멤버 정보(함수명, 줄번호)
+        /// <para>$"[{strFilterFlag}] [{strFileName}.{sLogPrintInfo.strMember}.{sLogPrintInfo.iSourceLineNumber}] -  {sLogPrintInfo.pLogMessage}"</para>
+        /// </summary>
+        DefaultLogFormat_Without_CallStack_OnlyMemberInfo,
+
+        /// <summary>
+        /// 기본 로그 포멧 - 멤버 정보(함수명, 줄번호) + 콜스택 포함용
+        /// <para>$"[{strFilterFlag}] [{strFileName}.{sLogPrintInfo.strMember}.{sLogPrintInfo.iSourceLineNumber}] -  {sLogPrintInfo.pLogMessage}\n" + $"{sLogPrintInfo.strStackTrace}"</para>
+        /// </summary>
         DefaultLogFormat_With_CallStack,
     }
 
     public class DefaultLogFormat_Without_CallStack : ILogPrinter
     {
-        /// <summary>
-        /// 기본 로그 포멧
-        /// </summary>
-        public void ILogPrinter_OnPrintLog(string strFilterFlag, LogPrintInfo sLogPrintInfo, out string strMessageResult)
+
+        public void ILogPrinter_OnPrintLog(LogType eLogType, string strFilterFlag, LogPrintInfo sLogPrintInfo, out string strMessageResult)
         {
             strMessageResult = $"<b>[{strFilterFlag}]</b> {sLogPrintInfo.pLogMessage}";
         }
     }
 
+    public class DefaultLogFormat_Without_CallStack_OnlyMemberInfo : ILogPrinter
+    {
+        public void ILogPrinter_OnPrintLog(LogType eLogType, string strFilterFlag, LogPrintInfo sLogPrintInfo, out string strMessageResult)
+        {
+            string strFilePath = sLogPrintInfo.strFilePath.Replace('\\', '/');
+            string strFileName = Path.GetFileNameWithoutExtension(strFilePath);
+
+            strMessageResult = $"[{strFilterFlag}] [{strFileName}.{sLogPrintInfo.strMember}.{sLogPrintInfo.iSourceLineNumber}] -  {sLogPrintInfo.pLogMessage}";
+        }
+    }
+
     public class DefaultLogFormat_With_CallStack : ILogPrinter
     {
-        /// <summary>
-        /// 기본 로그 포멧 - 콜스택 포함용
-        /// </summary>
-        public void ILogPrinter_OnPrintLog(string strFilterFlag, LogPrintInfo sLogPrintInfo, out string strMessageResult)
+
+        public void ILogPrinter_OnPrintLog(LogType eLogType, string strFilterFlag, LogPrintInfo sLogPrintInfo, out string strMessageResult)
         {
             string strFilePath = sLogPrintInfo.strFilePath.Replace('\\', '/');
             string strFileName = Path.GetFileNameWithoutExtension(strFilePath);

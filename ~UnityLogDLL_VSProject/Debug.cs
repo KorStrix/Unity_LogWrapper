@@ -17,6 +17,15 @@ namespace Wrapper
     /// </summary>
     public static partial class Debug
     {
+        private static readonly LogType[] const_arrLogTypeAll = new LogType[]
+        {
+            LogType.Log,
+            LogType.Warning,
+            LogType.Error,
+            LogType.Assert,
+            LogType.Error
+        };
+
         /// <summary>
         /// 플래그를 지정하지 않은 로그에 대한 플래그
         /// </summary>
@@ -24,7 +33,15 @@ namespace Wrapper
 
         static Dictionary<string, string> _mapColorHexCode_ByString = new Dictionary<string, string>();
         static ulong _ulFilterFlags;
-        static ILogPrinter _OnLogFormat = new DefaultLogFormat_Without_CallStack();
+
+        private static Dictionary<LogType, ILogPrinter> _mapLogPrinter = new Dictionary<LogType, ILogPrinter>()
+        {
+            {LogType.Log, new DefaultLogFormat_Without_CallStack()},
+            {LogType.Warning, new DefaultLogFormat_Without_CallStack()},
+            {LogType.Error, new DefaultLogFormat_Without_CallStack()},
+            {LogType.Assert, new DefaultLogFormat_Without_CallStack()},
+            {LogType.Exception, new DefaultLogFormat_Without_CallStack()}
+        };
 
         private static Dictionary<ulong, List<ILogLogic>> _mapOnPrintLog_LogicList = new Dictionary<ulong, List<ILogLogic>>();
 
@@ -70,21 +87,39 @@ namespace Wrapper
         /// <summary>
         /// 로그의 출력 포멧을 지정합니다.
         /// </summary>
-        public static void DoSet_OnLogFormat_Default(EDefaultLogFormatName eName)
-        {
-            switch (eName)
-            {
-                case EDefaultLogFormatName.DefaultLogFormat_Without_CallStack: _OnLogFormat = new DefaultLogFormat_Without_CallStack(); break;
-                case EDefaultLogFormatName.DefaultLogFormat_With_CallStack: _OnLogFormat = new DefaultLogFormat_With_CallStack(); break;
-            }
-        }
+        public static ILogPrinter DoSet_OnLogFormat_Default(EDefaultLogFormatName eName) => DoSet_OnLogFormat_Default(eName, const_arrLogTypeAll);
 
         /// <summary>
         /// 로그의 출력 포멧을 지정합니다.
         /// </summary>
-        public static void DoSet_OnLogFormat_Custom(ILogPrinter OnLogFormat)
+        public static ILogPrinter DoSet_OnLogFormat_Default(EDefaultLogFormatName eName, params LogType[] arrLogType)
         {
-            _OnLogFormat = OnLogFormat;
+            ILogPrinter iPrinter = null;
+            switch (eName)
+            {
+                case EDefaultLogFormatName.DefaultLogFormat_Without_CallStack: iPrinter = new DefaultLogFormat_Without_CallStack(); break;
+                case EDefaultLogFormatName.DefaultLogFormat_Without_CallStack_OnlyMemberInfo: iPrinter = new DefaultLogFormat_Without_CallStack_OnlyMemberInfo(); break;
+                case EDefaultLogFormatName.DefaultLogFormat_With_CallStack: iPrinter = new DefaultLogFormat_With_CallStack(); break;
+            }
+
+            for (int i = 0; i < arrLogType.Length; i++)
+                _mapLogPrinter[arrLogType[i]] = iPrinter;
+
+            return iPrinter;
+        }
+
+        /// <summary>
+        /// Default 외에 로그의 출력 포멧을 지정합니다.
+        /// </summary>
+        public static void DoSet_OnLogFormat_Custom(ILogPrinter iLogPrinter) => DoSet_OnLogFormat_Custom(iLogPrinter, const_arrLogTypeAll);
+
+        /// <summary>
+        /// Default 외에 로그의 출력 포멧을 지정합니다.
+        /// </summary>
+        public static void DoSet_OnLogFormat_Custom(ILogPrinter iLogPrinter, params LogType[] arrLogType)
+        {
+            for (int i = 0; i < arrLogType.Length; i++)
+                _mapLogPrinter[arrLogType[i]] = iLogPrinter;
         }
 
 
@@ -94,7 +129,7 @@ namespace Wrapper
         /// </summary>
         /// <param name="TryFunc">실행할 함수</param>
         /// <param name="eLogType">catch시 출력할 로그 타입</param>
-        public static bool TryExecute(System.Action TryFunc, LogType eLogType = LogType.Error)
+        public static bool TryExecute(Action TryFunc, LogType eLogType = LogType.Error)
         {
             return TryExecute(TryFunc, Default, eLogType);
         }
@@ -112,7 +147,7 @@ namespace Wrapper
             {
                 TryFunc();
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 switch (eLogType)
                 {
@@ -203,6 +238,11 @@ namespace Wrapper
 
         private static void PrintLog(ICustomLogType pFilterFlags, string strStacktrace, object message, Object context, LogType eLogType, string strMemberName, string strFilePath, int iSourceLineNumber)
         {
+            if (_mapLogPrinter.TryGetValue(eLogType, out ILogPrinter pPrinter) == false)
+                return;
+
+
+
             string strFilterFlag = pFilterFlags.LogTypeName;
 
             foreach (var pColorString in _mapColorHexCode_ByString.OrderBy(p => p.Key.Length * -1))
@@ -213,8 +253,7 @@ namespace Wrapper
                 strFilterFlag = Regex.Replace(strFilterFlag, strPattern, $"<color=#{pColorString.Value}>{strKey}</color>");
             }
 
-
-            _OnLogFormat.ILogPrinter_OnPrintLog(strFilterFlag, new LogPrintInfo(pFilterFlags, message, context,
+             pPrinter.ILogPrinter_OnPrintLog(eLogType, strFilterFlag, new LogPrintInfo(pFilterFlags, message, context,
                 strStacktrace, strMemberName, strFilePath, iSourceLineNumber), out var strMessageOut);
 
             var arrExecuteLogic = _mapOnPrintLog_LogicList.Where(p => Check_IsContainFilter(p.Key, pFilterFlags)).Select(p => p.Value);

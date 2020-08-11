@@ -73,9 +73,19 @@
             로그의 출력 포멧을 지정합니다.
             </summary>
         </member>
-        <member name="M:Wrapper.Debug.DoSet_OnLogFormat_Custom(ILogPrinter)">
+        <member name="M:Wrapper.Debug.DoSet_OnLogFormat_Default(CustomDebug.EDefaultLogFormatName,UnityEngine.LogType[])">
             <summary>
             로그의 출력 포멧을 지정합니다.
+            </summary>
+        </member>
+        <member name="M:Wrapper.Debug.DoSet_OnLogFormat_Custom(ILogPrinter)">
+            <summary>
+            Default 외에 로그의 출력 포멧을 지정합니다.
+            </summary>
+        </member>
+        <member name="M:Wrapper.Debug.DoSet_OnLogFormat_Custom(ILogPrinter,UnityEngine.LogType[])">
+            <summary>
+            Default 외에 로그의 출력 포멧을 지정합니다.
             </summary>
         </member>
         <member name="M:Wrapper.Debug.TryExecute(System.Action,UnityEngine.LogType)">
@@ -115,14 +125,22 @@
             현재 Wrapper에 필터가 들어있는지 유무
             </summary>
         </member>
-        <member name="M:CustomDebug.DefaultLogFormat_Without_CallStack.ILogPrinter_OnPrintLog(System.String,LogPrintInfo,System.String@)">
+        <member name="F:CustomDebug.EDefaultLogFormatName.DefaultLogFormat_Without_CallStack">
             <summary>
             기본 로그 포멧
+            <para>$"<b>[{strFilterFlag}]</b> {sLogPrintInfo.pLogMessage}"</para>
             </summary>
         </member>
-        <member name="M:CustomDebug.DefaultLogFormat_With_CallStack.ILogPrinter_OnPrintLog(System.String,LogPrintInfo,System.String@)">
+        <member name="F:CustomDebug.EDefaultLogFormatName.DefaultLogFormat_Without_CallStack_OnlyMemberInfo">
             <summary>
-            기본 로그 포멧 - 콜스택 포함용
+            기본 로그 포멧 - 멤버 정보(함수명, 줄번호)
+            <para>$"[{strFilterFlag}] [{strFileName}.{sLogPrintInfo.strMember}.{sLogPrintInfo.iSourceLineNumber}] -  {sLogPrintInfo.pLogMessage}"</para>
+            </summary>
+        </member>
+        <member name="F:CustomDebug.EDefaultLogFormatName.DefaultLogFormat_With_CallStack">
+            <summary>
+            기본 로그 포멧 - 멤버 정보(함수명, 줄번호) + 콜스택 포함용
+            <para>$"[{strFilterFlag}] [{strFileName}.{sLogPrintInfo.strMember}.{sLogPrintInfo.iSourceLineNumber}] -  {sLogPrintInfo.pLogMessage}\n" + $"{sLogPrintInfo.strStackTrace}"</para>
             </summary>
         </member>
         <member name="T:CustomDebug.EOperatorType">
