@@ -1,11 +1,12 @@
 # 1. 개요
 
-유니티 Debug.Log를 기능을 추가한 래핑한 클래스입니다.
+**유니티 Debug.Log를 기능을 추가한 래핑한 클래스입니다.**
 
-이 툴은 유니티에서 로컬 PC에서 Debug.Log를 빌드 한 후에도 Define Symbol로 로그 필터를 관리하기위한 툴입니다.
+**이 툴은 유니티에서 개별 PC 및 빌드 후에도 Debug.Log 로그의 형식과 출력 유무를 관리하기위한 툴입니다.**
 
-하단은 예시입니다.
+하단은 주요 기능 및 예시입니다.
 
+## 1-1. 어떤 로그 타입의 로그를 출력할지 필터링
 ```csharp
 private void OnEnable()
 {
@@ -41,6 +42,40 @@ private void PrintLog()
 ```
 
 ![](https://github.com/KorStrix/Unity_LogWrapper/blob/master/ForGithub/Example.gif?raw=true)
+
+## 1-2. Editor / Build Define Symbol에 의한 필터 관리
+
+Editor에선 각자 컴퓨터에서 다른 로그 타입을 볼 수 있으며,
+
+Build 후에는 Define Symbol에 따라 로그필터의 활성화 유무를 툴로 세팅할 수 있습니다.
+
+## 1-3. EditorLogType(Log, Warning, Error 등)에 따라 로그 출력 형식 관리
+
+Editor에선 어떤 파일에서 몇번째 줄에 어떤 콜스택으로 쌓였는지 알 필요가 없지만,
+
+Build 후에는 원활한 디버깅을 위해 추적할 필요가 있습니다.
+
+해서 다음과 같은 이미 구현된 기본 로그 출력 형식이 구현[(ILogPrinter.cs  코드링크 참고)](https://github.com/KorStrix/Unity_LogWrapper/blob/master/~UnityLogDLL_VSProject/ILogPrinter.cs) 되어 있으며, ILogPrinter를 상속받아 커스텀하게 구현할 수 있습니다.
+
+하단은 예시입니다.
+
+```csharp
+public class LogWrap_Partial
+{
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    public static void LogInit()
+    {
+        // Build일 경우 출력할 로그 프린터
+#if !UNITY_EDITOR
+        Wrapper.Debug.DoSet_OnLogFormat_Default(CustomDebug.EDefaultLogFormatName.DefaultLogFormat_Without_CallStack_OnlyMemberInfo,
+            LogType.Log, LogType.Warning);
+
+        Wrapper.Debug.DoSet_OnLogFormat_Default(CustomDebug.EDefaultLogFormatName.DefaultLogFormat_With_CallStack, 
+            LogType.Error, LogType.Assert, LogType.Exception);
+#endif
+    }
+}
+```
 
 # 2. 설치 방법
 
