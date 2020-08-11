@@ -6,7 +6,7 @@
 
 하단은 주요 기능 및 예시입니다.
 
-## 1. 어떤 로그 타입의 로그를 출력할지 필터링
+## 1-1. 어떤 로그 타입의 로그를 출력할지 필터링
 ```csharp
 private void OnEnable()
 {
@@ -43,13 +43,13 @@ private void PrintLog()
 
 ![](https://github.com/KorStrix/Unity_LogWrapper/blob/master/ForGithub/Example.gif?raw=true)
 
-## 2. Editor / Build Define Symbol에 의한 필터 관리
+## 1-2. Editor / Build Define Symbol에 의한 필터 관리
 
 Editor에선 각자 컴퓨터에서 다른 로그 타입을 볼 수 있으며,
 
 Build 후에는 Define Symbol에 따라 로그필터의 활성화 유무를 툴로 세팅할 수 있습니다.
 
-## 3. EditorLogType(Log, Warning, Error 등)에 따라 로그 출력 형식 관리
+## 1-3. EditorLogType(Log, Warning, Error 등)에 따라 로그 출력 형식 관리
 
 Editor에선 어떤 파일에서 몇번째 줄에 어떤 콜스택으로 쌓였는지 알 필요가 없지만,
 
