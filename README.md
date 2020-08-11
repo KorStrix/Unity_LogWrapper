@@ -43,7 +43,7 @@ private void PrintLog()
 
 ![](https://github.com/KorStrix/Unity_LogWrapper/blob/master/ForGithub/Example.gif?raw=true)
 
-## 1-2. Editor / Build Define Symbol에 의한 필터 관리
+## 1-2. Editor / Build Define Symbol에 의한 로그 타입 및 필터링 관리
 
 Editor에선 각자 컴퓨터에서 다른 로그 타입을 볼 수 있으며,
 
