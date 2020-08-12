@@ -75,8 +75,13 @@ public class LogWrapperSetting : ScriptableObject
         EditorGUI.BeginChangeCheck();
         {
             EditorGUILayout.PropertyField(pSerializeObject.FindProperty($"{nameof(LogWrapperSetting.bIsCurrent)}"));
-            EditorGUILayout.PropertyField(pSerializeObject.FindProperty($"{nameof(LogWrapperSetting.strTypeName)}"));
-            EditorGUILayout.PropertyField(pSerializeObject.FindProperty($"{nameof(LogWrapperSetting.strCSExportPath)}"));
+
+            EditorGUILayout.BeginHorizontal();
+            {
+                EditorGUILayout.PropertyField(pSerializeObject.FindProperty($"{nameof(LogWrapperSetting.strTypeName)}"), new GUIContent("TypeName"));
+                EditorGUILayout.PropertyField(pSerializeObject.FindProperty($"{nameof(LogWrapperSetting.strCSExportPath)}"), new GUIContent("CSExportPath"));
+            }
+            EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.PropertyField(pSerializeObject.FindProperty($"{nameof(LogWrapperSetting.arrLogType)}"), true);
 
@@ -107,8 +112,8 @@ public class LogWrapperSetting : ScriptableObject
 #if UNITY_EDITOR
 
 [CanEditMultipleObjects]
-[CustomEditor(typeof(ScriptableObject), true)]
-public class DebugWrapperSetting_Editor : Editor
+[CustomEditor(typeof(LogWrapperSetting), true)]
+public class LogWrapperSetting_Editor : Editor
 {
     public override void OnInspectorGUI()
     {
@@ -119,7 +124,7 @@ public class DebugWrapperSetting_Editor : Editor
 // PropertyDrawer 안에 PropertyDrawer가 있으면 ReorderableList가 Select가 안됨;
 // https://stackoverflow.com/questions/54516221/how-to-select-elements-in-nested-reorderablelist-in-a-customeditor
 [CustomPropertyDrawer(typeof(LogWrapperSetting), true)]
-public class DebugWrapperSetting_PropertyDrawer : PropertyDrawer
+public class LogWrapperSetting_PropertyDrawer : PropertyDrawer
 {
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {

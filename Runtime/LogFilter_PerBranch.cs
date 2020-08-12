@@ -26,10 +26,10 @@ public class LogFilter_PerBranch
     public string strBranchName;
     public CustomLogType_Enable[] arrLogTypeEnable;
 
-    public static LogFilter_PerBranch Get_LogTypeEnable_FromPlayerPrefs(out bool bIsFail)
+    public static LogFilter_PerBranch Get_LogTypeEnable_FromEditorPrefs(out bool bIsFail)
     {
         LogFilter_PerBranch pLocalBranch = new LogFilter_PerBranch();
-        bIsFail = LogWrapperUtility.Load_FromPlayerPrefs(LogFilter_PerBranch.const_strPlayerPrefs_SaveKey, ref pLocalBranch) == false;
+        bIsFail = LogWrapperUtility.Load_FromEditorPrefs(LogFilter_PerBranch.const_strPlayerPrefs_SaveKey, ref pLocalBranch) == false;
 
         return pLocalBranch;
     }
@@ -107,23 +107,35 @@ public class LogFilter_PerBranchDrawer : PropertyDrawer
             if (pSetting == null)
                 return;
 
-            if(bIsDraw_BranchField)
-                EditorGUI.indentLevel++;
+            SerializedObject pSO = property.serializedObject;
+            LogFilter_PerBranch pBranch = GetThis(property);
+
+            if (CustomLogType_Enable.DoMatch_LogTypeEnableArray(pSetting, ref pBranch.arrLogTypeEnable))
             {
-                SerializedObject pSO = property.serializedObject;
-                LogFilter_PerBranch pBranch = GetThis(property);
-
-                if (CustomLogType_Enable.DoMatch_LogTypeEnableArray(pSetting, ref pBranch.arrLogTypeEnable))
-                {
-                    pSO.ApplyModifiedProperties();
-                    EditorUtility.SetDirty(pSO.targetObject);
-                }
-
-                SerializedProperty pProperty_arrLogTypeEnable = property.FindPropertyRelative(nameof(LogFilter_PerBranch.arrLogTypeEnable));
-                EditorGUI.PropertyField(position, pProperty_arrLogTypeEnable, true);
+                pSO.ApplyModifiedProperties();
+                EditorUtility.SetDirty(pSO.targetObject);
             }
+            SerializedProperty pProperty_arrLogTypeEnable = property.FindPropertyRelative(nameof(LogFilter_PerBranch.arrLogTypeEnable));
+
+
             if (bIsDraw_BranchField)
+            {
+                EditorGUI.indentLevel++;
+                {
+                    EditorGUI.PropertyField(position, pProperty_arrLogTypeEnable, true);
+                }
                 EditorGUI.indentLevel--;
+            }
+            else
+            {
+                for (int i = 0; i < pProperty_arrLogTypeEnable.arraySize; i++)
+                {
+                    SerializedProperty pPropertyElement = pProperty_arrLogTypeEnable.GetArrayElementAtIndex(i);
+                    EditorGUI.PropertyField(position, pPropertyElement);
+                    position.y += const_fHeightPerLine;
+                }
+            }
+
         }
         EditorGUI.EndProperty();
     }

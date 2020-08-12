@@ -4,9 +4,7 @@
  *	Initial Creation Date 	: 2020-03-15
  *	Summary 		        : 
  *
- *
- * 참고한 코드
- * - ReorderableList - https://unityindepth.tistory.com/56
+ *  깃허브 주소 : https://github.com/KorStrix/Unity_LogWrapper
  *  Template 		        : For Unity Editor V1
    ============================================ */
 #endregion Header
@@ -23,7 +21,8 @@ using CustomDebug;
 public class LogWrapperEditor : EditorWindow
 {
     /* const & readonly declaration             */
-
+    
+    const string const_strGitURL = "https://github.com/KorStrix/Unity_LogWrapper";
 
     /* enum & struct declaration                */
 
@@ -58,35 +57,31 @@ public class LogWrapperEditor : EditorWindow
 
     private void OnGUI()
     {
-        EditorGUILayout.LabelField("Log Wrapper Editor", EditorStyles.boldLabel);
-        EditorGUILayout.HelpBox("This tool is for managing log filters by DefineSymbol after building Debug.Log on local PC.", MessageType.Info);
-        EditorGUILayout.Space();
-
         Draw_WorkSequence();
-
-
         SerializedObject pSO = new SerializedObject(this);
 
-        EditorGUILayout.LabelField("[0~3]. Editor Setting", EditorStyles.boldLabel);
-        Draw_EditorSetting(pSO);
 
-
-
-        EditorGUILayout.Space();
         if (pSetting != null)
         {
-            if(IsShowSetting(nameof(_bIsShow_LogSetting)))
-                Draw_CSExportButton();
-
-            EditorGUILayout.Space();
-            EditorGUILayout.Space();
-
-
-            EditorGUILayout.LabelField("[4]. Local Editor Setting", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("Local Editor Setting", EditorStyles.boldLabel);
             Draw_LocalEditor_EnableSetting(pSO);
         }
         else
-            EditorGUILayout.LabelField("Require Editor Setting");
+        {
+            Color sColorOrigin = GUI.color;
+            GUI.color = Color.red;
+            EditorGUILayout.LabelField("Require Editor Setting", EditorStyles.boldLabel);
+            GUI.color = sColorOrigin;
+        }
+
+
+        EditorGUILayout.LabelField("Editor Setting", EditorStyles.boldLabel);
+        Draw_EditorSetting(pSO);
+
+
+        if (pSetting != null && IsShowSetting(nameof(_bIsShow_LogSetting)))
+            Draw_CSExportButton();
+
 
         if (GUI.changed)
         {
@@ -108,7 +103,7 @@ public class LogWrapperEditor : EditorWindow
 
     private static void SetCurrentLogFilter()
     {
-        LogFilter_PerBranch pLocalBranch = LogFilter_PerBranch.Get_LogTypeEnable_FromPlayerPrefs(out bool bIsChange);
+        LogFilter_PerBranch pLocalBranch = LogFilter_PerBranch.Get_LogTypeEnable_FromEditorPrefs(out bool bIsChange);
         if (bIsChange)
         {
             UnityEngine.Debug.LogError($"Get LogTypeEnable FromPlayerPrefs Fail");
@@ -120,7 +115,9 @@ public class LogWrapperEditor : EditorWindow
 
     private void Draw_WorkSequence()
     {
-        EditorGUILayout.LabelField("Work sequence", EditorStyles.boldLabel);
+        EditorGUILayout.BeginHorizontal();
+        if (GUILayout.Button($"Visit Github Docs"))
+            Help.BrowseURL(const_strGitURL);
 
         if (IsShowSetting(nameof(_bIsShow_WorkSequence)))
         {
@@ -128,6 +125,7 @@ public class LogWrapperEditor : EditorWindow
             {
                 SaveSetting_Hide(nameof(_bIsShow_WorkSequence), ref _bIsShow_WorkSequence);
             }
+            EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.HelpBox(@"0. Create or set EditorSetting File.
 
@@ -149,6 +147,7 @@ This is necessary when Nos. 1 and 2 are modified.
             {
                 SaveSetting_Show(nameof(_bIsShow_WorkSequence), ref _bIsShow_WorkSequence);
             }
+            EditorGUILayout.EndHorizontal();
         }
 
         EditorGUILayout.Space();
@@ -157,7 +156,7 @@ This is necessary when Nos. 1 and 2 are modified.
 
     private void Get_LogTypeEnable_FromPlayerPrefs(SerializedObject pSO_this)
     {
-        LogFilter_PerBranch pCurrentBranch = LogFilter_PerBranch.Get_LogTypeEnable_FromPlayerPrefs(out bool bIsSave);
+        LogFilter_PerBranch pCurrentBranch = LogFilter_PerBranch.Get_LogTypeEnable_FromEditorPrefs(out bool bIsSave);
         if (bIsSave || pLocalBranch == null || pLocalBranch.arrLogTypeEnable == null || pLocalBranch.arrLogTypeEnable.Length != pCurrentBranch.arrLogTypeEnable.Length)
         {
             pLocalBranch = pCurrentBranch;
@@ -175,7 +174,7 @@ This is necessary when Nos. 1 and 2 are modified.
         if (bIsSave)
         {
             SaveSO(pSO_this);
-            LogWrapperUtility.Save_ToPlayerPrefs(LogFilter_PerBranch.const_strPlayerPrefs_SaveKey, pLocalBranch);
+            LogWrapperUtility.Save_ToEditorPrefs(LogFilter_PerBranch.const_strPlayerPrefs_SaveKey, pLocalBranch);
         }
     }
 
@@ -246,7 +245,7 @@ This is necessary when Nos. 1 and 2 are modified.
         if (GUI.changed)
         {
             SaveSO(pSO);
-            LogWrapperUtility.Save_ToPlayerPrefs(LogFilter_PerBranch.const_strPlayerPrefs_SaveKey, pLocalBranch);
+            LogWrapperUtility.Save_ToEditorPrefs(LogFilter_PerBranch.const_strPlayerPrefs_SaveKey, pLocalBranch);
         }
     }
 
