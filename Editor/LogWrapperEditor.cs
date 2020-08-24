@@ -79,10 +79,6 @@ public class LogWrapperEditor : EditorWindow
         Draw_EditorSetting(pSO);
 
 
-        if (pSetting != null && IsShowSetting(nameof(_bIsShow_LogSetting)))
-            Draw_CSExportButton();
-
-
         if (GUI.changed)
         {
             pSO.ApplyModifiedProperties();
@@ -199,6 +195,8 @@ This is necessary when Nos. 1 and 2 are modified.
             }
             else
             {
+                Draw_CSExportButton();
+
                 if (GUILayout.Button("Create New Setting File"))
                 {
                     LogWrapperUtility.CreateAsset<LogWrapperSetting>();
