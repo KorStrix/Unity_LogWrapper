@@ -47,6 +47,9 @@ public interface ILogPrinter
 
 namespace CustomDebug
 {
+    /// <summary>
+    /// 로그 포멧명
+    /// </summary>
     public enum EDefaultLogFormatName // Enum의 Value와 타입 명이 일치해야 합니다.
     {
         /// <summary>
