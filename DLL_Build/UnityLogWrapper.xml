@@ -125,6 +125,11 @@
             현재 Wrapper에 필터가 들어있는지 유무
             </summary>
         </member>
+        <member name="T:CustomDebug.EDefaultLogFormatName">
+            <summary>
+            로그 포멧명
+            </summary>
+        </member>
         <member name="F:CustomDebug.EDefaultLogFormatName.DefaultLogFormat_Without_CallStack">
             <summary>
             기본 로그 포멧
